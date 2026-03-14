@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zarf Robotics — Xiaozhi AI on ESP32</title>
 <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="icon" sizes="any" href="../../favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -914,11 +916,90 @@
 
   /* ====== RESPONSIVE ====== */
   @media (max-width: 768px) {
-    .video-inner { grid-template-columns: 1fr; }
-    .video-preview { min-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
-    .flash-config { grid-template-columns: 1fr 1fr; }
-    .hero-stats { gap: 24px; }
+    /* header */
+    .header-inner { padding: 11px 16px; }
+    .logo-text { font-size: 13px; letter-spacing: 1.5px; }
+    .logo-sub { font-size: 8px; letter-spacing: 1px; }
     nav { display: none; }
+
+    /* hero */
+    .hero { padding: 80px 0 48px; }
+    .hero-corner { display: none; }
+    .wrap { padding: 0 16px; }
+    .hero-channel { font-size: 9px; letter-spacing: 2px; }
+    .hero-title { font-size: clamp(32px, 11vw, 48px); letter-spacing: -0.5px; margin-bottom: 12px; }
+    .hero-sub { font-size: 14px; margin-bottom: 20px; }
+    .hero-tags { gap: 6px; margin-bottom: 24px; }
+    .tag { font-size: 9px; padding: 4px 9px; }
+
+    /* stats — 2x2 grid */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      padding-top: 0;
+    }
+    .hero-stats > div {
+      padding: 14px 16px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-stats > div:nth-child(2) { border-right: none; }
+    .hero-stats > div:nth-child(3) { border-bottom: none; }
+    .hero-stats > div:nth-child(4) { border-right: none; border-bottom: none; }
+    .stat-val { font-size: 18px; }
+    .stat-label { font-size: 8px; }
+
+    /* sections */
+    .section { padding: 40px 0; }
+    .sec-title { font-size: 11px; letter-spacing: 2px; }
+
+    /* component cards */
+    .components-grid { grid-template-columns: 1fr; gap: 12px; }
+    .comp-name { font-size: 11px; }
+    .comp-spec { font-size: 11px; }
+
+    /* flasher / download panel */
+    .flasher-body { padding: 20px 16px; }
+    .flash-config { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .flash-config .config-item:last-child { grid-column: 1 / -1; }
+    .config-val { font-size: 16px; }
+    .zip-download-box {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .btn-zip-download { width: 100%; justify-content: center; }
+    .fi-step { gap: 10px; }
+    .fi-text { font-size: 12px; }
+
+    /* circuit panel */
+    .circuit-toolbar { flex-wrap: wrap; gap: 8px; padding: 12px 14px; }
+    .circuit-title { font-size: 9px; width: 100%; }
+    .circuit-upload-area { min-height: 240px; }
+    #circuit-img { max-height: 360px; }
+
+    /* video panel */
+    .video-inner { grid-template-columns: 1fr; }
+    .video-preview { min-height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
+    .video-info { padding: 20px 16px; }
+    .video-title { font-size: 14px; }
+    .video-desc { font-size: 13px; margin-bottom: 16px; }
+    .video-meta { gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .btn-watch { font-size: 10px; padding: 12px 18px; }
+
+    /* footer */
+    .footer-inner { flex-direction: column; gap: 8px; text-align: center; padding: 0 16px; }
+  }
+
+  @media (max-width: 380px) {
+    .hero-title { font-size: 28px; }
+    .flasher-body { padding: 16px 12px; }
+    .flash-config { grid-template-columns: 1fr; }
+    .flash-config .config-item:last-child { grid-column: auto; }
   }
 
   /* Glow animation */
@@ -938,7 +1019,7 @@
     <a href="../../index.html" class="logo">
       <div>
         <div class="logo-text">ZARF ROBOTICS</div>
-        <div class="logo-sub">ENGINEERING CHANNEL</div>
+        <div class="logo-sub">TECHNOLOGY THAT HELPS!</div>
       </div>
     </a>
     <nav>
