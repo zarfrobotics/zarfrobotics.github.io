@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarf Robotics — Project Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020609;
+    --bg2: #040d14;
+    --panel: #060f18;
+    --panel2: #081525;
+    --border: #0a2a3f;
+    --border2: #0d3a55;
+    --cyan: #00d4ff;
+    --cyan2: #00a8cc;
+    --green: #00ff88;
+    --orange: #ff6b2b;
+    --red: #ff2b5e;
+    --purple: #b44fff;
+    --yellow: #ffe040;
+    --text: #c8e8f5;
+    --text2: #6a9ab5;
+    --text3: #3a6a85;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* SCANLINES */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* GRID BG */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .grid-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,60,100,0.35) 0%, transparent 65%);
+  }
+
+  /* ====== HEADER ====== */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(2,6,9,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo { display: flex; align-items: center; gap: 13px; text-decoration: none; }
+
+  .logo-icon {
+    width: 38px; height: 38px;
+    border: 2px solid var(--cyan);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(0,212,255,0.25);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .logo-icon::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.3), transparent);
+    border-radius: 3px;
+  }
+  .logo-icon svg { position: relative; z-index: 1; }
+
+  .logo-wordmark { display: flex; flex-direction: column; }
+  .logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 2.5px;
+    text-shadow: 0 0 18px rgba(0,212,255,0.45);
+    line-height: 1;
+  }
+  .logo-sub {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1.5px;
+    margin-top: 3px;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 20px; }
+
+  .yt-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #ff4444;
+    text-decoration: none;
+    padding: 7px 14px;
+    border: 1px solid rgba(255,68,68,0.35);
+    border-radius: 4px;
+    background: rgba(255,68,68,0.06);
+    transition: all 0.2s;
+  }
+  .yt-link:hover {
+    background: rgba(255,68,68,0.12);
+    border-color: #ff4444;
+    box-shadow: 0 0 16px rgba(255,0,0,0.2);
+  }
+
+  .nav-counter {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+  }
+  .nav-counter span { color: var(--cyan); }
+
+  /* ====== HERO ====== */
+  .hero {
+    padding: 130px 0 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Animated corner brackets */
+  .corner { position: absolute; width: 100px; height: 100px; }
+  .corner.tl { top: 80px; left: 32px; border-top: 1px solid rgba(0,212,255,0.2); border-left: 1px solid rgba(0,212,255,0.2); }
+  .corner.tr { top: 80px; right: 32px; border-top: 1px solid rgba(0,212,255,0.2); border-right: 1px solid rgba(0,212,255,0.2); }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .eyebrow-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+    animation: blink 2.2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100% { opacity:1; } 50% { opacity:0.35; }
+  }
+  .eyebrow-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+  }
+
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(34px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.0;
+    color: #fff;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+  }
+  .hero-title .accent {
+    color: var(--cyan);
+    text-shadow: 0 0 40px rgba(0,212,255,0.5), 0 0 80px rgba(0,212,255,0.15);
+  }
+  .hero-title .dim { color: rgba(255,255,255,0.15); }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--text2);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    max-width: 580px;
+    line-height: 1.7;
+    margin: 20px 0 36px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    width: fit-content;
+    margin-bottom: 56px;
+  }
+  .h-stat {
+    padding: 16px 28px;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .h-stat:last-child { border-right: none; }
+  .h-stat-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cyan);
+    line-height: 1;
+  }
+  .h-stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  /* ====== FILTER BAR ====== */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-right: 4px;
+  }
+  .filter-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    color: var(--cyan);
+    border-color: rgba(0,212,255,0.4);
+    background: rgba(0,212,255,0.06);
+  }
+
+  /* ====== SEARCH BAR ====== */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 36px;
+  }
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 13px 16px 13px 44px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    letter-spacing: 1px;
+    outline: none;
+    transition: all 0.25s;
+    caret-color: var(--cyan);
+  }
+  .search-input::placeholder { color: var(--text3); }
+  .search-input:focus {
+    border-color: rgba(0,212,255,0.4);
+    background: var(--panel2);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.06), 0 0 20px rgba(0,212,255,0.08);
+  }
+  .search-kbd {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    padding: 3px 7px;
+    pointer-events: none;
+  }
+  .search-results-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    min-height: 16px;
+    transition: all 0.2s;
+  }
+  .search-results-meta .hl { color: var(--cyan); }
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    border: 1px dashed var(--border2);
+    border-radius: 10px;
+  }
+  .no-results.show { display: block; }
+  .no-results-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.4; }
+  .no-results-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .no-results-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    opacity: 0.5;
+    letter-spacing: 1px;
+  }
+  /* highlight matched text */
+  .search-highlight {
+    background: rgba(0,212,255,0.18);
+    color: var(--cyan);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* ====== SECTION ====== */
+  .section { padding: 20px 0 80px; }
+
+  .sec-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .sec-num { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--cyan); letter-spacing: 2px; opacity: 0.55; }
+  .sec-title { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+  .sec-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border2), transparent); }
+
+  /* ====== PROJECT CARDS ====== */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .proj-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+  }
+
+  .proj-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-color, var(--cyan)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .proj-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.06), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.35s;
+    pointer-events: none;
+  }
+
+  .proj-card:hover {
+    border-color: rgba(0,212,255,0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.08);
+  }
+  .proj-card:hover::before { opacity: 1; }
+  .proj-card:hover::after { opacity: 1; }
+
+  /* Card banner */
+  .card-banner {
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .banner-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .banner-glow {
+    position: absolute;
+    inset: 0;
+  }
+
+  .card-chip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chip-icon {
+    font-size: 38px;
+    filter: drop-shadow(0 0 12px rgba(0,212,255,0.4));
+  }
+
+  .chip-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,212,255,0.3);
+    background: rgba(0,0,0,0.5);
+  }
+
+  /* Top-right badge */
+  .card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 3px;
+  }
+  .badge-new { background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.4); color: var(--green); }
+  .badge-soon { background: rgba(255,224,64,0.1); border: 1px solid rgba(255,224,64,0.35); color: var(--yellow); }
+  .badge-hot { background: rgba(255,107,43,0.15); border: 1px solid rgba(255,107,43,0.4); color: var(--orange); }
+  .badge-wip { background: rgba(180,79,255,0.12); border: 1px solid rgba(180,79,255,0.35); color: var(--purple); }
+
+  /* Card body */
+  .card-body {
+    padding: 20px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-id {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.65;
+    flex: 1;
+    margin-bottom: 18px;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+
+  .ctag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    padding: 3px 9px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+  .ctag-c { border: 1px solid rgba(0,212,255,0.25); color: var(--cyan2); background: rgba(0,212,255,0.05); }
+  .ctag-g { border: 1px solid rgba(0,255,136,0.25); color: rgba(0,255,136,0.8); background: rgba(0,255,136,0.04); }
+  .ctag-o { border: 1px solid rgba(255,107,43,0.25); color: rgba(255,107,43,0.8); background: rgba(255,107,43,0.05); }
+  .ctag-p { border: 1px solid rgba(180,79,255,0.25); color: rgba(180,79,255,0.8); background: rgba(180,79,255,0.05); }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 14px;
+  }
+
+  .meta-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .meta-item .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); opacity: 0.5; }
+
+  .card-arrow {
+    width: 30px; height: 30px;
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text3);
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .proj-card:hover .card-arrow {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0,212,255,0.08);
+    box-shadow: 0 0 12px rgba(0,212,255,0.2);
+  }
+
+  /* COMING SOON overlay */
+  .coming-soon-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(2,6,9,0.55);
+    backdrop-filter: blur(2px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .proj-card.locked:hover .coming-soon-overlay { opacity: 1; }
+  .coming-soon-overlay span {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--yellow);
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(255,224,64,0.5);
+  }
+  .coming-soon-overlay small {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+  }
+
+  /* ====== FEATURED ====== */
+  .featured-card {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 200px;
+  }
+
+  .featured-card .card-banner {
+    height: auto;
+    min-height: 200px;
+    border-right: 1px solid var(--border);
+  }
+
+  .featured-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    background: rgba(0,212,255,0.12);
+    border: 1px solid rgba(0,212,255,0.4);
+    color: var(--cyan);
+    border-radius: 3px;
+  }
+
+  /* ====== FOOTER ====== */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0;
+    margin-top: 20px;
+  }
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+  }
+  .footer-text span { color: var(--cyan); }
+
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--cyan); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--cyan2); }
+
+  @media (max-width: 768px) {
+    .featured-card { grid-template-columns: 1fr; }
+    .featured-card .card-banner { height: 160px; border-right: none; border-bottom: 1px solid var(--border); }
+    .projects-grid { grid-template-columns: 1fr; }
+    .hero-stats { flex-wrap: wrap; }
+    .header-inner { padding: 14px 16px; }
+    .wrap { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-wordmark">
+        <div class="logo-text">ZARF ROBOTICS</div>
+        <div class="logo-sub">ENGINEERING CHANNEL</div>
+      </div>
+    </a>
+    <div class="header-right">
+      <div class="nav-counter">PROJECTS: <span id="projectCount">—</span></div>
+      <a href="https://www.youtube.com/@zarfrobotics" target="_blank" class="yt-link">
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M13.7 1.56C13.54.92 13.04.42 12.4.26 11.32 0 7 0 7 0S2.68 0 1.6.26C.96.42.46.92.3 1.56 0 2.64 0 5 0 5s0 2.36.3 3.44c.16.64.66 1.12 1.3 1.3C2.68 10 7 10 7 10s4.32 0 5.4-.26c.64-.18 1.14-.66 1.3-1.3C14 7.36 14 5 14 5s0-2.36-.3-3.44z"/></svg>
+        YOUTUBE
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="wrap">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-dot"></div>
+      <span class="eyebrow-text">PROJECT REPOSITORY — OPEN SOURCE BUILDS</span>
+    </div>
+    <h1 class="hero-title">
+      ZARF<br>
+      <span class="accent">ROBOTICS</span><br>
+      <span class="dim">///</span> BUILDS
+    </h1>
+    <p class="hero-desc">
+      Step-by-step hardware & firmware projects for makers. From AI assistants on microcontrollers to custom robotics — every build documented and open source.
+    </p>
+    <div class="hero-stats">
+      <div class="h-stat">
+        <div class="h-stat-val" id="totalProjects">1</div>
+        <div class="h-stat-label">PROJECTS</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val">ESP32</div>
+        <div class="h-stat-label">MAIN PLATFORM</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val">100%</div>
+        <div class="h-stat-label">OPEN SOURCE</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val">FREE</div>
+        <div class="h-stat-label">ALL GUIDES</div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-label">FILTER //</span>
+      <button class="filter-btn active" data-filter="all">ALL</button>
+      <button class="filter-btn" data-filter="esp32">ESP32</button>
+      <button class="filter-btn" data-filter="ai">AI</button>
+      <button class="filter-btn" data-filter="audio">AUDIO</button>
+      <button class="filter-btn" data-filter="robotics">ROBOTICS</button>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title" id="sectionTitle">ALL PROJECTS</h2>
+      <div class="sec-line"></div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </span>
+      <input
+        type="text"
+        class="search-input"
+        id="searchInput"
+        placeholder="SEARCH PROJECTS — TYPE KEYWORDS, TAGS, COMPONENTS..."
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <span class="search-kbd">⌘ K</span>
+    </div>
+    <div class="search-results-meta" id="searchMeta"></div>
+
+    <div class="no-results" id="noResults">
+      <div class="no-results-icon">🔍</div>
+      <div class="no-results-title">NO PROJECTS FOUND</div>
+      <div class="no-results-sub">Try different keywords · ESP32 · AI · AUDIO · ROBOTICS</div>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid">
+
+      <!-- PROJECT 01 — FEATURED / LIVE -->
+      <a href="zarf-robotics.html" class="proj-card featured-card" data-tags="esp32 ai audio">
+        <div class="card-banner">
+          <div class="banner-grid"></div>
+          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,212,255,0.12), transparent 70%);"></div>
+          <div class="featured-tag">★ FEATURED</div>
+          <div class="card-badge badge-new">LIVE</div>
+          <div class="card-chip">
+            <div class="chip-icon">🤖</div>
+            <div class="chip-label" style="color: var(--cyan);">XIAOZHI · ESP32</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-id">PROJ-001 // ESP32 · AI · AUDIO</div>
+          <div class="card-title">XIAOZHI AI ON ESP32 DEVKIT V1</div>
+          <div class="card-desc">
+            Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide, and one-click web flasher at 921600 baud.
+          </div>
+          <div class="card-tags">
+            <span class="ctag ctag-c">ESP32</span>
+            <span class="ctag ctag-g">XIAOZHI AI</span>
+            <span class="ctag ctag-c">I2S AUDIO</span>
+            <span class="ctag ctag-o">WEB FLASHER</span>
+            <span class="ctag ctag-g">VOICE AI</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-meta">
+              <div class="meta-item"><div class="dot"></div> 6 COMPONENTS</div>
+              <div class="meta-item"><div class="dot"></div> BEGINNER</div>
+              <div class="meta-item"><div class="dot"></div> ~1 HOUR</div>
+            </div>
+            <div class="card-arrow">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- PROJECT 02 — COMING SOON -->
+      <div class="proj-card locked" data-tags="esp32 robotics">
+        <div class="coming-soon-overlay">
+          <span>COMING SOON</span>
+          <small>PROJECT IN PROGRESS</small>
+        </div>
+        <div class="card-banner">
+          <div class="banner-grid"></div>
+          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,107,43,0.10), transparent 70%);"></div>
+          <div class="card-badge badge-wip">WIP</div>
+          <div class="card-chip">
+            <div class="chip-icon">🦾</div>
+            <div class="chip-label" style="color: var(--orange);">SERVO · ESP32</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-id">PROJ-002 // ESP32 · ROBOTICS · SERVO</div>
+          <div class="card-title">ESP32 ROBOTIC ARM CONTROLLER</div>
+          <div class="card-desc">
+            6-DOF robotic arm driven by ESP32 with real-time inverse kinematics, web-based joystick UI, and smooth servo interpolation over WiFi.
+          </div>
+          <div class="card-tags">
+            <span class="ctag ctag-c">ESP32</span>
+            <span class="ctag ctag-o">SERVO</span>
+            <span class="ctag ctag-p">6-DOF</span>
+            <span class="ctag ctag-g">WEB UI</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-meta">
+              <div class="meta-item"><div class="dot"></div> 8 COMPONENTS</div>
+              <div class="meta-item"><div class="dot"></div> INTERMEDIATE</div>
+            </div>
+            <div class="card-arrow">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 03 — COMING SOON -->
+      <div class="proj-card locked" data-tags="esp32 ai">
+        <div class="coming-soon-overlay">
+          <span>COMING SOON</span>
+          <small>PROJECT IN PROGRESS</small>
+        </div>
+        <div class="card-banner">
+          <div class="banner-grid"></div>
+          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(180,79,255,0.10), transparent 70%);"></div>
+          <div class="card-badge badge-soon">SOON</div>
+          <div class="card-chip">
+            <div class="chip-icon">👁️</div>
+            <div class="chip-label" style="color: var(--purple);">VISION · ESP32-CAM</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-id">PROJ-003 // ESP32-CAM · AI · VISION</div>
+          <div class="card-title">ESP32-CAM FACE RECOGNITION DOOR</div>
+          <div class="card-desc">
+            AI-powered face recognition door lock using ESP32-CAM. Enroll faces via web UI, unlock servo latch on match. No cloud required — all on-device.
+          </div>
+          <div class="card-tags">
+            <span class="ctag ctag-c">ESP32-CAM</span>
+            <span class="ctag ctag-p">VISION AI</span>
+            <span class="ctag ctag-o">SERVO</span>
+            <span class="ctag ctag-g">ON-DEVICE</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-meta">
+              <div class="meta-item"><div class="dot"></div> 5 COMPONENTS</div>
+              <div class="meta-item"><div class="dot"></div> INTERMEDIATE</div>
+            </div>
+            <div class="card-arrow">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 04 — COMING SOON -->
+      <div class="proj-card locked" data-tags="esp32 robotics">
+        <div class="coming-soon-overlay">
+          <span>COMING SOON</span>
+          <small>PROJECT IN PROGRESS</small>
+        </div>
+        <div class="card-banner">
+          <div class="banner-grid"></div>
+          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,255,136,0.08), transparent 70%);"></div>
+          <div class="card-badge badge-soon">SOON</div>
+          <div class="card-chip">
+            <div class="chip-icon">🚗</div>
+            <div class="chip-label" style="color: var(--green);">LIDAR · ROS</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-id">PROJ-004 // ESP32 · LIDAR · NAVIGATION</div>
+          <div class="card-title">LIDAR OBSTACLE-AVOIDANCE ROVER</div>
+          <div class="card-desc">
+            Autonomous 4WD rover with VL53L0X LIDAR array, real-time mapping, and obstacle avoidance algorithm. Controlled via BLE from smartphone.
+          </div>
+          <div class="card-tags">
+            <span class="ctag ctag-c">ESP32</span>
+            <span class="ctag ctag-g">LIDAR</span>
+            <span class="ctag ctag-o">4WD</span>
+            <span class="ctag ctag-p">BLE</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-meta">
+              <div class="meta-item"><div class="dot"></div> 12 COMPONENTS</div>
+              <div class="meta-item"><div class="dot"></div> ADVANCED</div>
+            </div>
+            <div class="card-arrow">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 05 — COMING SOON -->
+      <div class="proj-card locked" data-tags="esp32 audio ai">
+        <div class="coming-soon-overlay">
+          <span>COMING SOON</span>
+          <small>PROJECT IN PROGRESS</small>
+        </div>
+        <div class="card-banner">
+          <div class="banner-grid"></div>
+          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,224,64,0.08), transparent 70%);"></div>
+          <div class="card-badge badge-hot">HOT</div>
+          <div class="card-chip">
+            <div class="chip-icon">🎵</div>
+            <div class="chip-label" style="color: var(--yellow);">MUSIC · AI</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-id">PROJ-005 // ESP32 · AUDIO · AI DSP</div>
+          <div class="card-title">ESP32 AI AUDIO VISUALIZER</div>
+          <div class="card-desc">
+            Real-time audio spectrum analyzer with AI beat detection, driving a WS2812B LED matrix. FFT on ESP32, visualizations sync to music beats.
+          </div>
+          <div class="card-tags">
+            <span class="ctag ctag-c">ESP32</span>
+            <span class="ctag ctag-g">WS2812B</span>
+            <span class="ctag ctag-o">FFT</span>
+            <span class="ctag ctag-p">AI DSP</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-meta">
+              <div class="meta-item"><div class="dot"></div> 4 COMPONENTS</div>
+              <div class="meta-item"><div class="dot"></div> INTERMEDIATE</div>
+            </div>
+            <div class="card-arrow">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-text">© 2025 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
+    <div class="footer-links">
+      <a href="https://www.youtube.com/@zarfrobotics" target="_blank">YOUTUBE</a>
+      <a href="#">GITHUB</a>
+      <a href="#">CONTACT</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ====== PROJECT DATA INDEX ======
+  // Each card's searchable text is derived from its DOM content
+  // We also store original title HTML so we can restore highlighting
+
+  const allCards = Array.from(document.querySelectorAll('.proj-card'));
+  const cardData = allCards.map(card => {
+    const titleEl = card.querySelector('.card-title');
+    const descEl  = card.querySelector('.card-desc');
+    const idEl    = card.querySelector('.card-id');
+    const tagsEl  = card.querySelector('.card-tags');
+    return {
+      el: card,
+      titleEl,
+      descEl,
+      originalTitle: titleEl ? titleEl.textContent : '',
+      originalDesc:  descEl  ? descEl.textContent  : '',
+      tags: card.dataset.tags || '',
+      searchText: [
+        titleEl  ? titleEl.textContent  : '',
+        descEl   ? descEl.textContent   : '',
+        idEl     ? idEl.textContent     : '',
+        tagsEl   ? tagsEl.textContent   : '',
+        card.dataset.tags || ''
+      ].join(' ').toLowerCase()
+    };
+  });
+
+  // Update header counters
+  document.getElementById('projectCount').textContent = allCards.length;
+  document.getElementById('totalProjects').textContent = allCards.length;
+
+  let activeFilter = 'all';
+  let searchQuery  = '';
+
+  // ====== APPLY COMBINED FILTER + SEARCH ======
+  function applyFilters() {
+    const q = searchQuery.trim().toLowerCase();
+    const noResults = document.getElementById('noResults');
+    const meta = document.getElementById('searchMeta');
+    const secTitle = document.getElementById('sectionTitle');
+    let visible = 0;
+
+    cardData.forEach(({ el, titleEl, descEl, originalTitle, originalDesc, tags, searchText }) => {
+      const passFilter = activeFilter === 'all' || tags.includes(activeFilter);
+      const passSearch = !q || searchText.includes(q);
+      const show = passFilter && passSearch;
+
+      el.style.display = show ? '' : 'none';
+      if (show) {
+        visible++;
+        // Highlight matched term in title and description
+        if (q && titleEl) titleEl.innerHTML = highlight(originalTitle, q);
+        else if (titleEl) titleEl.textContent = originalTitle;
+
+        if (q && descEl) descEl.innerHTML = highlight(originalDesc, q);
+        else if (descEl) descEl.textContent = originalDesc;
+      }
+    });
+
+    // No-results state
+    noResults.classList.toggle('show', visible === 0);
+
+    // Results meta text
+    if (q) {
+      meta.innerHTML = visible === 0
+        ? `<span>NO RESULTS FOR</span> <span class="hl">"${escHtml(q)}"</span>`
+        : `<span class="hl">${visible}</span> RESULT${visible !== 1 ? 'S' : ''} FOR <span class="hl">"${escHtml(q)}"</span>`;
+      secTitle.textContent = 'SEARCH RESULTS';
+    } else {
+      meta.innerHTML = '';
+      secTitle.textContent = activeFilter === 'all'
+        ? 'ALL PROJECTS'
+        : activeFilter.toUpperCase() + ' PROJECTS';
+    }
+  }
+
+  // Highlight helper — wraps matching text with <mark>
+  function highlight(text, query) {
+    if (!query) return escHtml(text);
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`(${escaped})`, 'gi');
+    return escHtml(text).replace(re, '<span class="search-highlight">$1</span>');
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ====== SEARCH INPUT ======
+  const searchInput = document.getElementById('searchInput');
+
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value;
+    // Clear active filter chip when typing
+    if (searchQuery) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-filter="all"]').classList.add('active');
+      activeFilter = 'all';
+    }
+    applyFilters();
+  });
+
+  // Keyboard shortcut ⌘K / Ctrl+K to focus search
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+    if (e.key === 'Escape' && document.activeElement === searchInput) {
+      searchInput.value = '';
+      searchQuery = '';
+      applyFilters();
+      searchInput.blur();
+    }
+  });
+
+  // ====== FILTER BUTTONS ======
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      // Clear search when using filter chips
+      searchInput.value = '';
+      searchQuery = '';
+      applyFilters();
+    });
+  });
+
+  // Prevent locked card navigation
+  allCards.filter(c => c.classList.contains('locked')).forEach(card => {
+    card.addEventListener('click', e => e.preventDefault());
+  });
+
+  // Initial render
+  applyFilters();
+</script>
+
+</body>
+</html>
