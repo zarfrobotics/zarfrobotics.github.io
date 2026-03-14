@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zarf Robotics — Project Hub</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -37,7 +38,6 @@
     min-height: 100vh;
   }
 
-  /* SCANLINES */
   body::before {
     content: '';
     position: fixed;
@@ -47,7 +47,6 @@
     z-index: 9999;
   }
 
-  /* GRID BG */
   .grid-bg {
     position: fixed;
     inset: 0;
@@ -65,7 +64,6 @@
     background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,60,100,0.35) 0%, transparent 65%);
   }
 
-  /* ====== HEADER ====== */
   header {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -84,27 +82,7 @@
     justify-content: space-between;
   }
 
-  .logo { display: flex; align-items: center; gap: 13px; text-decoration: none; }
-
-  .logo-icon {
-    width: 38px; height: 38px;
-    border: 2px solid var(--cyan);
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 18px rgba(0,212,255,0.25);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  .logo-icon::before {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    background: linear-gradient(135deg, rgba(0,212,255,0.3), transparent);
-    border-radius: 3px;
-  }
-  .logo-icon svg { position: relative; z-index: 1; }
-
+  .logo { display: flex; align-items: center; text-decoration: none; }
   .logo-wordmark { display: flex; flex-direction: column; }
   .logo-text {
     font-family: 'Orbitron', monospace;
@@ -154,26 +132,19 @@
   }
   .nav-counter span { color: var(--cyan); }
 
-  /* ====== HERO ====== */
   .hero {
     padding: 130px 0 60px;
     position: relative;
     overflow: hidden;
   }
 
-  /* Animated corner brackets */
   .corner { position: absolute; width: 100px; height: 100px; }
   .corner.tl { top: 80px; left: 32px; border-top: 1px solid rgba(0,212,255,0.2); border-left: 1px solid rgba(0,212,255,0.2); }
   .corner.tr { top: 80px; right: 32px; border-top: 1px solid rgba(0,212,255,0.2); border-right: 1px solid rgba(0,212,255,0.2); }
 
   .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
 
-  .hero-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 18px;
-  }
+  .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
   .eyebrow-dot {
     width: 7px; height: 7px;
     border-radius: 50%;
@@ -181,9 +152,7 @@
     box-shadow: 0 0 12px var(--green);
     animation: blink 2.2s ease-in-out infinite;
   }
-  @keyframes blink {
-    0%,100% { opacity:1; } 50% { opacity:0.35; }
-  }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
   .eyebrow-text {
     font-family: 'Share Tech Mono', monospace;
     font-size: 11px;
@@ -200,10 +169,7 @@
     letter-spacing: -1px;
     margin-bottom: 10px;
   }
-  .hero-title .accent {
-    color: var(--cyan);
-    text-shadow: 0 0 40px rgba(0,212,255,0.5), 0 0 80px rgba(0,212,255,0.15);
-  }
+  .hero-title .accent { color: var(--cyan); text-shadow: 0 0 40px rgba(0,212,255,0.5), 0 0 80px rgba(0,212,255,0.15); }
   .hero-title .dim { color: rgba(255,255,255,0.15); }
 
   .hero-desc {
@@ -225,11 +191,7 @@
     width: fit-content;
     margin-bottom: 56px;
   }
-  .h-stat {
-    padding: 16px 28px;
-    border-right: 1px solid var(--border);
-    position: relative;
-  }
+  .h-stat { padding: 16px 28px; border-right: 1px solid var(--border); }
   .h-stat:last-child { border-right: none; }
   .h-stat-val {
     font-family: 'Orbitron', monospace;
@@ -246,7 +208,6 @@
     margin-top: 4px;
   }
 
-  /* ====== FILTER BAR ====== */
   .filter-bar {
     display: flex;
     align-items: center;
@@ -279,20 +240,14 @@
     background: rgba(0,212,255,0.06);
   }
 
-  /* ====== SEARCH BAR ====== */
-  .search-wrap {
-    position: relative;
-    margin-bottom: 36px;
-  }
+  .search-wrap { position: relative; margin-bottom: 36px; }
   .search-icon {
     position: absolute;
-    left: 16px;
-    top: 50%;
+    left: 16px; top: 50%;
     transform: translateY(-50%);
     color: var(--text3);
     pointer-events: none;
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
   }
   .search-input {
     width: 100%;
@@ -316,8 +271,7 @@
   }
   .search-kbd {
     position: absolute;
-    right: 14px;
-    top: 50%;
+    right: 14px; top: 50%;
     transform: translateY(-50%);
     font-family: 'Share Tech Mono', monospace;
     font-size: 9px;
@@ -335,54 +289,21 @@
     letter-spacing: 1px;
     margin-bottom: 20px;
     min-height: 16px;
-    transition: all 0.2s;
   }
   .search-results-meta .hl { color: var(--cyan); }
-  .no-results {
-    display: none;
-    text-align: center;
-    padding: 60px 20px;
-    border: 1px dashed var(--border2);
-    border-radius: 10px;
-  }
+  .no-results { display: none; text-align: center; padding: 60px 20px; border: 1px dashed var(--border2); border-radius: 10px; }
   .no-results.show { display: block; }
   .no-results-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.4; }
-  .no-results-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 13px;
-    color: var(--text3);
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-  }
-  .no-results-sub {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    opacity: 0.5;
-    letter-spacing: 1px;
-  }
-  /* highlight matched text */
-  .search-highlight {
-    background: rgba(0,212,255,0.18);
-    color: var(--cyan);
-    border-radius: 2px;
-    padding: 0 2px;
-  }
+  .no-results-title { font-family: 'Orbitron', monospace; font-size: 13px; color: var(--text3); letter-spacing: 2px; margin-bottom: 8px; }
+  .no-results-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text3); opacity: 0.5; letter-spacing: 1px; }
+  .search-highlight { background: rgba(0,212,255,0.18); color: var(--cyan); border-radius: 2px; padding: 0 2px; }
 
-  /* ====== SECTION ====== */
   .section { padding: 20px 0 80px; }
-
-  .sec-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
+  .sec-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
   .sec-num { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--cyan); letter-spacing: 2px; opacity: 0.55; }
   .sec-title { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 3px; }
   .sec-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border2), transparent); }
 
-  /* ====== PROJECT CARDS ====== */
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -402,17 +323,15 @@
     transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
     cursor: pointer;
   }
-
   .proj-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent-color, var(--cyan)), transparent);
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
     opacity: 0;
     transition: opacity 0.3s;
   }
-
   .proj-card::after {
     content: '';
     position: absolute;
@@ -422,267 +341,94 @@
     transition: opacity 0.35s;
     pointer-events: none;
   }
-
-  .proj-card:hover {
-    border-color: rgba(0,212,255,0.25);
-    transform: translateY(-4px);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.08);
-  }
+  .proj-card:hover { border-color: rgba(0,212,255,0.25); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.08); }
   .proj-card:hover::before { opacity: 1; }
   .proj-card:hover::after { opacity: 1; }
 
-  /* Card banner */
-  .card-banner {
-    height: 160px;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
+  .card-banner { height: 160px; position: relative; overflow: hidden; flex-shrink: 0; }
   .banner-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
     background-size: 24px 24px;
   }
-
-  .banner-glow {
-    position: absolute;
-    inset: 0;
-  }
-
+  .banner-glow { position: absolute; inset: 0; }
   .card-chip {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
-
-  .chip-icon {
-    font-size: 38px;
-    filter: drop-shadow(0 0 12px rgba(0,212,255,0.4));
-  }
-
+  .chip-icon { font-size: 38px; filter: drop-shadow(0 0 12px rgba(0,212,255,0.4)); }
   .chip-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 3px;
-    padding: 4px 10px;
-    border-radius: 2px;
+    font-size: 9px; letter-spacing: 3px;
+    padding: 4px 10px; border-radius: 2px;
     border: 1px solid rgba(0,212,255,0.3);
     background: rgba(0,0,0,0.5);
   }
 
-  /* Top-right badge */
   .card-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
+    position: absolute; top: 12px; right: 12px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1px;
-    padding: 4px 10px;
-    border-radius: 3px;
+    font-size: 9px; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 3px;
   }
-  .badge-new { background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.4); color: var(--green); }
-  .badge-soon { background: rgba(255,224,64,0.1); border: 1px solid rgba(255,224,64,0.35); color: var(--yellow); }
-  .badge-hot { background: rgba(255,107,43,0.15); border: 1px solid rgba(255,107,43,0.4); color: var(--orange); }
-  .badge-wip { background: rgba(180,79,255,0.12); border: 1px solid rgba(180,79,255,0.35); color: var(--purple); }
+  .badge-new  { background: rgba(0,255,136,0.15);  border: 1px solid rgba(0,255,136,0.4);  color: var(--green);  }
+  .badge-soon { background: rgba(255,224,64,0.1);  border: 1px solid rgba(255,224,64,0.35); color: var(--yellow); }
+  .badge-hot  { background: rgba(255,107,43,0.15); border: 1px solid rgba(255,107,43,0.4); color: var(--orange); }
+  .badge-wip  { background: rgba(180,79,255,0.12); border: 1px solid rgba(180,79,255,0.35);color: var(--purple); }
 
-  /* Card body */
-  .card-body {
-    padding: 20px 22px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
+  .card-body { padding: 20px 22px; flex: 1; display: flex; flex-direction: column; }
+  .card-id { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 2px; margin-bottom: 10px; }
+  .card-title { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.5px; margin-bottom: 10px; line-height: 1.4; }
+  .card-desc { font-size: 13px; color: var(--text2); font-weight: 300; line-height: 1.65; flex: 1; margin-bottom: 18px; }
 
-  .card-id {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text3);
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-  }
-
-  .card-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-    line-height: 1.4;
-  }
-
-  .card-desc {
-    font-size: 13px;
-    color: var(--text2);
-    font-weight: 300;
-    line-height: 1.65;
-    flex: 1;
-    margin-bottom: 18px;
-  }
-
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 18px;
-  }
-
-  .ctag {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    padding: 3px 9px;
-    border-radius: 2px;
-    letter-spacing: 1px;
-  }
-  .ctag-c { border: 1px solid rgba(0,212,255,0.25); color: var(--cyan2); background: rgba(0,212,255,0.05); }
-  .ctag-g { border: 1px solid rgba(0,255,136,0.25); color: rgba(0,255,136,0.8); background: rgba(0,255,136,0.04); }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .ctag { font-family: 'Share Tech Mono', monospace; font-size: 9px; padding: 3px 9px; border-radius: 2px; letter-spacing: 1px; }
+  .ctag-c { border: 1px solid rgba(0,212,255,0.25);  color: var(--cyan2);         background: rgba(0,212,255,0.05); }
+  .ctag-g { border: 1px solid rgba(0,255,136,0.25);  color: rgba(0,255,136,0.8);  background: rgba(0,255,136,0.04); }
   .ctag-o { border: 1px solid rgba(255,107,43,0.25); color: rgba(255,107,43,0.8); background: rgba(255,107,43,0.05); }
   .ctag-p { border: 1px solid rgba(180,79,255,0.25); color: rgba(180,79,255,0.8); background: rgba(180,79,255,0.05); }
 
-  .card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    padding-top: 14px;
-  }
-
-  .card-meta {
-    display: flex;
-    gap: 14px;
-  }
-
-  .meta-item {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text3);
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; }
+  .card-meta { display: flex; gap: 14px; }
+  .meta-item { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
   .meta-item .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); opacity: 0.5; }
 
   .card-arrow {
     width: 30px; height: 30px;
-    border: 1px solid var(--border2);
-    border-radius: 5px;
+    border: 1px solid var(--border2); border-radius: 5px;
     display: flex; align-items: center; justify-content: center;
-    color: var(--text3);
-    transition: all 0.2s;
-    flex-shrink: 0;
+    color: var(--text3); transition: all 0.2s; flex-shrink: 0;
   }
+  .proj-card:hover .card-arrow { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.08); box-shadow: 0 0 12px rgba(0,212,255,0.2); }
 
-  .proj-card:hover .card-arrow {
-    border-color: var(--cyan);
-    color: var(--cyan);
-    background: rgba(0,212,255,0.08);
-    box-shadow: 0 0 12px rgba(0,212,255,0.2);
-  }
-
-  /* COMING SOON overlay */
   .coming-soon-overlay {
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: rgba(2,6,9,0.55);
     backdrop-filter: blur(2px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    z-index: 5;
-    opacity: 0;
-    transition: opacity 0.3s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    z-index: 5; opacity: 0; transition: opacity 0.3s;
   }
   .proj-card.locked:hover .coming-soon-overlay { opacity: 1; }
-  .coming-soon-overlay span {
-    font-family: 'Orbitron', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--yellow);
-    letter-spacing: 3px;
-    text-shadow: 0 0 20px rgba(255,224,64,0.5);
-  }
-  .coming-soon-overlay small {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 2px;
-  }
+  .coming-soon-overlay span { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; color: var(--yellow); letter-spacing: 3px; text-shadow: 0 0 20px rgba(255,224,64,0.5); }
+  .coming-soon-overlay small { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 2px; }
 
-  /* ====== FEATURED ====== */
-  .featured-card {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    min-height: 200px;
-  }
-
-  .featured-card .card-banner {
-    height: auto;
-    min-height: 200px;
-    border-right: 1px solid var(--border);
-  }
-
+  .featured-card { grid-column: 1 / -1; display: grid; grid-template-columns: 280px 1fr; min-height: 200px; }
+  .featured-card .card-banner { height: auto; min-height: 200px; border-right: 1px solid var(--border); }
   .featured-tag {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 2px;
-    padding: 4px 10px;
-    background: rgba(0,212,255,0.12);
-    border: 1px solid rgba(0,212,255,0.4);
-    color: var(--cyan);
-    border-radius: 3px;
+    position: absolute; top: 12px; left: 12px;
+    font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
+    padding: 4px 10px; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.4); color: var(--cyan); border-radius: 3px;
   }
 
-  /* ====== FOOTER ====== */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 28px 0;
-    margin-top: 20px;
-  }
-  .footer-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .footer-text {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 1.5px;
-  }
+  footer { border-top: 1px solid var(--border); padding: 28px 0; margin-top: 20px; }
+  .footer-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-text { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 1.5px; }
   .footer-text span { color: var(--cyan); }
-
   .footer-links { display: flex; gap: 20px; }
-  .footer-links a {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 1px;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
+  .footer-links a { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 1px; text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--cyan); }
 
-  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg2); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -713,7 +459,7 @@
     </a>
     <div class="header-right">
       <div class="nav-counter">PROJECTS: <span id="projectCount">—</span></div>
-      <a href="https://www.youtube.com/@zarfrobotics" target="_blank" class="yt-link">
+      <a href="https://www.youtube.com/@zarfrobotics2011" target="_blank" class="yt-link">
         <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M13.7 1.56C13.54.92 13.04.42 12.4.26 11.32 0 7 0 7 0S2.68 0 1.6.26C.96.42.46.92.3 1.56 0 2.64 0 5 0 5s0 2.36.3 3.44c.16.64.66 1.12 1.3 1.3C2.68 10 7 10 7 10s4.32 0 5.4-.26c.64-.18 1.14-.66 1.3-1.3C14 7.36 14 5 14 5s0-2.36-.3-3.44z"/></svg>
         YOUTUBE
       </a>
@@ -785,14 +531,9 @@
           <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
         </svg>
       </span>
-      <input
-        type="text"
-        class="search-input"
-        id="searchInput"
+      <input type="text" class="search-input" id="searchInput"
         placeholder="SEARCH PROJECTS — TYPE KEYWORDS, TAGS, COMPONENTS..."
-        autocomplete="off"
-        spellcheck="false"
-      >
+        autocomplete="off" spellcheck="false">
       <span class="search-kbd">⌘ K</span>
     </div>
     <div class="search-results-meta" id="searchMeta"></div>
@@ -805,13 +546,12 @@
 
     <div class="projects-grid" id="projectsGrid">
 
-      <!-- PROJECT 01 — FEATURED  -->
-      <a href="xiaozhi-esp32dev.html" class="proj-card featured-card" data-tags="esp32 ai audio">
+      <!-- PROJECT 01 — FEATURED / LIVE -->
+      <a href="projects/xiaozhi-esp32/" class="proj-card featured-card" data-tags="esp32 ai audio">
         <div class="card-banner">
           <div class="banner-grid"></div>
           <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,212,255,0.12), transparent 70%);"></div>
           <div class="featured-tag">★ FEATURED</div>
-          <div class="card-badge badge-new">Xiaozhi</div>
           <div class="card-chip">
             <div class="chip-icon">🤖</div>
             <div class="chip-label" style="color: var(--cyan);">XIAOZHI · ESP32</div>
@@ -821,18 +561,18 @@
           <div class="card-id">PROJ-001 // ESP32 · AI · AUDIO</div>
           <div class="card-title">XIAOZHI AI ON ESP32 DEVKIT V1</div>
           <div class="card-desc">
-            Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide, and one-click web flasher at 921600 baud.
+            Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide, and firmware download at 921600 baud.
           </div>
           <div class="card-tags">
             <span class="ctag ctag-c">ESP32</span>
             <span class="ctag ctag-g">XIAOZHI AI</span>
             <span class="ctag ctag-c">I2S AUDIO</span>
-            <span class="ctag ctag-o">WEB FLASHER</span>
+            <span class="ctag ctag-o">INMP441</span>
             <span class="ctag ctag-g">VOICE AI</span>
           </div>
           <div class="card-footer">
             <div class="card-meta">
-              <div class="meta-item"><div class="dot"></div> 6 COMPONENTS</div>
+              <div class="meta-item"><div class="dot"></div> 7 COMPONENTS</div>
               <div class="meta-item"><div class="dot"></div> BEGINNER</div>
               <div class="meta-item"><div class="dot"></div> ~1 HOUR</div>
             </div>
@@ -845,24 +585,23 @@
         </div>
       </a>
 
-      
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-text">© 2026 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
     <div class="footer-links">
-      <a href="https://www.youtube.com/@zarfrobotics" target="_blank">YOUTUBE</a>
-      <a href="#">GITHUB</a>
-      <a href="#">CONTACT</a>
+      <a href="https://www.youtube.com/@zarfrobotics2011" target="_blank">YOUTUBE</a>
+      <a href="https://github.com/zarfrobotics" target="_blank">GITHUB</a>
+      <a href="contact.html" id="contactLink">CONTACT</a>
     </div>
   </div>
 </footer>
 
 <script>
-  // ====== PROJECT DATA INDEX ======
-  // Each card's searchable text is derived from its DOM content
-  // We also store original title HTML so we can restore highlighting
-
   const allCards = Array.from(document.querySelectorAll('.proj-card'));
   const cardData = allCards.map(card => {
     const titleEl = card.querySelector('.card-title');
@@ -870,58 +609,49 @@
     const idEl    = card.querySelector('.card-id');
     const tagsEl  = card.querySelector('.card-tags');
     return {
-      el: card,
-      titleEl,
-      descEl,
+      el: card, titleEl, descEl,
       originalTitle: titleEl ? titleEl.textContent : '',
       originalDesc:  descEl  ? descEl.textContent  : '',
       tags: card.dataset.tags || '',
       searchText: [
-        titleEl  ? titleEl.textContent  : '',
-        descEl   ? descEl.textContent   : '',
-        idEl     ? idEl.textContent     : '',
-        tagsEl   ? tagsEl.textContent   : '',
+        titleEl ? titleEl.textContent : '',
+        descEl  ? descEl.textContent  : '',
+        idEl    ? idEl.textContent    : '',
+        tagsEl  ? tagsEl.textContent  : '',
         card.dataset.tags || ''
       ].join(' ').toLowerCase()
     };
   });
 
-  // Update header counters
   document.getElementById('projectCount').textContent = allCards.length;
   document.getElementById('totalProjects').textContent = allCards.length;
 
   let activeFilter = 'all';
   let searchQuery  = '';
 
-  // ====== APPLY COMBINED FILTER + SEARCH ======
   function applyFilters() {
     const q = searchQuery.trim().toLowerCase();
     const noResults = document.getElementById('noResults');
-    const meta = document.getElementById('searchMeta');
-    const secTitle = document.getElementById('sectionTitle');
+    const meta      = document.getElementById('searchMeta');
+    const secTitle  = document.getElementById('sectionTitle');
     let visible = 0;
 
     cardData.forEach(({ el, titleEl, descEl, originalTitle, originalDesc, tags, searchText }) => {
       const passFilter = activeFilter === 'all' || tags.includes(activeFilter);
       const passSearch = !q || searchText.includes(q);
       const show = passFilter && passSearch;
-
       el.style.display = show ? '' : 'none';
       if (show) {
         visible++;
-        // Highlight matched term in title and description
         if (q && titleEl) titleEl.innerHTML = highlight(originalTitle, q);
         else if (titleEl) titleEl.textContent = originalTitle;
-
         if (q && descEl) descEl.innerHTML = highlight(originalDesc, q);
         else if (descEl) descEl.textContent = originalDesc;
       }
     });
 
-    // No-results state
     noResults.classList.toggle('show', visible === 0);
 
-    // Results meta text
     if (q) {
       meta.innerHTML = visible === 0
         ? `<span>NO RESULTS FOR</span> <span class="hl">"${escHtml(q)}"</span>`
@@ -929,30 +659,23 @@
       secTitle.textContent = 'SEARCH RESULTS';
     } else {
       meta.innerHTML = '';
-      secTitle.textContent = activeFilter === 'all'
-        ? 'ALL PROJECTS'
-        : activeFilter.toUpperCase() + ' PROJECTS';
+      secTitle.textContent = activeFilter === 'all' ? 'ALL PROJECTS' : activeFilter.toUpperCase() + ' PROJECTS';
     }
   }
 
-  // Highlight helper — wraps matching text with <mark>
   function highlight(text, query) {
     if (!query) return escHtml(text);
     const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const re = new RegExp(`(${escaped})`, 'gi');
-    return escHtml(text).replace(re, '<span class="search-highlight">$1</span>');
+    return escHtml(text).replace(new RegExp(`(${escaped})`, 'gi'), '<span class="search-highlight">$1</span>');
   }
 
   function escHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ====== SEARCH INPUT ======
   const searchInput = document.getElementById('searchInput');
-
   searchInput.addEventListener('input', () => {
     searchQuery = searchInput.value;
-    // Clear active filter chip when typing
     if (searchQuery) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('[data-filter="all"]').classList.add('active');
@@ -961,42 +684,39 @@
     applyFilters();
   });
 
-  // Keyboard shortcut ⌘K / Ctrl+K to focus search
   document.addEventListener('keydown', e => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      searchInput.focus();
-      searchInput.select();
-    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); searchInput.focus(); searchInput.select(); }
     if (e.key === 'Escape' && document.activeElement === searchInput) {
-      searchInput.value = '';
-      searchQuery = '';
-      applyFilters();
-      searchInput.blur();
+      searchInput.value = ''; searchQuery = ''; applyFilters(); searchInput.blur();
     }
   });
 
-  // ====== FILTER BUTTONS ======
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
+  document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeFilter = btn.dataset.filter;
-      // Clear search when using filter chips
-      searchInput.value = '';
-      searchQuery = '';
+      searchInput.value = ''; searchQuery = '';
       applyFilters();
     });
   });
 
-  // Prevent locked card navigation
   allCards.filter(c => c.classList.contains('locked')).forEach(card => {
     card.addEventListener('click', e => e.preventDefault());
   });
 
-  // Initial render
   applyFilters();
+
+  // Smart contact — phone dials directly, desktop opens contact page
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+  const contactLink = document.getElementById('contactLink');
+  if (contactLink) {
+    if (isMobile) {
+      contactLink.href = 'tel:+918887840539';
+    } else {
+      contactLink.href = 'contact.html';
+    }
+  }
 </script>
 
 </body>
