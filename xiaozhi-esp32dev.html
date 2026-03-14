@@ -480,198 +480,138 @@
     font-weight: 700;
   }
 
-  .drop-zone {
-    border: 2px dashed var(--border2);
+  .drop-zone { display: none; } /* legacy — removed */
+
+  /* ====== ZIP DOWNLOAD ====== */
+  .zip-download-box {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
     border-radius: 10px;
-    padding: 48px 32px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
+    padding: 28px 28px;
+    margin-bottom: 28px;
     position: relative;
-    background: rgba(0,212,255,0.02);
+    overflow: hidden;
+    transition: border-color 0.3s;
   }
-
-  .drop-zone:hover, .drop-zone.dragover {
-    border-color: var(--cyan);
-    background: rgba(0,212,255,0.06);
-  }
-
-  .drop-zone input[type="file"] {
+  .zip-download-box::before {
+    content: '';
     position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
   }
+  .zip-download-box:hover { border-color: rgba(0,212,255,0.35); }
 
-  .drop-icon {
-    font-size: 40px;
-    margin-bottom: 14px;
-    filter: grayscale(0.3);
+  .zip-icon-wrap {
+    flex-shrink: 0;
+    width: 64px; height: 64px;
+    background: rgba(0,212,255,0.07);
+    border: 1px solid rgba(0,212,255,0.18);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
   }
+  .zip-icon { font-size: 30px; }
 
-  .drop-title {
+  .zip-info { flex: 1; }
+  .zip-name {
     font-family: 'Orbitron', monospace;
     font-size: 14px;
+    font-weight: 700;
     color: #fff;
+    letter-spacing: 1px;
     margin-bottom: 8px;
-    letter-spacing: 1px;
   }
-
-  .drop-sub {
+  .zip-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .zip-tag {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
+    font-size: 9px;
     letter-spacing: 1px;
+    padding: 3px 9px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,212,255,0.25);
+    color: var(--cyan2);
+    background: rgba(0,212,255,0.05);
   }
-
-  .drop-sub span { color: var(--cyan); }
-
-  .file-selected {
-    display: none;
-    margin-top: 20px;
-    background: rgba(0,255,136,0.06);
-    border: 1px solid rgba(0,255,136,0.3);
-    border-radius: 6px;
-    padding: 14px 18px;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .file-selected.show { display: flex; }
-
-  .file-name {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    color: var(--green);
-    flex: 1;
-    letter-spacing: 1px;
-  }
-
-  .file-size {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  .flash-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-  }
-
-  .btn-flash {
-    flex: 1;
-    font-family: 'Orbitron', monospace;
+  .zip-desc {
     font-size: 13px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .zip-desc span { color: var(--cyan); font-family: 'Share Tech Mono', monospace; font-size: 12px; }
+
+  .btn-zip-download {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
     padding: 16px 24px;
     border: 1px solid var(--cyan);
-    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.05));
+    background: linear-gradient(135deg, rgba(0,212,255,0.14), rgba(0,212,255,0.04));
     color: var(--cyan);
     border-radius: 6px;
     cursor: pointer;
+    text-decoration: none;
     transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
+    white-space: nowrap;
   }
-
-  .btn-flash::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0,212,255,0.2), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .btn-flash:hover {
-    box-shadow: 0 0 30px rgba(0,212,255,0.3), inset 0 0 20px rgba(0,212,255,0.1);
+  .btn-zip-download:hover {
+    background: linear-gradient(135deg, rgba(0,212,255,0.22), rgba(0,212,255,0.08));
+    box-shadow: 0 0 28px rgba(0,212,255,0.25);
     color: #fff;
   }
 
-  .btn-flash:hover::before { opacity: 1; }
-
-  .btn-erase {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 1px;
-    padding: 16px 20px;
-    border: 1px solid rgba(255,43,94,0.4);
-    background: rgba(255,43,94,0.06);
-    color: var(--red);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-erase:hover {
-    border-color: var(--red);
-    background: rgba(255,43,94,0.12);
-  }
-
-  .progress-wrap {
-    display: none;
-    margin-top: 24px;
-  }
-
-  .progress-wrap.show { display: block; }
-
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-
-  .progress-text {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text2);
-    letter-spacing: 1px;
-  }
-
-  .progress-pct {
-    font-family: 'Orbitron', monospace;
-    font-size: 11px;
-    color: var(--cyan);
-  }
-
-  .progress-bar {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--cyan2), var(--cyan));
-    border-radius: 2px;
-    width: 0%;
-    transition: width 0.3s;
-    box-shadow: 0 0 10px rgba(0,212,255,0.5);
-  }
-
-  .terminal-log {
-    margin-top: 16px;
+  /* ====== FLASH INSTRUCTIONS ====== */
+  .flash-instructions {
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px;
-    height: 120px;
-    overflow-y: auto;
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .fi-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .fi-steps { display: flex; flex-direction: column; gap: 12px; }
+  .fi-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .fi-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cyan);
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .fi-text {
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .fi-text code {
     font-family: 'Share Tech Mono', monospace;
     font-size: 11px;
-    color: var(--text2);
-    line-height: 1.8;
+    color: var(--cyan);
+    background: rgba(0,212,255,0.08);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,212,255,0.15);
   }
-
-  .log-line { display: block; }
-  .log-line.ok { color: var(--green); }
-  .log-line.err { color: var(--red); }
-  .log-line.info { color: var(--cyan); }
+  .fi-text strong { color: #fff; font-weight: 600; }
 
   /* ====== CIRCUIT DIAGRAM ====== */
   .circuit-panel {
@@ -740,18 +680,10 @@
     align-items: center;
     justify-content: center;
     background: var(--bg2);
-    cursor: pointer;
     overflow: hidden;
   }
 
-  .circuit-upload-area input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
+  .circuit-upload-area input[type="file"] { display: none; }
 
   .circuit-placeholder {
     text-align: center;
@@ -790,7 +722,6 @@
   }
 
   #circuit-img {
-    display: none;
     width: 100%;
     height: auto;
     max-height: 600px;
@@ -1079,10 +1010,10 @@
         <div class="comp-id">COMP-001 // MICROCONTROLLER</div>
         <div class="comp-icon">🔧</div>
         <div class="comp-name">ESP32 DEVKIT V1</div>
-        <div class="comp-spec">Dual-core 240MHz Xtensa LX6 · 4MB Flash · 520KB SRAM · WiFi + BT · 38-pin DIP</div>
+        <div class="comp-spec">Dual-core 240MHz Xtensa LX6 · 4MB Flash · 520KB SRAM · WiFi + BT 4.2 · 30-pin DIP · Main controller running Xiaozhi AI firmware at 921600 baud</div>
         <div class="comp-footer">
           <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
-          <a href="https://www.amazon.in/s?k=ESP32+DevKit+V1" target="_blank" class="btn-buy">
+          <a href="https://www.amazon.in/s?k=ESP32+DevKit+V1+30+pin" target="_blank" class="btn-buy">
             <svg width="10" height="10" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.25 4.5v3.75H12v1.5H8.25V13.5h-1.5V9.75H3v-1.5h3.75V4.5h1.5z"/></svg>
             BUY NOW
           </a>
@@ -1090,10 +1021,24 @@
       </div>
 
       <div class="comp-card">
-        <div class="comp-id">COMP-002 // AUDIO INPUT</div>
+        <div class="comp-id">COMP-002 // PROTOTYPING</div>
+        <div class="comp-icon">🧩</div>
+        <div class="comp-name">BREADBOARD HALF 30×10</div>
+        <div class="comp-spec">300-point half-size solderless breadboard · 30×10 tie-point grid · 2 power rails · Fits ESP32 DevKit V1 with room for INMP441 &amp; MAX98357A wiring</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=half+breadboard+300+point+30x10" target="_blank" class="btn-buy">
+            <svg width="10" height="10" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.25 4.5v3.75H12v1.5H8.25V13.5h-1.5V9.75H3v-1.5h3.75V4.5h1.5z"/></svg>
+            BUY NOW
+          </a>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-003 // AUDIO INPUT</div>
         <div class="comp-icon">🎤</div>
         <div class="comp-name">INMP441 MIC</div>
-        <div class="comp-spec">I2S MEMS Omnidirectional Microphone · 24-bit precision · 3.3V · SNR 87dB · Low noise floor</div>
+        <div class="comp-spec">I2S MEMS Omnidirectional Microphone · 24-bit resolution · 3.3V · SNR 87dB · WS / SCK / SD interface · Captures voice input for Xiaozhi AI</div>
         <div class="comp-footer">
           <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
           <a href="https://www.amazon.in/s?k=INMP441+I2S+microphone" target="_blank" class="btn-buy">
@@ -1104,10 +1049,10 @@
       </div>
 
       <div class="comp-card">
-        <div class="comp-id">COMP-003 // AUDIO OUTPUT</div>
+        <div class="comp-id">COMP-004 // AUDIO OUTPUT</div>
         <div class="comp-icon">🔊</div>
         <div class="comp-name">MAX98357A AMP</div>
-        <div class="comp-spec">I2S Class-D Mono Amplifier · 3.2W output · 3.3V · No MCLK required · Filterless design</div>
+        <div class="comp-spec">I2S Class-D Mono Amplifier · 3W @ 4Ω · 3.3V · No MCLK required · Filterless design · Drives speaker output directly from ESP32 I2S bus</div>
         <div class="comp-footer">
           <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
           <a href="https://www.amazon.in/s?k=MAX98357A+I2S+amplifier" target="_blank" class="btn-buy">
@@ -1118,13 +1063,13 @@
       </div>
 
       <div class="comp-card">
-        <div class="comp-id">COMP-004 // SPEAKER</div>
+        <div class="comp-id">COMP-005 // SPEAKER</div>
         <div class="comp-icon">📢</div>
-        <div class="comp-name">2W 8Ω SPEAKER</div>
-        <div class="comp-spec">Compact 2W 8Ω full-range driver · Compatible with MAX98357A · 2" form factor · Clear voice output</div>
+        <div class="comp-name">SPEAKER 4Ω 3W</div>
+        <div class="comp-spec">4Ω 3W full-range driver · Matched impedance for MAX98357A · Clear, loud voice playback for Xiaozhi AI responses · No enclosure needed for testing</div>
         <div class="comp-footer">
           <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
-          <a href="https://www.amazon.in/s?k=2W+8ohm+speaker+small" target="_blank" class="btn-buy">
+          <a href="https://www.amazon.in/s?k=4ohm+3w+speaker" target="_blank" class="btn-buy">
             <svg width="10" height="10" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.25 4.5v3.75H12v1.5H8.25V13.5h-1.5V9.75H3v-1.5h3.75V4.5h1.5z"/></svg>
             BUY NOW
           </a>
@@ -1132,13 +1077,13 @@
       </div>
 
       <div class="comp-card">
-        <div class="comp-id">COMP-005 // TRIGGER</div>
-        <div class="comp-icon">🔘</div>
-        <div class="comp-name">PUSH BUTTON</div>
-        <div class="comp-spec">6mm tactile momentary push button · PCB / breadboard mount · Optional wake word trigger</div>
+        <div class="comp-id">COMP-006 // INDICATOR</div>
+        <div class="comp-icon">💡</div>
+        <div class="comp-name">LED</div>
+        <div class="comp-spec">5mm indicator LED · 3.3V GPIO compatible · Pair with a 330Ω series resistor · Visual status indicator for boot state, WiFi connection &amp; AI activity</div>
         <div class="comp-footer">
           <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
-          <a href="https://www.amazon.in/s?k=6mm+tactile+push+button" target="_blank" class="btn-buy">
+          <a href="https://www.amazon.in/s?k=5mm+led+assorted" target="_blank" class="btn-buy">
             <svg width="10" height="10" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.25 4.5v3.75H12v1.5H8.25V13.5h-1.5V9.75H3v-1.5h3.75V4.5h1.5z"/></svg>
             BUY NOW
           </a>
@@ -1146,13 +1091,13 @@
       </div>
 
       <div class="comp-card">
-        <div class="comp-id">COMP-006 // PASSIVES</div>
-        <div class="comp-icon">⚡</div>
-        <div class="comp-name">RESISTORS + WIRES</div>
-        <div class="comp-spec">10kΩ pull-down resistors · Dupont jumper wires M-M & M-F · Optional decoupling 100nF caps</div>
+        <div class="comp-id">COMP-007 // DISPLAY</div>
+        <div class="comp-icon">🖥️</div>
+        <div class="comp-name">OLED 128×64 I2C</div>
+        <div class="comp-spec">0.96" SSD1306 OLED · 128×64 px monochrome · I2C via SDA/SCL · 3.3V · Displays AI responses, WiFi status &amp; system info in real time</div>
         <div class="comp-footer">
-          <div class="comp-qty">QTY: <span class="qty-val">ASSORTED</span></div>
-          <a href="https://www.amazon.in/s?k=resistor+kit+jumper+wires" target="_blank" class="btn-buy">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=0.96+inch+oled+i2c+128x64" target="_blank" class="btn-buy">
             <svg width="10" height="10" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.25 4.5v3.75H12v1.5H8.25V13.5h-1.5V9.75H3v-1.5h3.75V4.5h1.5z"/></svg>
             BUY NOW
           </a>
@@ -1163,12 +1108,12 @@
   </div>
 </section>
 
-<!-- FLASHER -->
+<!-- FIRMWARE DOWNLOAD -->
 <section class="section" id="flasher">
   <div class="wrap">
     <div class="sec-header">
       <span class="sec-num">02</span>
-      <h2 class="sec-title">ESP32 WEB FLASHER</h2>
+      <h2 class="sec-title">FIRMWARE DOWNLOAD</h2>
       <div class="sec-line"></div>
     </div>
     <div class="flasher-panel">
@@ -1176,7 +1121,7 @@
         <div class="flasher-dot dot-r"></div>
         <div class="flasher-dot dot-y"></div>
         <div class="flasher-dot dot-g"></div>
-        <div class="flasher-title">XIAOZHI_ESP32_FLASHER.SH — ESP WEB TOOLS</div>
+        <div class="flasher-title">XIAOZHI-ESP32DEV-CODE.ZIP — MERGED FIRMWARE PACKAGE</div>
       </div>
       <div class="flasher-body">
         <div class="flash-config">
@@ -1194,36 +1139,58 @@
           </div>
         </div>
 
-        <div class="drop-zone" id="dropZone">
-          <input type="file" accept=".bin" id="binFileInput">
-          <div class="drop-icon">📦</div>
-          <div class="drop-title">DROP YOUR .BIN FILE HERE</div>
-          <div class="drop-sub">Drag & drop or click to browse · <span>Merged firmware binary only</span></div>
-        </div>
-
-        <div class="file-selected" id="fileSelected">
-          <svg width="16" height="16" fill="#00ff88" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 011.07 1.05l-3.99 4.99a.75.75 0 01-1.08.02L4.324 8.384a.75.75 0 111.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 01.02-.022z"/></svg>
-          <div class="file-name" id="fileName">firmware.bin</div>
-          <div class="file-size" id="fileSize">—</div>
-        </div>
-
-        <div class="flash-actions">
-          <button class="btn-flash" id="flashBtn" onclick="startFlash()">
-            ⚡ FLASH TO ESP32
-          </button>
-          <button class="btn-erase" onclick="eraseFlash()">ERASE</button>
-        </div>
-
-        <div class="progress-wrap" id="progressWrap">
-          <div class="progress-label">
-            <span class="progress-text" id="progressLabel">CONNECTING...</span>
-            <span class="progress-pct" id="progressPct">0%</span>
+        <div class="zip-download-box">
+          <div class="zip-icon-wrap">
+            <div class="zip-icon">📦</div>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+          <div class="zip-info">
+            <div class="zip-name">xiaozhi-esp32dev-code.zip</div>
+            <div class="zip-meta">
+              <span class="zip-tag">MERGED .BIN</span>
+              <span class="zip-tag">FLASH GUIDE</span>
+              <span class="zip-tag">ESP32 DEVKIT V1</span>
+            </div>
+            <div class="zip-desc">Contains the merged Xiaozhi AI firmware binary ready to flash at offset <span>0x0</span> using esptool or ESP Flash Download Tool at <span>921600</span> baud.</div>
           </div>
-          <div class="terminal-log" id="terminalLog">
-            <span class="log-line info">[INIT] ESP Web Flasher ready.</span>
+          <a href="codes/xiaozhi-esp32dev-code.zip" download class="btn-zip-download">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 3v13M7 11l5 5 5-5"/><path d="M3 19h18"/>
+            </svg>
+            DOWNLOAD ZIP
+          </a>
+        </div>
+
+        <div class="flash-instructions">
+          <div class="fi-title">// HOW TO FLASH AFTER DOWNLOAD</div>
+          <div class="fi-steps">
+            <div class="fi-step">
+              <span class="fi-num">01</span>
+              <span class="fi-text">Open <strong>ESP Flash Download Tool</strong></span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">02</span>
+              <span class="fi-text">Click <code>...</code> and select the <code>.bin</code> file from the ZIP</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">03</span>
+              <span class="fi-text">Click the text box beside <code>@</code> and change the value to <code>0x0</code></span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">04</span>
+              <span class="fi-text">Click the <strong>checkbox</strong> in front of the file name to enable it</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">05</span>
+              <span class="fi-text">Set baud rate to <code>921600</code></span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">06</span>
+              <span class="fi-text">Select your <strong>COM port</strong></span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">07</span>
+              <span class="fi-text">Click <strong>START</strong></span>
+            </div>
           </div>
         </div>
 
@@ -1242,7 +1209,7 @@
     </div>
     <div class="circuit-panel">
       <div class="circuit-toolbar">
-        <div class="circuit-title">XIAOZHI_ESP32_WIRING.PNG — SCHEMATIC VIEW</div>
+        <div class="circuit-title">XIAOZHI-ESP32DEV-CIRCUIT.PNG — SCHEMATIC VIEW</div>
         <button class="toolbar-btn btn-print" onclick="printCircuit()">
           🖨️ PRINT
         </button>
@@ -1251,14 +1218,16 @@
         </button>
       </div>
       <div class="circuit-upload-area" id="circuitUploadArea">
-        <input type="file" accept="image/*" id="circuitInput" onchange="loadCircuitImage(event)">
         <div class="circuit-grid-lines"></div>
-        <div class="circuit-placeholder" id="circuitPlaceholder">
+        <img id="circuit-img" src="circuits/xiaozhi-esp32dev-circuit.png" alt="Xiaozhi ESP32 Circuit Diagram"
+          style="display:none;"
+          onerror="this.style.display='none';document.getElementById('circuitPlaceholder').style.display='flex';"
+          onload="this.style.display='block';document.getElementById('circuitPlaceholder').style.display='none';">
+        <div class="circuit-placeholder" id="circuitPlaceholder" style="display:flex;flex-direction:column;align-items:center;">
           <div class="circuit-ph-icon">🔌</div>
-          <div class="circuit-ph-title">UPLOAD CIRCUIT DIAGRAM</div>
-          <div class="circuit-ph-sub">Click here or drag an image · PNG · JPG · SVG supported</div>
+          <div class="circuit-ph-title">CIRCUIT DIAGRAM</div>
+          <div class="circuit-ph-sub">Place image at circuits/xiaozhi-esp32dev-circuit.png</div>
         </div>
-        <img id="circuit-img" src="" alt="Circuit Diagram">
       </div>
     </div>
   </div>
@@ -1310,277 +1279,34 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-text">© 2025 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
+    <div class="footer-text">© 2026 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
     <div class="footer-text">PROJECT: <span>XIAOZHI-ESP32-V1.0</span></div>
   </div>
 </footer>
 
-<script type="module">
-  // ── Import ESPLoader & Transport as ES module (the only correct way for this bundle)
-  import { ESPLoader, Transport } from "https://unpkg.com/esptool-js@0.5.7/bundle.js";
-
-  // ── DOM refs ──────────────────────────────────────────────────────────────────
-  const binInput    = document.getElementById('binFileInput');
-  const dropZone    = document.getElementById('dropZone');
-  const fileSelectedEl = document.getElementById('fileSelected');
-  const fileNameEl  = document.getElementById('fileName');
-  const fileSizeEl  = document.getElementById('fileSize');
-  const progressWrap  = document.getElementById('progressWrap');
-  const progressFill  = document.getElementById('progressFill');
-  const progressLabel = document.getElementById('progressLabel');
-  const progressPct   = document.getElementById('progressPct');
-  const terminalLog   = document.getElementById('terminalLog');
-
-  let selectedFile = null;
-
-  // ── File input ────────────────────────────────────────────────────────────────
-  binInput.addEventListener('change', e => { const f = e.target.files[0]; if (f) handleFile(f); });
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault(); dropZone.classList.remove('dragover');
-    const f = e.dataTransfer.files[0]; if (f) handleFile(f);
-  });
-
-  function handleFile(f) {
-    if (!f.name.endsWith('.bin')) { addLog('[ERROR] Please select a valid .bin file.', 'err'); return; }
-    selectedFile = f;
-    fileNameEl.textContent = f.name;
-    fileSizeEl.textContent = formatBytes(f.size);
-    fileSelectedEl.classList.add('show');
-  }
-
-  function formatBytes(b) {
-    if (b < 1024) return b + ' B';
-    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
-    return (b/1048576).toFixed(2) + ' MB';
-  }
-
-  // ── Terminal helpers ──────────────────────────────────────────────────────────
-  function addLog(msg, type = '') {
-    const ts = new Date().toISOString().substr(11, 8);
-    const br = document.createElement('br');
-    const span = document.createElement('span');
-    span.className = 'log-line ' + type;
-    span.textContent = `[${ts}] ${msg}`;
-    terminalLog.appendChild(br);
-    terminalLog.appendChild(span);
-    terminalLog.scrollTop = terminalLog.scrollHeight;
-  }
-
-  function updateProgress(pct, label) {
-    progressFill.style.width = pct + '%';
-    progressPct.textContent = Math.round(pct) + '%';
-    if (label) progressLabel.textContent = label;
-  }
-
-  function makeTerminal() {
-    return {
-      clean() {},
-      writeLine(data) { if (data.trim()) addLog(data, 'info'); },
-      write(data)     { if (data.trim()) addLog(data, 'info'); },
-    };
-  }
-
-  function readFileAsArrayBuffer(file) {
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload  = e => res(e.target.result);
-      r.onerror = rej;
-      r.readAsArrayBuffer(file);
-    });
-  }
-
-  function uint8ToStr(buf) {
-    // Fast binary-string conversion without stack overflow on large files
-    const CHUNK = 8192;
-    let str = '';
-    for (let i = 0; i < buf.length; i += CHUNK) {
-      str += String.fromCharCode(...buf.subarray(i, i + CHUNK));
-    }
-    return str;
-  }
-
-  // ── FLASH ─────────────────────────────────────────────────────────────────────
-  async function startFlash() {
-    if (!selectedFile) { addLog('[ERROR] No .bin file selected.', 'err'); return; }
-
-    if (!navigator.serial) {
-      progressWrap.classList.add('show');
-      terminalLog.innerHTML = '';
-      addLog('[ERROR] Web Serial API not available.', 'err');
-      addLog('[TIP] Use Chrome or Edge on desktop — not Firefox or Safari.', 'info');
-      updateProgress(0, 'UNSUPPORTED BROWSER');
-      return;
-    }
-
-    progressWrap.classList.add('show');
-    terminalLog.innerHTML = '';
-    addLog('[INIT] esptool-js v0.5.7 ready.', 'ok');
-    updateProgress(0, 'READY');
-
-    let transport;
-    try {
-      addLog('[USB] Opening serial port picker...', 'info');
-      updateProgress(5, 'SELECTING PORT...');
-
-      const port = await navigator.serial.requestPort();
-      transport = new Transport(port, true);
-
-      addLog('[USB] Port selected. Connecting to ESP32 bootloader...', 'info');
-      addLog('[TIP] If stuck here: hold BOOT then tap RESET on your board.', 'info');
-      updateProgress(10, 'CONNECTING...');
-
-      const esploader = new ESPLoader({
-        transport,
-        baudrate: 921600,
-        romBaudrate: 115200,
-        terminal: makeTerminal(),
-        enableTracing: false,
-      });
-
-      const chip = await esploader.main();
-      addLog('[OK] Chip detected: ' + chip, 'ok');
-      updateProgress(20, 'CONNECTED — ' + chip);
-
-      // Read & convert firmware binary
-      addLog('[READ] Loading ' + selectedFile.name + ' (' + formatBytes(selectedFile.size) + ')...', 'info');
-      const buf  = await readFileAsArrayBuffer(selectedFile);
-      const data = uint8ToStr(new Uint8Array(buf));
-      updateProgress(27, 'FILE READY');
-
-      addLog('[FLASH] Writing merged binary at 0x00000000 @ 921600 baud...', 'info');
-      updateProgress(30, 'FLASHING...');
-
-      await esploader.writeFlash({
-        fileArray: [{ data, address: 0x0 }],
-        flashSize: 'keep',
-        flashMode: 'keep',
-        flashFreq: 'keep',
-        eraseAll:  false,
-        compress:  true,
-        reportProgress(_idx, written, total) {
-          const pct = 30 + (written / total) * 65;
-          updateProgress(pct, 'WRITING ' + Math.round((written / total) * 100) + '%');
-        },
-      });
-
-      updateProgress(97, 'RESETTING...');
-      addLog('[RESET] Sending hard-reset signal...', 'info');
-      await esploader.hardReset();
-
-      updateProgress(100, 'COMPLETE ✓');
-      addLog('[DONE] ✓ Flash complete! ESP32 is booting Xiaozhi AI firmware.', 'ok');
-      addLog('[READY] Disconnect and reconnect power if needed.', 'ok');
-
-    } catch (err) {
-      const msg = err?.message || String(err);
-      if (msg.includes('No port selected') || msg.includes('cancelled') || err?.name === 'NotFoundError') {
-        addLog('[INFO] Port selection cancelled.', 'info');
-        updateProgress(0, 'CANCELLED');
-      } else {
-        addLog('[ERROR] ' + msg, 'err');
-        addLog('[TIP] Make sure no other app (Arduino IDE, PuTTY) is using the port.', 'info');
-        updateProgress(0, 'FAILED');
-      }
-    } finally {
-      if (transport) { try { await transport.disconnect(); } catch (_) {} }
-    }
-  }
-
-  // ── ERASE ─────────────────────────────────────────────────────────────────────
-  async function eraseFlash() {
-    if (!navigator.serial) { alert('Web Serial not supported. Use Chrome or Edge.'); return; }
-
-    progressWrap.classList.add('show');
-    terminalLog.innerHTML = '';
-    addLog('[ERASE] Starting full chip erase...', 'info');
-    updateProgress(0, 'SELECTING PORT...');
-
-    let transport;
-    try {
-      const port = await navigator.serial.requestPort();
-      transport = new Transport(port, true);
-
-      addLog('[USB] Connecting for erase operation...', 'info');
-      updateProgress(10, 'CONNECTING...');
-
-      const esploader = new ESPLoader({
-        transport,
-        baudrate: 921600,
-        romBaudrate: 115200,
-        terminal: makeTerminal(),
-      });
-
-      const chip = await esploader.main();
-      addLog('[OK] Connected to ' + chip, 'ok');
-      updateProgress(20, 'CONNECTED');
-
-      addLog('[ERASE] Erasing entire flash — this takes ~10 seconds...', 'info');
-      updateProgress(30, 'ERASING...');
-
-      await esploader.eraseFlash();
-
-      updateProgress(100, 'ERASED ✓');
-      addLog('[DONE] ✓ Flash erased. Board is now blank.', 'ok');
-      await esploader.hardReset();
-
-    } catch (err) {
-      const msg = err?.message || String(err);
-      if (msg.includes('No port selected') || err?.name === 'NotFoundError') {
-        addLog('[INFO] Cancelled.', 'info'); updateProgress(0, 'CANCELLED');
-      } else {
-        addLog('[ERROR] ' + msg, 'err'); updateProgress(0, 'FAILED');
-      }
-    } finally {
-      if (transport) { try { await transport.disconnect(); } catch (_) {} }
-    }
-  }
-
-  // ── Circuit helpers ───────────────────────────────────────────────────────────
-  function loadCircuitImage(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = document.getElementById('circuit-img');
-      img.src = ev.target.result;
-      img.style.display = 'block';
-      document.getElementById('circuitPlaceholder').style.display = 'none';
-      document.getElementById('circuitInput').style.pointerEvents = 'none';
-    };
-    reader.readAsDataURL(file);
-  }
-
+<script>
   function printCircuit() {
     const img = document.getElementById('circuit-img');
-    if (!img.src || img.style.display === 'none') { alert('Upload a circuit diagram first.'); return; }
+    if (!img || img.style.display === 'none') { alert('Circuit diagram not loaded. Make sure circuits/xiaozhi-esp32dev-circuit.png exists.'); return; }
     const w = window.open('', '_blank');
     w.document.write(`<html><head><title>Xiaozhi ESP32 Circuit</title>
-    <style>body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;}img{max-width:100%;}</style>
+    <style>body{margin:0;background:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;}img{max-width:100%;}</style>
     </head><body><img src="${img.src}" onload="window.print();window.close();"></body></html>`);
     w.document.close();
   }
 
   function downloadCircuit() {
-    const img = document.getElementById('circuit-img');
-    if (!img.src || img.style.display === 'none') { alert('Upload a circuit diagram first.'); return; }
     const a = document.createElement('a');
-    a.href = img.src; a.download = 'xiaozhi-esp32-circuit.png'; a.click();
+    a.href = 'circuits/xiaozhi-esp32dev-circuit.png';
+    a.download = 'xiaozhi-esp32-circuit.png';
+    a.click();
   }
 
   function openVideo() {
     window.open('https://www.youtube.com/@zarfrobotics', '_blank');
   }
-
-  // ── Expose to global scope for onclick= attributes ────────────────────────────
-  window.startFlash       = startFlash;
-  window.eraseFlash       = eraseFlash;
-  window.loadCircuitImage = loadCircuitImage;
-  window.printCircuit     = printCircuit;
-  window.downloadCircuit  = downloadCircuit;
-  window.openVideo        = openVideo;
 </script>
+
 
 </body>
 </html>
