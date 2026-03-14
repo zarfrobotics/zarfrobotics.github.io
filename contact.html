@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarf Robotics — Contact</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020609;
+    --bg2: #040d14;
+    --panel: #060f18;
+    --panel2: #081525;
+    --border: #0a2a3f;
+    --border2: #0d3a55;
+    --cyan: #00d4ff;
+    --cyan2: #00a8cc;
+    --green: #00ff88;
+    --orange: #ff6b2b;
+    --text: #c8e8f5;
+    --text2: #6a9ab5;
+    --text3: #3a6a85;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* SCANLINES */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* GRID BG */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .grid-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(0,60,100,0.4) 0%, transparent 65%);
+  }
+
+  /* HEADER */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(2,6,9,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 2.5px;
+    text-shadow: 0 0 18px rgba(0,212,255,0.45);
+  }
+  .logo-sub {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1.5px;
+    margin-top: 3px;
+  }
+  .back-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--text2);
+    text-decoration: none;
+    padding: 7px 16px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    background: transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .back-btn:hover {
+    color: var(--cyan);
+    border-color: rgba(0,212,255,0.4);
+    background: rgba(0,212,255,0.06);
+  }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 32px 60px;
+  }
+
+  /* EYEBROW */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .eyebrow-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  .eyebrow-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+  }
+
+  /* PHONE DISPLAY */
+  .phone-display {
+    position: relative;
+    width: 100%;
+    max-width: 680px;
+    background: var(--panel);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,212,255,0.08), 0 0 0 1px rgba(0,212,255,0.05);
+  }
+
+  /* animated top bar */
+  .phone-display::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--green), var(--cyan), transparent);
+    background-size: 200% 100%;
+    animation: scan 3s linear infinite;
+  }
+  @keyframes scan { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* terminal bar */
+  .term-bar {
+    background: var(--panel2);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .td-r { background: #ff5f57; }
+  .td-y { background: #febc2e; }
+  .td-g { background: #28c840; }
+  .term-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    flex: 1;
+    text-align: center;
+  }
+
+  /* display body */
+  .display-body {
+    padding: 48px 48px 40px;
+    text-align: center;
+  }
+
+  .signal-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 32px;
+    height: 28px;
+  }
+  .bar {
+    width: 8px;
+    background: var(--cyan);
+    border-radius: 2px;
+    opacity: 0.3;
+    animation: barPulse 1.4s ease-in-out infinite;
+  }
+  .bar:nth-child(1) { height: 8px;  animation-delay: 0s;    }
+  .bar:nth-child(2) { height: 14px; animation-delay: 0.15s; }
+  .bar:nth-child(3) { height: 20px; animation-delay: 0.3s;  }
+  .bar:nth-child(4) { height: 26px; animation-delay: 0.45s; }
+  .bar:nth-child(5) { height: 20px; animation-delay: 0.3s;  }
+  .bar:nth-child(6) { height: 14px; animation-delay: 0.15s; }
+  .bar:nth-child(7) { height: 8px;  animation-delay: 0s;    }
+  @keyframes barPulse {
+    0%,100% { opacity:0.3; }
+    50% { opacity:1; box-shadow: 0 0 8px var(--cyan); }
+  }
+
+  .call-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+  }
+
+  .phone-number {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(32px, 7vw, 58px);
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 4px;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: 0 0 40px rgba(0,212,255,0.3);
+    position: relative;
+    display: inline-block;
+  }
+
+  /* digit glow effect on each character */
+  .phone-number .d {
+    display: inline-block;
+    animation: digitGlow 3s ease-in-out infinite;
+  }
+  .phone-number .d:nth-child(1)  { animation-delay: 0.0s; }
+  .phone-number .d:nth-child(2)  { animation-delay: 0.1s; }
+  .phone-number .d:nth-child(3)  { animation-delay: 0.2s; }
+  .phone-number .d:nth-child(4)  { animation-delay: 0.3s; }
+  .phone-number .d:nth-child(5)  { animation-delay: 0.4s; }
+  .phone-number .d:nth-child(6)  { animation-delay: 0.5s; }
+  .phone-number .d:nth-child(7)  { animation-delay: 0.6s; }
+  .phone-number .d:nth-child(8)  { animation-delay: 0.7s; }
+  .phone-number .d:nth-child(9)  { animation-delay: 0.8s; }
+  .phone-number .d:nth-child(10) { animation-delay: 0.9s; }
+  .phone-number .sep { color: var(--text3); margin: 0 2px; }
+
+  @keyframes digitGlow {
+    0%,80%,100% { color: #fff; text-shadow: none; }
+    40% { color: var(--cyan); text-shadow: 0 0 20px rgba(0,212,255,0.8), 0 0 40px rgba(0,212,255,0.4); }
+  }
+
+  .country-code {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-bottom: 36px;
+  }
+  .country-code span { color: var(--cyan); }
+
+  /* call button */
+  .btn-call {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 18px 40px;
+    background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,255,136,0.05));
+    border: 1px solid rgba(0,255,136,0.5);
+    color: var(--green);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .btn-call::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,136,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-call:hover {
+    box-shadow: 0 0 40px rgba(0,255,136,0.25), inset 0 0 20px rgba(0,255,136,0.08);
+    color: #fff;
+    border-color: var(--green);
+    transform: translateY(-2px);
+  }
+  .btn-call:hover::before { opacity: 1; }
+
+  .call-icon {
+    width: 22px; height: 22px;
+    animation: ringRing 2s ease-in-out infinite;
+  }
+  @keyframes ringRing {
+    0%,90%,100% { transform: rotate(0deg); }
+    92% { transform: rotate(-15deg); }
+    94% { transform: rotate(15deg); }
+    96% { transform: rotate(-10deg); }
+    98% { transform: rotate(10deg); }
+  }
+
+  /* info grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .info-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .info-card:hover {
+    border-color: var(--border2);
+    background: var(--panel2);
+    transform: translateY(-1px);
+  }
+  .info-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .info-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .info-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 1px;
+  }
+  .info-card.gh:hover .info-value { color: #fff; }
+  .info-card.yt:hover .info-value { color: #ff4444; }
+
+  /* scan line animation across display */
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.15), transparent);
+    animation: scanDown 4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scanDown {
+    0%   { top: 0%; opacity: 0; }
+    5%   { opacity: 1; }
+    95%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* corner decorations */
+  .deco-corner {
+    position: absolute;
+    width: 16px; height: 16px;
+  }
+  .deco-corner.tl { top: 8px; left: 8px; border-top: 1px solid rgba(0,212,255,0.4); border-left: 1px solid rgba(0,212,255,0.4); }
+  .deco-corner.tr { top: 8px; right: 8px; border-top: 1px solid rgba(0,212,255,0.4); border-right: 1px solid rgba(0,212,255,0.4); }
+  .deco-corner.bl { bottom: 8px; left: 8px; border-bottom: 1px solid rgba(0,212,255,0.4); border-left: 1px solid rgba(0,212,255,0.4); }
+  .deco-corner.br { bottom: 8px; right: 8px; border-bottom: 1px solid rgba(0,212,255,0.4); border-right: 1px solid rgba(0,212,255,0.4); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    text-align: center;
+  }
+  .footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+  }
+  .footer-text span { color: var(--cyan); }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .display-body { padding: 32px 24px 28px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .phone-number { letter-spacing: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div>
+        <div class="logo-text">ZARF ROBOTICS</div>
+        <div class="logo-sub">ENGINEERING CHANNEL</div>
+      </div>
+    </a>
+    <a href="index.html" class="back-btn">
+      <svg width="10" height="10" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M15 8a.5.5 0 00-.5-.5H2.707l3.147-3.146a.5.5 0 10-.708-.708l-4 4a.5.5 0 000 .708l4 4a.5.5 0 00.708-.708L2.707 8.5H14.5A.5.5 0 0015 8z"/>
+      </svg>
+      BACK
+    </a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+  <div class="eyebrow">
+    <div class="eyebrow-dot"></div>
+    <span class="eyebrow-text">DIRECT CONTACT LINE — OPEN</span>
+  </div>
+
+  <div class="phone-display">
+    <div class="scan-line"></div>
+    <div class="deco-corner tl"></div>
+    <div class="deco-corner tr"></div>
+    <div class="deco-corner bl"></div>
+    <div class="deco-corner br"></div>
+
+    <!-- terminal bar -->
+    <div class="term-bar">
+      <div class="term-dot td-r"></div>
+      <div class="term-dot td-y"></div>
+      <div class="term-dot td-g"></div>
+      <div class="term-title">ZARF_ROBOTICS :: CONTACT_TERMINAL</div>
+    </div>
+
+    <div class="display-body">
+
+      <!-- signal bars -->
+      <div class="signal-bars">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="call-label">// INITIATING CALL TO</div>
+
+      <div class="phone-number">
+        <span class="d">8</span><span class="d">8</span><span class="d">8</span><span class="d">7</span><span class="sep">-</span><span class="d">8</span><span class="d">4</span><span class="d">0</span><span class="sep">-</span><span class="d">5</span><span class="d">3</span><span class="d">9</span>
+      </div>
+
+      <div class="country-code">INDIA <span>+91</span> · 8887840539</div>
+
+      <a href="tel:+918887840539" class="btn-call">
+        <svg class="call-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.66A2 2 0 012 .96h3a2 2 0 012 1.72c.127.96.36 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.77a16 16 0 006.14 6.14l1.17-1.17a2 2 0 012.11-.45c.907.34 1.85.573 2.81.7a2 2 0 011.72 2.03z"/>
+        </svg>
+        CALL NOW
+      </a>
+
+      <!-- social links -->
+      <div class="info-grid">
+        <a href="https://github.com/zarfrobotics" target="_blank" class="info-card gh">
+          <div class="info-icon">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="info-label">GITHUB</div>
+            <div class="info-value">github.com/zarfrobotics</div>
+          </div>
+        </a>
+        <a href="https://www.youtube.com/@zarfrobotics2011" target="_blank" class="info-card yt">
+          <div class="info-icon">
+            <svg width="20" height="14" viewBox="0 0 14 10" fill="currentColor">
+              <path d="M13.7 1.56C13.54.92 13.04.42 12.4.26 11.32 0 7 0 7 0S2.68 0 1.6.26C.96.42.46.92.3 1.56 0 2.64 0 5 0 5s0 2.36.3 3.44c.16.64.66 1.12 1.3 1.3C2.68 10 7 10 7 10s4.32 0 5.4-.26c.64-.18 1.14-.66 1.3-1.3C14 7.36 14 5 14 5s0-2.36-.3-3.44z"/>
+              <polygon fill="#020609" points="5.6,7.1 9.2,5 5.6,2.9"/>
+            </svg>
+          </div>
+          <div>
+            <div class="info-label">YOUTUBE</div>
+            <div class="info-value">@zarfrobotics2011</div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">© 2026 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
+</footer>
+
+<script>
+  // On mobile, redirect directly to phone dialer
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+  if (isMobile) {
+    window.location.href = 'tel:+918887840539';
+  }
+</script>
+
+</body>
+</html>
