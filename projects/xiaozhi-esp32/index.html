@@ -1234,12 +1234,12 @@
             </div>
             <div class="zip-desc">Contains the merged Xiaozhi AI firmware binary ready to flash at offset <span>0x0</span> using esptool or ESP Flash Download Tool at <span>921600</span> baud.</div>
           </div>
-          <a href="codes/xiaozhi-esp32dev-code.zip" download class="btn-zip-download">
+          <button onclick="openDownloadPopup()" class="btn-zip-download">
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M12 3v13M7 11l5 5 5-5"/><path d="M3 19h18"/>
             </svg>
             DOWNLOAD ZIP
-          </a>
+          </button>
         </div>
 
         <div class="flash-instructions">
@@ -1389,6 +1389,399 @@
   }
 </script>
 
+<!-- ══════════════ DOWNLOAD POPUP ══════════════ -->
+<style>
+  .dl-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2,6,9,0.88);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .dl-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
 
-</body>
-</html>
+  .dl-popup {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    background: var(--panel);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 0 80px rgba(0,212,255,0.1);
+    transform: translateY(20px);
+    transition: transform 0.3s;
+  }
+  .dl-overlay.open .dl-popup { transform: translateY(0); }
+
+  /* animated top border */
+  .dl-popup::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--green), var(--cyan), transparent);
+    background-size: 200% 100%;
+    animation: dlShimmer 2.5s linear infinite;
+  }
+  @keyframes dlShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* terminal bar */
+  .dl-term-bar {
+    background: var(--panel2);
+    border-bottom: 1px solid var(--border);
+    padding: 11px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dl-tdot { width: 10px; height: 10px; border-radius: 50%; }
+  .dl-td-r { background: #ff5f57; cursor: pointer; }
+  .dl-td-y { background: #febc2e; }
+  .dl-td-g { background: #28c840; }
+  .dl-term-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    flex: 1;
+    text-align: center;
+  }
+
+  /* body */
+  .dl-pop-body {
+    padding: 32px 32px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* icon ring */
+  .dl-icon-ring {
+    position: relative;
+    width: 72px; height: 72px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+  .dl-icon-ring svg.dl-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    animation: dlSpin 3s linear infinite;
+  }
+  @keyframes dlSpin { to { transform: rotate(360deg); } }
+  .dl-icon-ring .dl-inner {
+    position: absolute;
+    inset: 14px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  .dl-pop-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .dl-pop-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  /* countdown ring */
+  .dl-countdown-wrap {
+    position: relative;
+    width: 80px; height: 80px;
+    margin-bottom: 24px;
+  }
+  .dl-countdown-wrap svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .dl-ring-bg { fill: none; stroke: var(--border2); stroke-width: 4; }
+  .dl-ring-prog {
+    fill: none;
+    stroke: var(--cyan);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 220;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(0 0 6px rgba(0,212,255,0.6));
+  }
+  .dl-countdown-num {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,212,255,0.5);
+  }
+
+  /* progress bar */
+  .dl-prog-wrap { width: 100%; margin-bottom: 12px; }
+  .dl-prog-labels {
+    display: flex; justify-content: space-between;
+    margin-bottom: 7px;
+  }
+  .dl-prog-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; color: var(--text2); letter-spacing: 1px;
+  }
+  .dl-prog-pct {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; color: var(--cyan); font-weight: 700;
+  }
+  .dl-prog-bar {
+    height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .dl-prog-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--cyan2), var(--cyan));
+    border-radius: 2px;
+    transition: width 1s linear;
+    box-shadow: 0 0 10px rgba(0,212,255,0.5);
+  }
+
+  /* log */
+  .dl-log {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    height: 88px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  .dl-log-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; line-height: 1.9;
+    color: var(--text3); display: block;
+  }
+  .dl-log-line.ok   { color: var(--green); }
+  .dl-log-line.info { color: var(--cyan2); }
+
+  /* close button */
+  .dl-close-btn {
+    width: 100%;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    padding: 13px;
+    border: 1px solid var(--cyan);
+    background: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(0,212,255,0.04));
+    color: var(--cyan);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: none;
+  }
+  .dl-close-btn:hover {
+    background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,212,255,0.08));
+    box-shadow: 0 0 24px rgba(0,212,255,0.2);
+    color: #fff;
+  }
+
+  /* corner deco */
+  .dl-deco { position: absolute; width: 12px; height: 12px; }
+  .dl-deco.tl { top:6px; left:6px; border-top:1px solid rgba(0,212,255,0.3); border-left:1px solid rgba(0,212,255,0.3); }
+  .dl-deco.tr { top:6px; right:6px; border-top:1px solid rgba(0,212,255,0.3); border-right:1px solid rgba(0,212,255,0.3); }
+  .dl-deco.bl { bottom:6px; left:6px; border-bottom:1px solid rgba(0,212,255,0.3); border-left:1px solid rgba(0,212,255,0.3); }
+  .dl-deco.br { bottom:6px; right:6px; border-bottom:1px solid rgba(0,212,255,0.3); border-right:1px solid rgba(0,212,255,0.3); }
+
+  @media (max-width: 480px) {
+    .dl-pop-body { padding: 24px 16px 20px; }
+    .dl-pop-title { font-size: 13px; }
+  }
+</style>
+
+<!-- POPUP HTML -->
+<div class="dl-overlay" id="dlOverlay">
+  <div class="dl-popup" id="dlPopup">
+    <div class="dl-deco tl"></div>
+    <div class="dl-deco tr"></div>
+    <div class="dl-deco bl"></div>
+    <div class="dl-deco br"></div>
+
+    <div class="dl-term-bar">
+      <div class="dl-tdot dl-td-r" onclick="closeDownloadPopup()" title="Close"></div>
+      <div class="dl-tdot dl-td-y"></div>
+      <div class="dl-tdot dl-td-g"></div>
+      <div class="dl-term-title">ZARF_DOWNLOADER :: XIAOZHI-ESP32-PACKAGE</div>
+    </div>
+
+    <div class="dl-pop-body">
+
+      <div class="dl-icon-ring">
+        <svg class="dl-ring" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="32" stroke="rgba(0,212,255,0.1)" stroke-width="2"/>
+          <path d="M36 4 A32 32 0 0 1 68 36" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="36" cy="4" r="3" fill="var(--cyan)"/>
+        </svg>
+        <div class="dl-inner" id="dlInnerIcon">📦</div>
+      </div>
+
+      <div class="dl-pop-title">PREPARING DOWNLOAD</div>
+      <div class="dl-pop-sub" id="dlPopSub">XIAOZHI-ESP32DEV-CODE.ZIP</div>
+
+      <!-- countdown ring -->
+      <div class="dl-countdown-wrap" id="dlCountdownWrap">
+        <svg viewBox="0 0 80 80">
+          <circle class="dl-ring-bg" cx="40" cy="40" r="35"/>
+          <circle class="dl-ring-prog" id="dlRingProg" cx="40" cy="40" r="35"/>
+        </svg>
+        <div class="dl-countdown-num" id="dlCountNum">5</div>
+      </div>
+
+      <!-- progress bar -->
+      <div class="dl-prog-wrap">
+        <div class="dl-prog-labels">
+          <span class="dl-prog-label" id="dlProgLabel">INITIALIZING...</span>
+          <span class="dl-prog-pct" id="dlProgPct">0%</span>
+        </div>
+        <div class="dl-prog-bar">
+          <div class="dl-prog-fill" id="dlProgFill"></div>
+        </div>
+      </div>
+
+      <!-- log -->
+      <div class="dl-log" id="dlLog">
+        <span class="dl-log-line info">[INIT] Download sequence started.</span>
+      </div>
+
+      <button class="dl-close-btn" id="dlCloseBtn" onclick="closeDownloadPopup()">
+        ✓ DONE — CLOSE
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const ZIP_URL  = 'https://github.com/zarfrobotics/zarfrobotics.github.io/raw/main/projects/xiaozhi-esp32/codes/Xiaozhi-esp32dev-code.zip';
+  const ZIP_NAME = 'Xiaozhi-esp32dev-code.zip';
+  const COUNTDOWN = 5;
+
+  let dlTimer = null;
+
+  function dlLog(msg, type = '') {
+    const ts = new Date().toISOString().substr(11, 8);
+    const el = document.createElement('span');
+    el.className = 'dl-log-line ' + type;
+    el.textContent = `[${ts}] ${msg}`;
+    const log = document.getElementById('dlLog');
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function setDlProgress(pct, label) {
+    document.getElementById('dlProgFill').style.width  = pct + '%';
+    document.getElementById('dlProgPct').textContent   = Math.round(pct) + '%';
+    if (label) document.getElementById('dlProgLabel').textContent = label;
+  }
+
+  function openDownloadPopup() {
+    const overlay = document.getElementById('dlOverlay');
+    // reset state
+    document.getElementById('dlLog').innerHTML       = '<span class="dl-log-line info">[INIT] Download sequence started.</span>';
+    document.getElementById('dlCountNum').textContent = COUNTDOWN;
+    document.getElementById('dlRingProg').style.strokeDashoffset = '0';
+    document.getElementById('dlInnerIcon').textContent = '📦';
+    document.getElementById('dlPopSub').textContent   = 'XIAOZHI-ESP32DEV-CODE.ZIP';
+    document.getElementById('dlCloseBtn').style.display = 'none';
+    document.getElementById('dlCountdownWrap').style.display = 'block';
+    setDlProgress(0, 'INITIALIZING...');
+
+    overlay.classList.add('open');
+    runCountdown();
+  }
+
+  function closeDownloadPopup() {
+    document.getElementById('dlOverlay').classList.remove('open');
+    if (dlTimer) { clearInterval(dlTimer); dlTimer = null; }
+  }
+
+  // close on overlay background click
+  document.getElementById('dlOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeDownloadPopup();
+  });
+
+  function runCountdown() {
+    const circumference = 2 * Math.PI * 35; // 219.9
+    let remaining = COUNTDOWN;
+    const ring = document.getElementById('dlRingProg');
+    const num  = document.getElementById('dlCountNum');
+
+    ring.style.strokeDasharray  = circumference;
+    ring.style.strokeDashoffset = '0';
+
+    dlLog('[READY] Package located on server.', 'info');
+    dlLog('[WAIT]  Starting in ' + COUNTDOWN + ' seconds...', '');
+
+    const steps = [
+      { at: COUNTDOWN - 1, fn: () => { setDlProgress(20, 'VERIFYING PACKAGE...'); dlLog('[CHECK] Verifying file integrity...', 'info'); } },
+      { at: COUNTDOWN - 2, fn: () => { setDlProgress(45, 'PREPARING STREAM...'); dlLog('[OK]    File verified. Building download stream...', 'ok'); } },
+      { at: COUNTDOWN - 3, fn: () => { setDlProgress(70, 'OPENING CONNECTION...'); dlLog('[CONN]  Opening secure connection...', 'info'); } },
+      { at: 1,             fn: () => { setDlProgress(90, 'DOWNLOADING...'); dlLog('[DL]    Triggering download...', 'info'); } },
+    ];
+
+    dlTimer = setInterval(() => {
+      remaining--;
+
+      // update ring
+      const offset = circumference * (1 - remaining / COUNTDOWN);
+      ring.style.strokeDashoffset = offset;
+      num.textContent = remaining > 0 ? remaining : '✓';
+
+      // update progress bar each second
+      setDlProgress((COUNTDOWN - remaining) / COUNTDOWN * 90, null);
+
+      // run step actions
+      steps.forEach(s => { if (remaining === s.at) s.fn(); });
+
+      if (remaining <= 0) {
+        clearInterval(dlTimer);
+        dlTimer = null;
+        triggerDownload();
+      }
+    }, 1000);
+  }
+
+  function triggerDownload() {
+    setDlProgress(100, 'DOWNLOAD STARTED ✓');
+    document.getElementById('dlCountdownWrap').style.display = 'none';
+    document.getElementById('dlInnerIcon').textContent = '✅';
+    document.getElementById('dlPopSub').textContent = 'YOUR FILE IS DOWNLOADING';
+    dlLog('[DONE] Download triggered successfully!', 'ok');
+    dlLog('[INFO] Check your Downloads folder.', 'info');
+
+    // trigger the actual download
+    const a = document.createElement('a');
+    a.href     = ZIP_URL;
+    a.download = ZIP_NAME;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    document.getElementById('dlCloseBtn').style.display = 'block';
+  }
+</script>
