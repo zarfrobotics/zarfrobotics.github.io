@@ -30,6 +30,11 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  button { outline: none; border: none; background: none; -webkit-appearance: none; appearance: none; }
+  button:focus { outline: none; }
+  button::-moz-focus-inner { border: 0; padding: 0; }
+  img { border: none; outline: none; display: block; }
+
   html { scroll-behavior: smooth; }
 
   body {
@@ -1300,11 +1305,11 @@
         </button>
       </div>
       <div class="circuit-upload-area" id="circuitUploadArea">
-        <div class="circuit-grid-lines"></div>
+        <div class="circuit-grid-lines" id="circuitGridLines"></div>
         <img id="circuit-img" src="circuits/xiaozhi-esp32dev-circuit.png" alt="Xiaozhi ESP32 Circuit Diagram"
           style="display:none;"
           onerror="this.style.display='none';document.getElementById('circuitPlaceholder').style.display='flex';"
-          onload="this.style.display='block';document.getElementById('circuitPlaceholder').style.display='none';">
+          onload="this.style.display='block';document.getElementById('circuitPlaceholder').style.display='none';document.getElementById('circuitGridLines').style.display='none';">
         <div class="circuit-placeholder" id="circuitPlaceholder" style="display:flex;flex-direction:column;align-items:center;">
           <div class="circuit-ph-icon">🔌</div>
           <div class="circuit-ph-title">CIRCUIT DIAGRAM</div>
