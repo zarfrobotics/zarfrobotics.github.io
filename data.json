@@ -2,7 +2,7 @@
   "projects": [
     {
       "id": "001",
-      "title": "Xiaozhi AI on ESP32 DevKit V1",
+      "title": "Xiaozhi AI on ESP32 DevKit",
       "description": "Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide and firmware.",
       "short_desc": "INMP441 · MAX98357A · I2S · Voice AI",
       "tags": ["ESP32", "AI", "I2S AUDIO", "INMP441", "VOICE AI"],
@@ -27,19 +27,3 @@
     "website": "https://zarfrobotics.github.io"
   }
 }
-
-"projects": [
-    {
-      "id": "001",
-      "title": "Xiaozhi AI on ESP32 DevKit V1",
-      "description": "Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide and firmware.",
-      "short_desc": "INMP441 · MAX98357A · I2S · Voice AI",
-      "tags": ["ESP32", "AI", "I2S AUDIO", "INMP441", "VOICE AI"],
-      "category": "esp32,ai,audio",
-      "badge": "new",
-      "difficulty": "Beginner",
-      "components": 7,
-      "time": "~1 Hour",
-      "icon": "robot",
-      "featured": true,
-      "project_url": "projects/xiaozhi-esp32/"
