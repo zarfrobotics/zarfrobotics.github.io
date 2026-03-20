@@ -2,7 +2,7 @@
   "projects": [
     {
       "id": "001",
-      "title": "Xiaozhi AI on ESP32 DevKit",
+      "title": "Xiaozhi AI on ESP32 DevKit V1",
       "description": "Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide and firmware.",
       "short_desc": "INMP441 · MAX98357A · I2S · Voice AI",
       "tags": ["ESP32", "AI", "I2S AUDIO", "INMP441", "VOICE AI"],
