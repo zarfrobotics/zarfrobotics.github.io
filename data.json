@@ -5,6 +5,7 @@
       "title": "Xiaozhi AI on ESP32 DevKit V1",
       "description": "Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide and firmware.",
       "short_desc": "INMP441 · MAX98357A · I2S · Voice AI",
+      "overview": "Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. This project walks you through wiring an INMP441 MEMS microphone and MAX98357A I2S amplifier to get a fully working voice AI on a $5 microcontroller.",
       "tags": ["ESP32", "AI", "I2S AUDIO", "INMP441", "VOICE AI"],
       "category": "esp32,ai,audio",
       "badge": "new",
@@ -13,7 +14,28 @@
       "time": "~1 Hour",
       "icon": "robot",
       "featured": true,
-      "project_url": "projects/xiaozhi-esp32/"
+      "project_url": "projects/xiaozhi-esp32/",
+      "github_url": "https://github.com/zarfrobotics/zarfrobotics.github.io/tree/main/projects/xiaozhi-esp32",
+      "youtube_url": "https://www.youtube.com/@zarfrobotics2011",
+      "components_list": [
+        {"name": "ESP32 DevKit V1", "type": "MCU"},
+        {"name": "INMP441", "type": "MICROPHONE"},
+        {"name": "MAX98357A", "type": "I2S AMP"},
+        {"name": "Speaker", "type": "OUTPUT"},
+        {"name": "Jumper Wires", "type": "WIRING"},
+        {"name": "Breadboard", "type": "PROTOTYPING"},
+        {"name": "USB Cable", "type": "POWER"}
+      ],
+      "steps": [
+        "Wire INMP441 microphone to ESP32 — VDD to 3.3V, GND to GND, SD to GPIO34, WS to GPIO15, SCK to GPIO14",
+        "Wire MAX98357A amplifier — VIN to 5V, GND to GND, DIN to GPIO22, BCLK to GPIO26, LRC to GPIO25",
+        "Connect speaker to MAX98357A output pins",
+        "Download Xiaozhi firmware from the project page",
+        "Flash firmware via Arduino IDE at 921600 baud — select ESP32 Dev Module",
+        "Power on and wait for WiFi setup — connect to Xiaozhi AP and configure your network",
+        "Say the wake word and start talking to your AI assistant!"
+      ],
+      "code_snippet": "#include <driver/i2s.h>\n\n// I2S Microphone (INMP441)\n#define I2S_WS  15\n#define I2S_SD  34\n#define I2S_SCK 14\n\n// I2S Amplifier (MAX98357A)\n#define I2S_DOUT 22\n#define I2S_BCLK 26\n#define I2S_LRC  25\n\nvoid setup() {\n  Serial.begin(921600);\n  // Xiaozhi handles I2S init\n}"
     }
   ],
   "tags": ["ESP32", "AI", "AUDIO", "I2S", "INMP441", "VOICE AI", "OPEN SOURCE"],
@@ -21,7 +43,7 @@
   "about": {
     "channel": "@zarfrobotics2011",
     "youtube_url": "https://www.youtube.com/@zarfrobotics2011",
-    "description": "Step-by-step hardware and firmware projects for makers. From AI assistants on microcontrollers to custom robotics — every build documented and open source.",
+    "description": "Step-by-step hardware and firmware projects for makers.",
     "tagline": "TECHNOLOGY THAT HELPS!",
     "github": "https://github.com/zarfrobotics",
     "website": "https://zarfrobotics.github.io"
