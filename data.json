@@ -23,7 +23,7 @@
         {"name": "MAX98357A", "type": "I2S AMP"},
         {"name": "Speaker", "type": "OUTPUT"},
         {"name": "Jumper Wires", "type": "WIRING"},
-        {"name": "Breadboard", "type": "PROTOTYPING"},
+        {"name": "Breadboard", "type": "PROTOTYPING"}
       ],
       "steps": [
         "Wire INMP441 microphone to ESP32 — VDD to 3.3V, GND to GND, SD to GPIO34, WS to GPIO15, SCK to GPIO14",
