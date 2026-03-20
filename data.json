@@ -48,11 +48,4 @@
     "website": "https://zarfrobotics.github.io"
   }
 
-  "videos": [
-  {
-    "id": "1",
-    "title": "Xiaozhi AI on ESP32 DevKit V1",
-    "youtube_id": ""
-  }
-]
 }
