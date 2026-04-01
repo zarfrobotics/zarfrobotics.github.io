@@ -2,42 +2,64 @@
   "projects": [
     {
       "id": "001",
-      "title": "Xiaozhi AI on ESP32 DevKit V1",
-      "description": "Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. Includes INMP441 microphone, MAX98357A I2S amplifier, full wiring guide and firmware.",
-      "short_desc": "INMP441 · MAX98357A · I2S · Voice AI",
-      "overview": "Run a real-time AI voice assistant on the ESP32 DevKit V1 using Xiaozhi firmware. This project walks you through wiring an INMP441 MEMS microphone and MAX98357A I2S amplifier to get a fully working voice AI on a $5 microcontroller.",
-      "tags": ["ESP32", "AI", "I2S AUDIO", "INMP441", "VOICE AI"],
-      "category": "esp32,ai,audio",
+      "title": "Z|Watch — ESP32-C3 Smart Watch",
+      "description": "A full-featured smart watch built on the ESP32-C3 SuperMini with SSD1306 OLED. NTP time sync, 3 alarms, stopwatch, Pomodoro timer, flashlight, battery monitor and four built-in games.",
+      "short_desc": "ESP32-C3 · SSD1306 · NTP · 4 Games · Pomodoro",
+      "overview": "Z|Watch is a full-featured smart watch running on the ESP32-C3 SuperMini. It syncs time over WiFi via NTP, supports three configurable alarms with per-day scheduling, a stopwatch, Pomodoro timer with flash transitions, a flashlight mode, and live battery monitoring via ADC. Four games — Breakout, Car Dodge, Flappy Bird and Pong — are built in with high-score persistence. A CRT-style sleep animation and fully configurable display/sound settings round out the package.",
+      "tags": ["ESP32-C3", "OLED", "SSD1306", "NTP", "GAMES", "WATCH", "POMODORO"],
+      "category": "esp32,oled,games,watch",
       "badge": "new",
-      "difficulty": "Beginner",
-      "components": 7,
-      "time": "~1 Hour",
-      "icon": "robot",
+      "difficulty": "Intermediate",
+      "components": 5,
+      "time": "~2 Hours",
+      "icon": "watch",
       "featured": true,
-      "project_url": "projects/xiaozhi-esp32/",
-      "github_url": "https://github.com/zarfrobotics/zarfrobotics.github.io/tree/main/projects/xiaozhi-esp32",
+      "version": "1.0",
+      "project_url": "projects/zwatch/",
+      "github_url": "https://github.com/zarfrobotics/zarfrobotics.github.io/tree/main/projects/zwatch",
       "youtube_url": "https://www.youtube.com/@zarfrobotics2011",
+      "pin_mapping": [
+        {"component": "SSD1306 OLED", "signal": "SDA",   "gpio": "8",  "note": "I2C Data · 0x3C"},
+        {"component": "SSD1306 OLED", "signal": "SCL",   "gpio": "9",  "note": "I2C Clock · 1MHz"},
+        {"component": "Button UP",    "signal": "OUT",   "gpio": "2",  "note": "INPUT_PULLUP"},
+        {"component": "Button SEL",   "signal": "OUT",   "gpio": "3",  "note": "INPUT_PULLUP"},
+        {"component": "Button DOWN",  "signal": "OUT",   "gpio": "4",  "note": "INPUT_PULLUP"},
+        {"component": "Buzzer",       "signal": "+",     "gpio": "5",  "note": "LEDC PWM"},
+        {"component": "Battery ADC",  "signal": "Vbat/2","gpio": "1",  "note": "100kΩ÷100kΩ divider"}
+      ],
       "components_list": [
-        {"name": "ESP32 DevKit V1", "type": "MCU"},
-        {"name": "INMP441", "type": "MICROPHONE"},
-        {"name": "MAX98357A", "type": "I2S AMP"},
-        {"name": "Speaker", "type": "OUTPUT"},
-        {"name": "Jumper Wires", "type": "WIRING"},
-        {"name": "Breadboard", "type": "PROTOTYPING"}
+        {"name": "ESP32-C3 SuperMini", "type": "MCU"},
+        {"name": "SSD1306 OLED 128×64", "type": "DISPLAY"},
+        {"name": "Push Buttons ×3", "type": "INPUT"},
+        {"name": "Passive Buzzer", "type": "AUDIO"},
+        {"name": "18650 Li-Ion Cell", "type": "POWER"}
+      ],
+      "features": [
+        "NTP time sync via pool.ntp.org and time.google.com",
+        "3 independent alarms with Mon–Sun day scheduling",
+        "Centisecond stopwatch — keeps running in background",
+        "Pomodoro timer with configurable focus and break durations",
+        "4 games: Breakout, Car Dodge, Flappy Bird, Pong",
+        "CRT sleep/wake animation with configurable timeout",
+        "Live 18650 battery voltage and percent on watch face",
+        "Flashlight with adjustable strobe mode",
+        "Settings: brightness, invert, rotate, animations, volumes, 12/24hr"
       ],
       "steps": [
-        "Wire INMP441 microphone to ESP32 — VDD to 3.3V, GND to GND, SD to GPIO34, WS to GPIO15, SCK to GPIO14",
-        "Wire MAX98357A amplifier — VIN to 5V, GND to GND, DIN to GPIO22, BCLK to GPIO26, LRC to GPIO25",
-        "Connect speaker to MAX98357A output pins",
-        "Download Xiaozhi firmware from the project page",
-        "Flash firmware via Arduino IDE at 921600 baud — select ESP32 Dev Module",
-        "Power on and wait for WiFi setup — connect to Xiaozhi AP and configure your network",
-        "Say the wake word and start talking to your AI assistant!"
+        "Wire SSD1306 OLED — SDA to GPIO8, SCL to GPIO9, VCC to 3.3V, GND to GND",
+        "Wire three buttons — UP to GPIO2, SELECT to GPIO3, DOWN to GPIO4 (all with INPUT_PULLUP)",
+        "Wire passive buzzer positive to GPIO5, negative to GND",
+        "Wire 18650 battery via 100kΩ÷100kΩ voltage divider to GPIO1 for ADC monitoring",
+        "Install Arduino IDE and add ESP32 board support via Board Manager",
+        "Install Adafruit SSD1306 and Adafruit GFX libraries via Library Manager",
+        "Open NWatch_ESP32C3_v3.ino and set WIFI_SSID and WIFI_PASS",
+        "Select board: ESP32C3 Dev Module · USB CDC on Boot: Enabled",
+        "Select your COM port and click Upload"
       ],
-      "code_snippet": "#include <driver/i2s.h>\n\n// I2S Microphone (INMP441)\n#define I2S_WS  15\n#define I2S_SD  34\n#define I2S_SCK 14\n\n// I2S Amplifier (MAX98357A)\n#define I2S_DOUT 22\n#define I2S_BCLK 26\n#define I2S_LRC  25\n\nvoid setup() {\n  Serial.begin(921600);\n  // Xiaozhi handles I2S init\n}"
+      "code_snippet": "#define SDA_PIN      8\n#define SCL_PIN      9\n#define BTN_UP_PIN   2\n#define BTN_SEL_PIN  3\n#define BTN_DN_PIN   4\n#define BUZZER_PIN   5\n#define BATT_ADC_PIN 1\n\n#define WIFI_SSID  \"YourSSID\"\n#define WIFI_PASS  \"YourPassword\"\n#define NTP_SERVER \"pool.ntp.org\"\n#define NTP_TZ_OFFSET (5*3600 + 30*60)  // IST"
     }
   ],
-  "tags": ["ESP32", "AI", "AUDIO", "I2S", "INMP441", "VOICE AI", "OPEN SOURCE"],
+  "tags": ["ESP32-C3", "OLED", "SSD1306", "NTP", "GAMES", "WATCH", "POMODORO", "OPEN SOURCE"],
   "videos": [],
   "about": {
     "channel": "@zarfrobotics2011",
@@ -47,5 +69,4 @@
     "github": "https://github.com/zarfrobotics",
     "website": "https://zarfrobotics.github.io"
   }
-
 }
