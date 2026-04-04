@@ -455,21 +455,19 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
         </div>
       </div>
 
-      <!-- PANE 1: Pins (Default Only) -->
-<div class="cfg-pane" id="cfgPane1">
-  <div class="cfg-sub">// DEFAULT PIN CONFIGURATION</div>
-  <div id="cfgPinRows"></div>
-  
-  <div style="margin-top:24px; padding:12px; background:#020609; border:1px solid #0a2a3f; border-radius:6px; font-size:11px; color:#6a9ab5;">
-    <strong>Note:</strong> Using default pin mapping for ZWatch ESP32-C3.<br>
-    You can still change WiFi credentials in the previous step.
-  </div>
-
-  <div class="cfg-nav">
-    <button class="cfg-back" id="cfgBack1">&#x2190; BACK</button>
-    <button class="cfg-next" id="cfgNext1">NEXT &rarr;</button>
-  </div>
-</div>
+      <!-- PANE 1: Pins -->
+      <div class="cfg-pane" id="cfgPane1">
+        <div class="cfg-sub">// CONFIGURE GPIO PIN ASSIGNMENTS</div>
+        <div class="cfg-toggle">
+          <button class="cfg-toggle-btn active" id="cfgPinDefault">DEFAULT CONFIG</button>
+          <button class="cfg-toggle-btn" id="cfgPinCustom">CUSTOM CONFIG</button>
+        </div>
+        <div id="cfgPinRows"></div>
+        <div class="cfg-nav">
+          <button class="cfg-back" id="cfgBack1">&#x2190; BACK</button>
+          <button class="cfg-next" id="cfgNext1">NEXT &rarr;</button>
+        </div>
+      </div>
 
       <!-- PANE 2: Output -->
       <div class="cfg-pane" id="cfgPane2">
@@ -536,18 +534,14 @@ function showPane(n) {
 }
 
 function renderPins() {
+  var isCustom = cfgPinMode === 'custom';
   var html = '';
   for (var i = 0; i < PINS.length; i++) {
     var p = PINS[i];
-    html += `
-      <div class="cfg-pin-row">
-        <div>
-          <div class="cfg-pin-key">${p.key}</div>
-          <div class="cfg-pin-label">${p.label}</div>
-        </div>
-        <div class="cfg-pin-note">${p.note}</div>
-        <div class="cfg-pin-val">${p.val}</div>
-      </div>`;
+    var ctrl = isCustom
+      ? '<input class="cfg-pin-input" type="number" min="0" max="21" id="pin' + i + '" value="' + p.val + '">'
+      : '<div class="cfg-pin-val" id="pin' + i + '">' + p.val + '</div>';
+    html += '<div class="cfg-pin-row"><div><div class="cfg-pin-key">' + p.key + '</div><div class="cfg-pin-label">' + p.label + '</div></div><div class="cfg-pin-note">' + p.note + '</div>' + ctrl + '</div>';
   }
   document.getElementById('cfgPinRows').innerHTML = html;
 }
@@ -605,18 +599,10 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('cfgTab2').addEventListener('click', function() { showPane(2); });
 
   // Nav buttons
-  document.getElementById('cfgNext0').addEventListener('click', function() { 
-  showPane(1); 
-  renderPins(); 
-});
-
-document.getElementById('cfgBack1').addEventListener('click', function() { 
-  showPane(0); 
-});
-
-document.getElementById('cfgNext1').addEventListener('click', function() { 
-  showPane(2); 
-});
+  document.getElementById('cfgNext0').addEventListener('click', function() { showPane(1); renderPins(); });
+  document.getElementById('cfgBack1').addEventListener('click', function() { showPane(0); });
+  document.getElementById('cfgNext1').addEventListener('click', function() { showPane(2); });
+  document.getElementById('cfgBack2').addEventListener('click', function() { showPane(1); renderPins(); });
 
   // WiFi scan
   document.getElementById('cfgScanBtn').addEventListener('click', function() {
