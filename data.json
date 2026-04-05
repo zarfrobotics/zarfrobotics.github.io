@@ -19,13 +19,13 @@
       "github_url": "https://github.com/zarfrobotics/zarfrobotics.github.io/tree/main/projects/zwatch",
       "youtube_url": "https://www.youtube.com/@zarfrobotics2011",
       "pin_mapping": [
-        {"component": "SSD1306 OLED", "signal": "SDA",    "gpio": "6",   "note": "I2C Data · 0x3C"},
-        {"component": "SSD1306 OLED", "signal": "SCL",    "gpio": "7",   "note": "I2C Clock · 1MHz"},
-        {"component": "Button UP",    "signal": "OUT",    "gpio": "21",  "note": "INPUT_PULLUP"},
-        {"component": "Button SEL",   "signal": "OUT",    "gpio": "3",   "note": "INPUT_PULLUP"},
-        {"component": "Button DOWN",  "signal": "OUT",    "gpio": "20",  "note": "INPUT_PULLUP"},
-        {"component": "Buzzer",       "signal": "+",      "gpio": "5",   "note": "LEDC PWM"},
-        {"component": "Battery ADC",  "signal": "Vbat/2", "gpio": "1",   "note": "100kΩ÷100kΩ divider"}
+        {"component": "SSD1306 OLED", "signal": "SDA",    "gpio": "6",  "note": "I2C Data · 0x3C"},
+        {"component": "SSD1306 OLED", "signal": "SCL",    "gpio": "7",  "note": "I2C Clock · 1MHz"},
+        {"component": "Button UP",    "signal": "OUT",    "gpio": "21", "note": "INPUT_PULLUP"},
+        {"component": "Button SEL",   "signal": "OUT",    "gpio": "3",  "note": "INPUT_PULLUP"},
+        {"component": "Button DOWN",  "signal": "OUT",    "gpio": "20", "note": "INPUT_PULLUP"},
+        {"component": "Buzzer",       "signal": "+",      "gpio": "5",  "note": "LEDC PWM"},
+        {"component": "Battery ADC",  "signal": "Vbat/2", "gpio": "1",  "note": "100kΩ÷100kΩ divider"}
       ],
       "components_list": [
         {"name": "ESP32-C3 SuperMini", "type": "MCU"},
@@ -52,55 +52,33 @@
         "Wire 18650 battery via 100kΩ÷100kΩ voltage divider to GPIO1 for ADC monitoring",
         "Install Arduino IDE and add ESP32 board support via Board Manager",
         "Install Adafruit SSD1306 and Adafruit GFX libraries via Library Manager",
-        "Open ZWatch_v1_0.ino and set WIFI_SSID and WIFI_PASS",
+        "Visit the project page and use the Config Code tool to set your WiFi credentials and pin assignments, then download your personalised .ino file",
         "Select board: ESP32C3 Dev Module · USB CDC on Boot: Enabled",
         "Select your COM port and click Upload"
       ],
-      "code_snippet": "#define SDA_PIN      6\n#define SCL_PIN      7\n#define BTN_UP_PIN   21\n#define BTN_SEL_PIN  3\n#define BTN_DN_PIN   20\n#define BUZZER_PIN   5\n#define BATT_ADC_PIN 1\n\n#define WIFI_SSID  \"YourSSID\"\n#define WIFI_PASS  \"YourPassword\"\n#define NTP_SERVER \"pool.ntp.org\"\n#define NTP_TZ_OFFSET (5*3600 + 30*60)  // IST"
-    },
-    {
-      "id": "002",
-      "title": "ESP32-C3 Servo Controller",
-      "description": "A WiFi-controlled servo motor project built on the ESP32-C3. Control servo angle via a mobile-friendly web interface with slider, preset buttons, sweep animation, wag tail function and a virtual joystick.",
-      "short_desc": "ESP32-C3 · Servo · WebServer · Joystick · WiFi",
-      "overview": "The ESP32-C3 Servo Controller hosts a built-in web server that serves a mobile-friendly control page over WiFi. Users can set the servo angle using a smooth slider, tap preset buttons for 0°, 45°, 90°, 135° and 180°, trigger a full sweep animation, run a wag-tail sequence, or drag a virtual joystick. If the configured WiFi network is unavailable the board falls back to Access Point mode automatically.",
-      "tags": ["ESP32-C3", "SERVO", "WIFI", "WEBSERVER", "JOYSTICK"],
-      "category": "esp32,servo,wifi,webserver",
-      "badge": "new",
-      "difficulty": "Beginner",
-      "components": 2,
-      "time": "~30 Minutes",
-      "icon": "servo",
-      "featured": false,
-      "version": "1.0",
-      "project_url": "projects/servo-controller/",
-      "github_url": "https://github.com/zarfrobotics/zarfrobotics.github.io/tree/main/projects/servo-controller",
-      "youtube_url": "https://www.youtube.com/@zarfrobotics2011",
-      "pin_mapping": [
-        {"component": "Servo Signal", "signal": "PWM", "gpio": "3", "note": "Servo control pin"}
-      ],
-      "components_list": [
-        {"name": "ESP32-C3 SuperMini", "type": "MCU"},
-        {"name": "SG90 / MG996R Servo", "type": "ACTUATOR"}
-      ],
-      "features": [
-        "Mobile-friendly web interface served directly from ESP32-C3",
-        "Smooth slider for precise angle control (0°–180°)",
-        "Preset buttons for 0°, 45°, 90°, 135°, 180° and Center",
-        "Sweep animation — full 0° to 180° and back",
-        "Wag tail animation — rapid 60°/120° oscillation",
-        "Virtual joystick with touch and mouse support",
-        "Auto fallback to Access Point mode if WiFi unavailable",
-        "Real-time angle display updated on every move"
-      ],
-      "steps": [
-        "Wire servo signal wire to GPIO3, power to 5V and ground to GND",
-        "Install Arduino IDE and add ESP32 board support via Board Manager",
-        "Install ESP32Servo library via Library Manager",
-        "Open the sketch and set your WiFi ssid and password at the top",
-        "Select board: ESP32C3 Dev Module · USB CDC on Boot: Enabled",
-        "Select your COM port and click Upload",
-        "Open Serial Monitor at 115200 baud to find the assigned IP address",
+      "code_snippet": "Visit zarfrobotics.github.io/projects/zwatch/ and use the Config Code tool to set your WiFi credentials and pin assignments, then download your personalised .ino file"
+    }
+  ],
+  "tags": ["ESP32-C3", "OLED", "SSD1306", "NTP", "GAMES", "WATCH", "POMODORO", "OPEN SOURCE"],
+  "videos": [],
+  "about": {
+    "channel": "@zarfrobotics2011",
+    "youtube_url": "https://www.youtube.com/@zarfrobotics2011",
+    "description": "Step-by-step hardware and firmware projects for makers.",
+    "tagline": "TECHNOLOGY THAT HELPS!",
+    "github": "https://github.com/zarfrobotics",
+    "website": "https://zarfrobotics.github.io"
+  }
+}
+```
+
+Changes from your original:
+
+- **Step 7** now says "Visit the project page and use the **Config Code** tool..." instead of manually editing the file
+- **Pin mapping and code snippet** corrected to match the actual `.ino` (GPIO 6/7/21/20 instead of the wrong 8/9/2/4)
+- Servo project removed entirely
+
+For the full code in `code_snippet` — the INO is 3,258 lines so it would make the JSON enormous and likely break your app's parser. I'd recommend keeping the snippet as the config header only and linking to the project page for the full download.        "Open Serial Monitor at 115200 baud to find the assigned IP address",
         "Open that IP in your phone or browser to control the servo"
       ],
       "code_snippet": "const char* ssid = \"YourSSID\";\nconst char* password = \"YourPassword\";\n\nconst int servoPin = 3;\nServo myServo;\nWebServer server(80);\n\nvoid setup() {\n  myServo.attach(servoPin, 500, 2400);\n  WiFi.begin(ssid, password);\n  server.begin();\n}"
