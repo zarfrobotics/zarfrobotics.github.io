@@ -634,7 +634,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
           <div class="api-row">
             <span class="api-method">GET</span>
             <span class="api-endpoint">/</span>
-            <span class="api-desc">Serves web control panel (index.html from SPIFFS).</span>
+            <span class="api-desc">Serves web control panel (ESPSentinel.html from Browser).</span>
             <span class="api-port">:82</span>
           </div>
           <div class="api-row">
@@ -716,11 +716,11 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
         <div class="webui-dot" style="background:#ff5f57"></div>
         <div class="webui-dot" style="background:#febc2e;margin-left:6px"></div>
         <div class="webui-dot" style="background:#28c840;margin-left:6px"></div>
-        <div class="webui-title">ESP-SENTINEL WEB DASHBOARD — SERVED FROM SPIFFS (PORT 82)</div>
+        <div class="webui-title">ESP-SENTINEL WEB DASHBOARD — SERVED FROM BROWSER</div>
       </div>
       <div class="webui-body">
         <p style="font-size:13px;color:var(--text2);font-weight:300;line-height:1.7;margin-bottom:24px;">
-          A full dark-theme single-page dashboard served directly from the ESP32-CAM's SPIFFS filesystem. Upload <code style="color:var(--orange);font-family:'Share Tech Mono',monospace;font-size:11px;">index.html</code> to SPIFFS using the <strong>ESP32 Sketch Data Upload</strong> tool. The dashboard connects to both stream (port 81) and control (port 82) servers automatically once you enter the camera IP.
+          A full dark-theme single-page dashboard served directly from <code style="color:var(--orange);font-family:'Share Tech Mono',monospace;font-size:11px;">Browser 
         </p>
         <div class="webui-screens">
           <div class="screen-card">
@@ -790,25 +790,20 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
           </div>
         </div>
 
-        <div class="repo-icon">
-  <img src="github.png" 
-       alt="Zarf Octocat" 
-       style="width:48px; height:48px; object-fit:contain; 
-              filter: drop-shadow(0 0 6px #ff6b2b);">
-</div>
+        <div class="repo-icon">🐙</div>
           <div class="repo-info">
             <div class="repo-name">zarfrobotics / esp-sentinel</div>
             <div class="repo-meta">
               <span class="repo-tag">ARDUINO SKETCH</span>
-              <span class="repo-tag">SPIFFS HTML</span>
+              <span class="repo-tag">WEB PANEL HTML</span>
               <span class="repo-tag">ESP32-CAM</span>
               <span class="repo-tag">OPEN SOURCE</span>
             </div>
             <div class="repo-desc">
-              Complete firmware + web UI source. Two files: <span>ESPSentinel.ino</span> (Arduino sketch) and <span>data/index.html</span> (SPIFFS web panel). Clone, edit WiFi credentials, upload sketch then upload SPIFFS data.
+              Complete firmware + web UI source. Two files: <span>ESPSentinel.ino</span> (Arduino sketch) and <span>ESPSentinel.html</span> (Web panel). Clone, edit WiFi credentials.
             </div>
           </div>
-          <a href="https://github.com/zarfrobotics/esp-sentinel" target="_blank" class="btn-repo">
+          <a href="https://github.com/zarfroboticsprojects/ESPSentinel" target="_blank" class="btn-repo">
             <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
               <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
             </svg>
@@ -829,7 +824,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
             </div>
             <div class="fi-step">
               <span class="fi-num">03</span>
-              <span class="fi-text">Install libraries via Library Manager: <code>ESP32Servo</code>, <code>ArduinoJson</code>. SPIFFS and SD_MMC are built-in.</span>
+              <span class="fi-text">Install libraries via Library Manager: <code>ESP32Servo</code>, <code>ArduinoJson</code>.SD_MMC is built-in.</span>
             </div>
             <div class="fi-step">
               <span class="fi-num">04</span>
@@ -905,7 +900,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
         <div class="video-info">
           <div class="video-label">// FULL BUILD WALKTHROUGH</div>
           <div class="video-title">ESP-Sentinel — ESP32-CAM Security Camera Build</div>
-          <div class="video-desc">Complete build guide: wiring the AI Thinker board, servo mount, PIR sensor, SD card, flashing firmware, uploading SPIFFS, and a full live demo of the web control panel.</div>
+          <div class="video-desc">Complete build guide: wiring the AI Thinker board, servo mount, PIR sensor, SD card, flashing firmware, Opening the html file from Browser, and a full live demo of the web control panel.</div>
           <div class="video-meta">
             <div class="meta-item"><div class="meta-dot"></div> ZARF ROBOTICS</div>
             <div class="meta-item"><div class="meta-dot"></div> ~30 MIN</div>
