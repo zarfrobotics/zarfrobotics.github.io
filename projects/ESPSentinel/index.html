@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarf Robotics — ESP-Sentinel Security Camera</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#020609;--bg2:#040d14;--panel:#060f18;--panel2:#081525;
+  --border:#0a2a3f;--border2:#0d3a55;
+  --orange:#ff6b2b;--orange2:#cc5520;--orange3:#ff9060;
+  --cyan:#00d4ff;--cyan2:#00a8cc;
+  --green:#00ff88;--red:#ff2b5e;--purple:#b44fff;--yellow:#ffe040;
+  --text:#c8e8f5;--text2:#6a9ab5;--text3:#3a6a85;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+button{outline:none;border:none;background:none;cursor:pointer;}
+img{border:none;display:block;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;}
+
+.grid-bg{
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(255,107,43,0.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,107,43,0.022) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
+.grid-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(80,30,0,0.35) 0%,transparent 65%);
+}
+
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px;}
+
+/* ── HEADER ── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(2,6,9,0.87);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.header-inner{
+  max-width:1200px;margin:0 auto;padding:13px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{display:flex;align-items:center;text-decoration:none;}
+.logo-text{font-family:'Orbitron',monospace;font-size:15px;font-weight:700;color:var(--orange);letter-spacing:2px;}
+.logo-sub{font-size:9px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-top:2px;}
+nav{display:flex;gap:6px;}
+nav a{
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);
+  text-decoration:none;padding:6px 14px;border:1px solid transparent;
+  border-radius:4px;letter-spacing:1px;transition:all 0.2s;
+}
+nav a:hover{color:var(--orange);border-color:var(--border2);background:rgba(255,107,43,0.06);}
+
+/* ── HERO ── */
+.hero{padding:130px 0 72px;position:relative;overflow:hidden;}
+.hero-corner{position:absolute;width:180px;height:180px;border:1px solid rgba(255,107,43,0.1);}
+.hero-corner.tl{top:76px;left:0;border-right:none;border-bottom:none;}
+.hero-corner.br{bottom:0;right:0;border-left:none;border-top:none;}
+
+.status-bar{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.status-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--orange);box-shadow:0 0 12px var(--orange);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+.status-text{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--orange);letter-spacing:2px;}
+
+.hero-channel{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--orange2);letter-spacing:3px;margin-bottom:12px;opacity:0.8;}
+.hero-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(26px,5vw,54px);font-weight:900;
+  line-height:1.05;color:#fff;letter-spacing:-1px;margin-bottom:16px;
+}
+.hero-title span{color:var(--orange);text-shadow:0 0 30px rgba(255,107,43,0.55);}
+.hero-sub{font-size:18px;color:var(--text2);font-weight:300;letter-spacing:0.5px;max-width:640px;margin-bottom:36px;line-height:1.6;}
+
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;}
+.tag{font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 12px;border-radius:3px;letter-spacing:1px;}
+.tag-orange{border:1px solid rgba(255,107,43,0.4);color:var(--orange);background:rgba(255,107,43,0.07);}
+.tag-cyan  {border:1px solid rgba(0,212,255,0.35); color:var(--cyan);  background:rgba(0,212,255,0.06);}
+.tag-green {border:1px solid rgba(0,255,136,0.35); color:var(--green); background:rgba(0,255,136,0.06);}
+.tag-purple{border:1px solid rgba(180,79,255,0.35);color:var(--purple);background:rgba(180,79,255,0.06);}
+.tag-red   {border:1px solid rgba(255,43,94,0.35); color:var(--red);   background:rgba(255,43,94,0.06);}
+
+.hero-stats{display:flex;gap:40px;padding-top:36px;border-top:1px solid var(--border);}
+.stat-val{font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--orange);}
+.stat-label{font-size:11px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-top:2px;}
+
+/* ── SECTIONS ── */
+.section{padding:56px 0;}
+.sec-header{display:flex;align-items:center;gap:16px;margin-bottom:34px;}
+.sec-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;opacity:0.6;}
+.sec-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:3px;text-transform:uppercase;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
+
+/* ── COMPONENTS ── */
+.components-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.comp-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  padding:20px;position:relative;overflow:hidden;transition:all 0.3s;
+}
+.comp-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--orange),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.comp-card:hover{border-color:var(--border2);background:var(--panel2);transform:translateY(-2px);}
+.comp-card:hover::before{opacity:1;}
+.comp-id{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:12px;}
+.comp-icon{width:44px;height:44px;border-radius:8px;background:rgba(255,107,43,0.08);border:1px solid rgba(255,107,43,0.18);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:22px;}
+.comp-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:6px;}
+.comp-spec{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px;font-weight:300;}
+.comp-footer{display:flex;align-items:center;justify-content:space-between;}
+.comp-qty{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:1px;}
+.qty-val{color:var(--orange);margin-left:4px;}
+.btn-buy{
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;
+  padding:6px 16px;border:1px solid rgba(255,107,43,0.5);
+  background:rgba(255,107,43,0.08);color:var(--orange);
+  border-radius:4px;cursor:pointer;text-decoration:none;
+  transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-buy:hover{background:rgba(255,107,43,0.16);border-color:var(--orange);color:#fff;}
+
+/* ── FEATURES ── */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.feat-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:8px;padding:18px;transition:all 0.25s;
+}
+.feat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.feat-icon{font-size:26px;margin-bottom:10px;}
+.feat-title{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:6px;}
+.feat-desc{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;}
+
+/* ── PIN TABLE ── */
+.pin-table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.pin-table{width:100%;border-collapse:collapse;}
+.pin-table th{
+  background:var(--panel2);font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--orange);letter-spacing:2px;
+  padding:12px 18px;text-align:left;border-bottom:1px solid var(--border);
+}
+.pin-table td{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);padding:11px 18px;border-bottom:1px solid var(--border);}
+.pin-table tr:last-child td{border-bottom:none;}
+.pin-table tr:hover td{background:rgba(255,107,43,0.03);}
+.pin-pin{color:var(--orange);}
+.pin-gpio{color:var(--cyan);font-weight:700;}
+.pin-note{color:var(--text3);font-size:10px;}
+
+/* ── API ENDPOINTS ── */
+.api-grid{display:flex;flex-direction:column;gap:10px;}
+.api-row{
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  padding:14px 18px;display:flex;align-items:flex-start;gap:16px;
+  transition:border-color 0.2s;
+}
+.api-row:hover{border-color:var(--border2);}
+.api-method{
+  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;
+  padding:4px 9px;border-radius:3px;flex-shrink:0;
+  background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green);
+}
+.api-endpoint{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--orange);flex-shrink:0;margin-right:4px;}
+.api-desc{font-size:12px;color:var(--text2);line-height:1.5;font-weight:300;}
+.api-port{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto;flex-shrink:0;padding-left:12px;}
+
+/* ── CODE / DOWNLOAD PANEL ── */
+.code-panel{
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+}
+.code-hdr{
+  background:rgba(255,107,43,0.05);border-bottom:1px solid var(--border);
+  padding:16px 24px;display:flex;align-items:center;gap:12px;
+}
+.code-dot{width:10px;height:10px;border-radius:50%;}
+.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+.code-title{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text2);letter-spacing:2px;flex:1;text-align:center;}
+.code-body{padding:32px;}
+
+.flash-config{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.config-item{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;}
+.config-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;}
+.config-val{font-family:'Orbitron',monospace;font-size:14px;color:var(--orange);font-weight:700;}
+
+/* Repo download box */
+.repo-box{
+  display:flex;align-items:center;gap:20px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:22px;margin-bottom:24px;
+}
+.repo-icon{font-size:42px;}
+.repo-info{flex:1;}
+.repo-name{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:8px;}
+.repo-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.repo-tag{
+  font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 10px;
+  border-radius:3px;border:1px solid rgba(255,107,43,0.3);
+  color:var(--orange2);background:rgba(255,107,43,0.06);letter-spacing:1px;
+}
+.repo-desc{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;}
+.repo-desc span{color:var(--orange);font-family:'Share Tech Mono',monospace;}
+
+.btn-repo{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Orbitron',monospace;font-size:12px;font-weight:700;
+  letter-spacing:2px;padding:16px 24px;
+  border:1px solid var(--orange);background:rgba(255,107,43,0.09);
+  color:var(--orange);border-radius:6px;cursor:pointer;
+  text-decoration:none;transition:all 0.3s;white-space:nowrap;
+  flex-shrink:0;
+}
+.btn-repo:hover{
+  background:rgba(255,107,43,0.18);
+  box-shadow:0 0 28px rgba(255,107,43,0.25);color:#fff;
+}
+
+.flash-instructions{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px 24px;}
+.fi-title{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:16px;}
+.fi-steps{display:flex;flex-direction:column;gap:12px;}
+.fi-step{display:flex;align-items:flex-start;gap:16px;}
+.fi-num{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--orange);flex-shrink:0;}
+.fi-text{font-size:13px;color:var(--text2);font-weight:300;line-height:1.6;}
+.fi-text code{
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--orange);
+  background:rgba(255,107,43,0.08);padding:1px 6px;border-radius:3px;
+  border:1px solid rgba(255,107,43,0.18);
+}
+.fi-text strong{color:#fff;font-weight:600;}
+
+/* ── CIRCUIT ── */
+.circuit-panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.circuit-toolbar{
+  padding:14px 20px;background:var(--panel2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.circuit-title{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text2);letter-spacing:2px;flex:1;}
+.toolbar-btn{
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;
+  padding:7px 14px;border-radius:4px;cursor:pointer;
+  transition:all 0.2s;display:flex;align-items:center;gap:6px;
+}
+.btn-print{border:1px solid rgba(255,107,43,0.35);background:rgba(255,107,43,0.06);color:var(--orange);}
+.btn-print:hover{background:rgba(255,107,43,0.12);border-color:var(--orange);}
+.btn-dl{border:1px solid rgba(0,255,136,0.35);background:rgba(0,255,136,0.06);color:var(--green);}
+.btn-dl:hover{background:rgba(0,255,136,0.12);border-color:var(--green);}
+.circuit-area{min-height:380px;display:flex;align-items:center;justify-content:center;background:var(--bg2);}
+.circuit-ph{text-align:center;display:flex;flex-direction:column;align-items:center;}
+.circuit-ph-icon{font-size:54px;margin-bottom:16px;opacity:0.35;}
+.circuit-ph-title{font-family:'Orbitron',monospace;font-size:14px;color:var(--text3);letter-spacing:2px;margin-bottom:8px;}
+.circuit-ph-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);opacity:0.55;letter-spacing:1px;}
+
+/* ── VIDEO PANEL ── */
+.video-panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.video-inner{display:grid;grid-template-columns:1fr 1fr;}
+.video-preview{
+  position:relative;min-height:280px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;border-right:1px solid var(--border);
+  cursor:pointer;background:var(--bg2);
+}
+.video-thumb-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 35% 50%,rgba(255,0,0,0.12),transparent 60%),
+    radial-gradient(circle at 65% 50%,rgba(255,107,43,0.08),transparent 60%);
+}
+.play-btn{
+  position:relative;z-index:1;width:72px;height:72px;
+  border-radius:50%;background:rgba(255,0,0,0.9);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;box-shadow:0 0 30px rgba(255,0,0,0.3);
+}
+.play-btn:hover{transform:scale(1.1);}
+.play-btn svg{margin-left:4px;}
+.yt-badge{
+  position:absolute;bottom:16px;left:16px;
+  background:rgba(255,0,0,0.9);border-radius:4px;
+  padding:4px 10px;font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:#fff;letter-spacing:1px;
+  display:flex;align-items:center;gap:6px;
+}
+.video-info{padding:32px;display:flex;flex-direction:column;justify-content:center;}
+.video-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:3px;margin-bottom:12px;}
+.video-title{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:#fff;line-height:1.4;margin-bottom:16px;}
+.video-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;font-weight:300;}
+.video-meta{display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);}
+.meta-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);}
+.btn-watch{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Orbitron',monospace;font-size:12px;font-weight:700;
+  letter-spacing:2px;padding:14px 24px;
+  background:rgba(255,0,0,0.12);border:1px solid rgba(255,0,0,0.5);
+  color:#ff4444;border-radius:6px;cursor:pointer;
+  text-decoration:none;transition:all 0.3s;align-self:flex-start;
+}
+.btn-watch:hover{background:rgba(255,0,0,0.22);border-color:#ff4444;color:#fff;}
+
+/* ── WEB UI PREVIEW ── */
+.webui-preview{
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+}
+.webui-header{
+  background:var(--panel2);border-bottom:1px solid var(--border);
+  padding:14px 20px;display:flex;align-items:center;gap:8px;
+}
+.webui-dot{width:10px;height:10px;border-radius:50%;}
+.webui-title{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:2px;flex:1;text-align:center;}
+.webui-body{padding:28px;}
+.webui-screens{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.screen-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;
+  transition:border-color 0.2s;
+}
+.screen-card:hover{border-color:rgba(255,107,43,0.3);}
+.screen-icon{font-size:28px;margin-bottom:8px;}
+.screen-name{font-family:'Orbitron',monospace;font-size:11px;color:#fff;letter-spacing:1px;margin-bottom:6px;}
+.screen-desc{font-size:11px;color:var(--text2);line-height:1.6;font-weight:300;}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;}
+.footer-text{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:1px;}
+.footer-text span{color:var(--orange);}
+
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+@media(max-width:768px){
+  nav{display:none;}
+  .hero{padding:80px 0 48px;}
+  .hero-corner{display:none;}
+  .wrap{padding:0 16px;}
+  .hero-title{font-size:clamp(26px,9vw,42px);}
+  .hero-sub{font-size:14px;}
+  .hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;padding-top:0;}
+  .hero-stats>div{padding:12px 14px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .hero-stats>div:nth-child(2){border-right:none;}
+  .hero-stats>div:nth-child(3){border-bottom:none;}
+  .hero-stats>div:nth-child(4){border-right:none;border-bottom:none;}
+  .components-grid{grid-template-columns:1fr;}
+  .features-grid{grid-template-columns:1fr 1fr;}
+  .flash-config{grid-template-columns:1fr 1fr;}
+  .flash-config .config-item:last-child{grid-column:1/-1;}
+  .code-body{padding:20px 16px;}
+  .repo-box{flex-direction:column;align-items:flex-start;}
+  .btn-repo{width:100%;justify-content:center;}
+  .video-inner{grid-template-columns:1fr;}
+  .video-preview{border-right:none;border-bottom:1px solid var(--border);min-height:180px;}
+  .video-info{padding:20px 16px;}
+  .video-title{font-size:14px;}
+  .footer-inner{flex-direction:column;gap:8px;text-align:center;}
+  .webui-screens{grid-template-columns:1fr 1fr;}
+  .api-row{flex-wrap:wrap;}
+  .api-port{margin-left:0;padding-left:0;}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header>
+  <div class="header-inner">
+    <a href="../../index.html" class="logo">
+      <div><div class="logo-text">ZARF ROBOTICS</div><div class="logo-sub">TECHNOLOGY THAT HELPS!</div></div>
+    </a>
+    <nav>
+      <a href="#components">COMPONENTS</a>
+      <a href="#features">FEATURES</a>
+      <a href="#pinout">PINOUT</a>
+      <a href="#api">API</a>
+      <a href="#code">CODE</a>
+      <a href="#circuit">CIRCUIT</a>
+      <a href="#tutorial">TUTORIAL</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-corner tl"></div>
+  <div class="hero-corner br"></div>
+  <div class="wrap">
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span class="status-text">PROJECT ACTIVE — REV 1.0.0</span>
+    </div>
+    <div class="hero-channel">// ZARF ROBOTICS PRESENTS</div>
+    <h1 class="hero-title">
+      ESP-SENTINEL<br>
+      <span>AI THINKER</span><br>
+      SECURITY CAMERA
+    </h1>
+    <p class="hero-sub">
+      A full-featured IP security camera built on the ESP32-CAM (AI Thinker). 30 fps MJPEG live stream, AVI recording to SD card, pan/tilt servo control, PIR motion detection, LED flash — all controllable from a sleek web UI.
+    </p>
+    <div class="hero-tags">
+      <span class="tag tag-orange">ESP32-CAM (AI THINKER)</span>
+      <span class="tag tag-cyan">30fps MJPEG STREAM</span>
+      <span class="tag tag-red">AVI SD RECORDING</span>
+      <span class="tag tag-green">PIR MOTION DETECT</span>
+      <span class="tag tag-orange">PAN/TILT SERVO</span>
+      <span class="tag tag-purple">WEB CONTROL PANEL</span>
+      <span class="tag tag-cyan">OPEN SOURCE</span>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-val">30</div><div class="stat-label">FPS STREAM</div></div>
+      <div><div class="stat-val">640×480</div><div class="stat-label">VGA RESOLUTION</div></div>
+      <div><div class="stat-val">2</div><div class="stat-label">SERVOS (PAN/TILT)</div></div>
+      <div><div class="stat-val">AVI</div><div class="stat-label">SD RECORDING</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMPONENTS ══════════════════════════════════════════ -->
+<section class="section" id="components">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">BILL OF MATERIALS</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="components-grid">
+      <div class="comp-card">
+        <div class="comp-id">COMP-001 // MICROCONTROLLER + CAMERA</div>
+        <div class="comp-icon">📷</div>
+        <div class="comp-name">ESP32-CAM (AI THINKER)</div>
+        <div class="comp-spec">Dual-core 240MHz · OV2640 2MP camera · WiFi+BT · PSRAM · MicroSD slot · GPIO 3.3V-tolerant · Built-in flash LED</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=ESP32-CAM+AI+Thinker" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-id">COMP-002 // PROGRAMMER</div>
+        <div class="comp-icon">🔌</div>
+        <div class="comp-name">FTDI / USB-TTL (3.3V)</div>
+        <div class="comp-spec">CH340 or FT232 USB-to-Serial · 3.3V logic · Required to flash ESP32-CAM (no onboard USB) · Connect TXD→RXD, RXD→TXD, IO0→GND to flash</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=FTDI+USB+TTL+3.3V" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-id">COMP-003 // PAN SERVO</div>
+        <div class="comp-icon">⚙️</div>
+        <div class="comp-name">SG90 / MG90S SERVO × 2</div>
+        <div class="comp-spec">9g micro servo · 180° rotation · 4.8–6V · 500–2500 µs pulse range · Pan on GPIO12, Tilt on GPIO13 · Attach AFTER SD init</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×2</span></div>
+          <a href="https://www.amazon.in/s?k=SG90+servo+motor" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-id">COMP-004 // MOTION SENSOR</div>
+        <div class="comp-icon">👁️</div>
+        <div class="comp-name">HC-SR501 PIR SENSOR</div>
+        <div class="comp-spec">Passive infrared motion detector · 3–7m range · 5V · OUT→ GPIO2 · Auto-snapshot on motion trigger · 5-second cooldown between events</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=HC-SR501+PIR+sensor" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-id">COMP-005 // STORAGE</div>
+        <div class="comp-icon">💾</div>
+        <div class="comp-name">MICROSD CARD (CLASS 10)</div>
+        <div class="comp-spec">8–64 GB · FAT32 formatted · Class 10 recommended for 15fps AVI recording · Plugs directly into ESP32-CAM slot · Auto-creates /videos and /photos folders</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=microSD+card+class+10+32GB" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-id">COMP-006 // POWER</div>
+        <div class="comp-icon">⚡</div>
+        <div class="comp-name">5V POWER SUPPLY (2A+)</div>
+        <div class="comp-spec">5V regulated · 2A minimum (servos + camera peak) · USB or DC barrel · Separate supply recommended when using both servos to avoid brownout during capture</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=5V+2A+power+supply" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══════════════════════════════════════════ -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">FEATURES</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📺</div>
+        <div class="feat-title">30fps MJPEG STREAM</div>
+        <div class="feat-desc">Live 640×480 VGA stream over WiFi on port 81. Multipart MJPEG boundary protocol — compatible with any browser and VLC.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎥</div>
+        <div class="feat-title">AVI RECORDING TO SD</div>
+        <div class="feat-desc">15fps AVI segments recorded to MicroSD automatically. 1-minute rotation. Byte-exact AVI header with patched frame count and FPS. Stop/start via web UI.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🕹️</div>
+        <div class="feat-title">PAN / TILT SERVO</div>
+        <div class="feat-desc">Pan on GPIO12, tilt on GPIO13. D-pad + slider control in web UI. 500–2500 µs pulse range for SG90/MG90S. Attach after SD init to avoid boot strapping issue.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👁️</div>
+        <div class="feat-title">PIR MOTION DETECTION</div>
+        <div class="feat-desc">HC-SR501 on GPIO2. Triggers auto-snapshot saved to SD with timestamped filename. Motion log and event counter in web UI. Toggle on/off at runtime.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📸</div>
+        <div class="feat-title">SNAPSHOT (SAVE + DOWNLOAD)</div>
+        <div class="feat-desc">Save snapshots to SD with timestamped paths. Download directly to PC from browser. Day/hour folder structure auto-created on SD.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💡</div>
+        <div class="feat-title">LED FLASH PWM</div>
+        <div class="feat-desc">GPIO4 flash LED with 0–255 PWM brightness control via LEDC. Stays LOW during SD init to avoid clock conflicts on some AI Thinker revisions.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🗂️</div>
+        <div class="feat-title">SD FILE BROWSER</div>
+        <div class="feat-desc">Browse, preview, download and delete videos/photos directly from the web UI. Folder tree navigation. In-browser AVI playback and JPEG viewer.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌙</div>
+        <div class="feat-title">NIGHT MODE + IMAGE SETTINGS</div>
+        <div class="feat-desc">Software night mode (boost gain, brightness, desaturate). Live quality, brightness, contrast, saturation, mirror and flip sliders. All applied in real-time via /camset endpoint.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌡️</div>
+        <div class="feat-title">CHIP TEMPERATURE</div>
+        <div class="feat-desc">Live internal chip temperature via ESP32's temperatureRead() sensor. Displayed prominently in status sidebar with colour-coded warning thresholds (55°C / 70°C).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PINOUT ══════════════════════════════════════════════ -->
+<section class="section" id="pinout">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">PIN MAPPING</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="pin-table-wrap">
+      <table class="pin-table">
+        <thead>
+          <tr>
+            <th>COMPONENT</th>
+            <th>SIGNAL</th>
+            <th>ESP32-CAM GPIO</th>
+            <th>NOTES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>OV2640 Camera</td><td class="pin-pin">SDA/SCL + Data</td><td class="pin-gpio">BUILT-IN</td><td class="pin-note">Hardwired on AI Thinker board</td></tr>
+          <tr><td>Pan Servo</td><td class="pin-pin">SIGNAL</td><td class="pin-gpio">GPIO 12</td><td class="pin-note">⚠ Strapping pin — attach AFTER SD.begin()</td></tr>
+          <tr><td>Tilt Servo</td><td class="pin-pin">SIGNAL</td><td class="pin-gpio">GPIO 13</td><td class="pin-note">Safe to attach anytime</td></tr>
+          <tr><td>HC-SR501 PIR</td><td class="pin-pin">OUT</td><td class="pin-gpio">GPIO 2</td><td class="pin-note">Also SD_MMC D0 — INPUT only</td></tr>
+          <tr><td>Flash LED</td><td class="pin-pin">+</td><td class="pin-gpio">GPIO 4</td><td class="pin-note">⚠ Also SD_MMC CLK — keep LOW during SD init</td></tr>
+          <tr><td>MicroSD Card</td><td class="pin-pin">DAT0/CLK/CMD</td><td class="pin-gpio">BUILT-IN SLOT</td><td class="pin-note">1-bit SDMMC mode via SD_MMC library</td></tr>
+          <tr><td>FTDI Programmer</td><td class="pin-pin">TXD → RXD</td><td class="pin-gpio">UOR / UOT</td><td class="pin-note">3.3V only. GPIO0 → GND to enter flash mode</td></tr>
+          <tr><td>All Servos</td><td class="pin-pin">VCC</td><td class="pin-gpio">5V EXTERNAL</td><td class="pin-note">Do NOT power from ESP32 3.3V pin</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Critical warnings -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:20px;">
+      <div style="background:rgba(255,43,94,0.06);border:1px solid rgba(255,43,94,0.25);border-radius:8px;padding:16px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);letter-spacing:2px;margin-bottom:8px;">⚠ GPIO12 — STRAPPING PIN</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">If GPIO12 is HIGH at boot, SD gets 1.8V and won't init. Pan servo MUST be attached only after <code style="color:var(--orange);font-family:'Share Tech Mono',monospace;font-size:11px;">SD_MMC.begin()</code> returns successfully.</div>
+      </div>
+      <div style="background:rgba(255,107,43,0.06);border:1px solid rgba(255,107,43,0.2);border-radius:8px;padding:16px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;margin-bottom:8px;">⚠ GPIO4 — LED + SD CLK CONFLICT</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">GPIO4 is both the flash LED and SD_MMC CLK on some AI Thinker revisions. Always keep LED LOW (off) before and during SD init. Use LEDC PWM only after SD is confirmed ready.</div>
+      </div>
+      <div style="background:rgba(255,224,64,0.05);border:1px solid rgba(255,224,64,0.2);border-radius:8px;padding:16px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--yellow);letter-spacing:2px;margin-bottom:8px;">💡 FLASHING ESP32-CAM</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">Connect FTDI TXD→RXD0, RXD→TXD0, GND→GND, 3.3V→3.3V. Bridge GPIO0→GND before powering to enter flash mode. Remove bridge after upload and press reset.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ API ENDPOINTS ════════════════════════════════════════ -->
+<section class="section" id="api">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">API ENDPOINTS</h2>
+      <div class="sec-line"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+      <div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;margin-bottom:14px;">// PORT 81 — STREAM SERVER</div>
+        <div class="api-grid">
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/stream</span>
+            <span class="api-desc">30fps MJPEG multipart live stream. Open in browser or VLC.</span>
+            <span class="api-port">:81</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/snapshot</span>
+            <span class="api-desc">Download single JPEG frame directly to PC.</span>
+            <span class="api-port">:81</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;margin-bottom:14px;">// PORT 82 — CONTROL SERVER</div>
+        <div class="api-grid">
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/</span>
+            <span class="api-desc">Serves web control panel (index.html from SPIFFS).</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/status</span>
+            <span class="api-desc">JSON: name, IP, recording, pan, tilt, SD, uptime, RSSI, snaps, temp.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/servo?pan=90&amp;tilt=45</span>
+            <span class="api-desc">Move pan/tilt servos. Both params optional, 0–180°.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/led?state=128</span>
+            <span class="api-desc">Flash LED PWM brightness 0–255. 0 = off.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/record?cmd=stop|start</span>
+            <span class="api-desc">Stop or restart AVI recording. Returns JSON status.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/savesnap</span>
+            <span class="api-desc">Save JPEG snapshot to SD. Returns path in JSON.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/camset?quality=12&brightness=1</span>
+            <span class="api-desc">Adjust image settings live. Supports quality, brightness, contrast, saturation, hmirror, vflip, nightmode.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/pir</span>
+            <span class="api-desc">Returns current PIR sensor state as JSON boolean.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/sd/list?path=/videos</span>
+            <span class="api-desc">JSON array of files/folders at given SD path.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/sd/download?path=/...</span>
+            <span class="api-desc">Stream SD file as attachment for browser download.</span>
+            <span class="api-port">:82</span>
+          </div>
+          <div class="api-row">
+            <span class="api-method">GET</span>
+            <span class="api-endpoint">/sd/delete?path=/...</span>
+            <span class="api-desc">Delete a file from SD. Returns JSON ok status.</span>
+            <span class="api-port">:82</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WEB UI PREVIEW ════════════════════════════════════════ -->
+<section class="section" id="webui">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">WEB CONTROL PANEL</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="webui-preview">
+      <div class="webui-header">
+        <div class="webui-dot" style="background:#ff5f57"></div>
+        <div class="webui-dot" style="background:#febc2e;margin-left:6px"></div>
+        <div class="webui-dot" style="background:#28c840;margin-left:6px"></div>
+        <div class="webui-title">ESP-SENTINEL WEB DASHBOARD — SERVED FROM SPIFFS (PORT 82)</div>
+      </div>
+      <div class="webui-body">
+        <p style="font-size:13px;color:var(--text2);font-weight:300;line-height:1.7;margin-bottom:24px;">
+          A full dark-theme single-page dashboard served directly from the ESP32-CAM's SPIFFS filesystem. Upload <code style="color:var(--orange);font-family:'Share Tech Mono',monospace;font-size:11px;">index.html</code> to SPIFFS using the <strong>ESP32 Sketch Data Upload</strong> tool. The dashboard connects to both stream (port 81) and control (port 82) servers automatically once you enter the camera IP.
+        </p>
+        <div class="webui-screens">
+          <div class="screen-card">
+            <div class="screen-icon">📺</div>
+            <div class="screen-name">LIVE STREAM</div>
+            <div class="screen-desc">Full-resolution 30fps MJPEG feed with HUD overlays — REC badge, motion indicator, FPS counter, timestamp.</div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-icon">📊</div>
+            <div class="screen-name">STATUS SIDEBAR</div>
+            <div class="screen-desc">Live chip temperature with colour warning, RSSI, uptime, SD usage bar, recording state, snapshot count, motion events.</div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-icon">🕹️</div>
+            <div class="screen-name">PTZ D-PAD</div>
+            <div class="screen-desc">8-direction virtual D-pad plus range sliders for fine pan/tilt control. Angles displayed in real-time.</div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-icon">🎛️</div>
+            <div class="screen-name">CAMERA SETTINGS</div>
+            <div class="screen-desc">Quality, brightness, contrast, saturation sliders. Mirror/flip/night mode toggles — all applied instantly via /camset.</div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-icon">🚨</div>
+            <div class="screen-name">MOTION LOG</div>
+            <div class="screen-desc">PIR live status, event counter, timestamped event log, configurable enable/disable toggle.</div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-icon">🗂️</div>
+            <div class="screen-name">SD BROWSER</div>
+            <div class="screen-desc">Browse /videos and /photos folders. In-browser AVI playback, JPEG viewer, one-click download and delete.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CODE / REPOSITORY ════════════════════════════════════════ -->
+<section class="section" id="code">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">SOURCE CODE</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="code-panel">
+      <div class="code-hdr">
+        <div class="code-dot dot-r"></div>
+        <div class="code-dot dot-y"></div>
+        <div class="code-dot dot-g"></div>
+        <div class="code-title">ESP-SENTINEL v1.0 — REPOSITORY &amp; DOWNLOAD</div>
+      </div>
+      <div class="code-body">
+        <div class="flash-config">
+          <div class="config-item">
+            <div class="config-label">BOARD</div>
+            <div class="config-val">AI THINKER</div>
+          </div>
+          <div class="config-item">
+            <div class="config-label">IDE</div>
+            <div class="config-val">ARDUINO</div>
+          </div>
+          <div class="config-item">
+            <div class="config-label">VERSION</div>
+            <div class="config-val">REV 1.0</div>
+          </div>
+        </div>
+
+        <div class="repo-box">
+          <div class="repo-icon">🐙</div>
+          <div class="repo-info">
+            <div class="repo-name">zarfrobotics / esp-sentinel</div>
+            <div class="repo-meta">
+              <span class="repo-tag">ARDUINO SKETCH</span>
+              <span class="repo-tag">SPIFFS HTML</span>
+              <span class="repo-tag">ESP32-CAM</span>
+              <span class="repo-tag">OPEN SOURCE</span>
+            </div>
+            <div class="repo-desc">
+              Complete firmware + web UI source. Two files: <span>ESPSentinel.ino</span> (Arduino sketch) and <span>data/index.html</span> (SPIFFS web panel). Clone, edit WiFi credentials, upload sketch then upload SPIFFS data.
+            </div>
+          </div>
+          <a href="https://github.com/zarfrobotics/esp-sentinel" target="_blank" class="btn-repo">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            GO TO REPOSITORY →
+          </a>
+        </div>
+
+        <div class="flash-instructions">
+          <div class="fi-title">// HOW TO FLASH &amp; DEPLOY</div>
+          <div class="fi-steps">
+            <div class="fi-step">
+              <span class="fi-num">01</span>
+              <span class="fi-text">Clone repo or download ZIP from GitHub. Open <code>ESPSentinel.ino</code> in <strong>Arduino IDE</strong>.</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">02</span>
+              <span class="fi-text">In Board Manager, install <strong>ESP32 by Espressif</strong>. Select board: <code>AI Thinker ESP32-CAM</code>.</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">03</span>
+              <span class="fi-text">Install libraries via Library Manager: <code>ESP32Servo</code>, <code>ArduinoJson</code>. SPIFFS and SD_MMC are built-in.</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">04</span>
+              <span class="fi-text">Edit <code>WIFI_SSID</code> and <code>WIFI_PASS</code> at the top of the sketch with your network credentials.</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">05</span>
+              <span class="fi-text">Insert your ESP32-CAM to its MB Board</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">06</span>
+              <span class="fi-text">Upload sketch via Arduino IDE. Check Serial Monitor (115200 baud) for IP address.</span>
+            </div>
+            <div class="fi-step">
+              <span class="fi-num">07</span>
+              <span class="fi-text">Open <code>ESPSentinel.html</code> in any Browser</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CIRCUIT ════════════════════════════════════════════════ -->
+<section class="section" id="circuit">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">07</span>
+      <h2 class="sec-title">CIRCUIT DIAGRAM</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="circuit-panel">
+      <div class="circuit-toolbar">
+        <div class="circuit-title">ESP-SENTINEL-CIRCUIT.PNG — SCHEMATIC VIEW</div>
+        <button id="printBtn" class="toolbar-btn btn-print">🖨️ PRINT</button>
+        <button id="dlCircuitBtn" class="toolbar-btn btn-dl">↓ DOWNLOAD</button>
+      </div>
+      <div class="circuit-area" id="circuitArea">
+        <img id="circuitImg" src="circuits/espsentinel-circuit.png" alt="Circuit Diagram" style="width:100%;max-height:600px;object-fit:contain;display:none;">
+        <div class="circuit-ph" id="circuitPh">
+          <div class="circuit-ph-icon">🔌</div>
+          <div class="circuit-ph-title">CIRCUIT DIAGRAM</div>
+          <div class="circuit-ph-sub">Place image at circuits/espsentinel-circuit.png</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VIDEO ══════════════════════════════════════════════════ -->
+<section class="section" id="tutorial">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">08</span>
+      <h2 class="sec-title">VIDEO TUTORIAL</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="video-panel">
+      <div class="video-inner">
+        <div class="video-preview" id="videoPreview">
+          <div class="video-thumb-bg"></div>
+          <div class="play-btn">
+            <svg width="28" height="28" fill="white" viewBox="0 0 16 16">
+              <path d="M6.79 5.093A.5.5 0 006 5.5v5a.5.5 0 00.79.407l3.5-2.5a.5.5 0 000-.814l-3.5-2.5z"/>
+            </svg>
+          </div>
+          <div class="yt-badge">
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="white"><path d="M13.7 1.56C13.54.92 13.04.42 12.4.26 11.32 0 7 0 7 0S2.68 0 1.6.26C.96.42.46.92.3 1.56 0 2.64 0 5 0 5s0 2.36.3 3.44c.16.64.66 1.12 1.3 1.3C2.68 10 7 10 7 10s4.32 0 5.4-.26c.64-.18 1.14-.66 1.3-1.3C14 7.36 14 5 14 5s0-2.36-.3-3.44z"/></svg>
+            YOUTUBE
+          </div>
+        </div>
+        <div class="video-info">
+          <div class="video-label">// FULL BUILD WALKTHROUGH</div>
+          <div class="video-title">ESP-Sentinel — ESP32-CAM Security Camera Build</div>
+          <div class="video-desc">Complete build guide: wiring the AI Thinker board, servo mount, PIR sensor, SD card, flashing firmware, uploading SPIFFS, and a full live demo of the web control panel.</div>
+          <div class="video-meta">
+            <div class="meta-item"><div class="meta-dot"></div> ZARF ROBOTICS</div>
+            <div class="meta-item"><div class="meta-dot"></div> ~30 MIN</div>
+            <div class="meta-item"><div class="meta-dot"></div> INTERMEDIATE</div>
+          </div>
+          <a href="https://www.youtube.com/@zarfrobotics2011" target="_blank" class="btn-watch">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M15.6 1.87C15.43 1.22 14.93.72 14.28.55 13.03.22 8 .22 8 .22S2.97.22 1.72.55C1.07.72.57 1.22.4 1.87.08 3.12.08 5.72.08 5.72s0 2.6.32 3.85c.17.65.67 1.15 1.32 1.32C3 11.22 8 11.22 8 11.22s5.03 0 6.28-.33c.65-.17 1.15-.67 1.32-1.32.32-1.25.32-3.85.32-3.85S15.92 3.12 15.6 1.87z"/></svg>
+            WATCH ON YOUTUBE
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-text">© 2026 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
+    <div class="footer-text">PROJECT: <span>ESP-SENTINEL-V1.0</span></div>
+  </div>
+</footer>
+
+<script>
+  // Circuit image show/hide
+  const cImg = document.getElementById('circuitImg');
+  if (cImg) {
+    cImg.addEventListener('load',  function() { this.style.display='block'; document.getElementById('circuitPh').style.display='none'; });
+    cImg.addEventListener('error', function() { this.style.display='none';  document.getElementById('circuitPh').style.display='flex'; });
+  }
+
+  document.getElementById('printBtn').addEventListener('click', function() {
+    const img = document.getElementById('circuitImg');
+    if (!img || img.style.display === 'none') { alert('Circuit diagram not loaded.'); return; }
+    const w = window.open('', '_blank');
+    w.document.write('<html><body style="margin:0"><img src="' + img.src + '" style="max-width:100%" onload="window.print();window.close()"></body></html>');
+    w.document.close();
+  });
+
+  document.getElementById('dlCircuitBtn').addEventListener('click', function() {
+    const a = document.createElement('a');
+    a.href = 'circuits/espsentinel-circuit.png';
+    a.download = 'espsentinel-circuit.png';
+    a.click();
+  });
+
+  document.getElementById('videoPreview').addEventListener('click', function() {
+    window.open('https://www.youtube.com/@zarfrobotics2011', '_blank');
+  });
+</script>
+</body>
+</html>
