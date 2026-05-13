@@ -338,11 +338,32 @@
   .proj-card:hover::before { opacity: 1; }
   .proj-card:hover::after { opacity: 1; }
 
+  /* Orange accent for ESPCam card */
+  .proj-card.orange-accent::before {
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+  }
+  .proj-card.orange-accent::after {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,107,43,0.07), transparent 70%);
+  }
+  .proj-card.orange-accent:hover {
+    border-color: rgba(255,107,43,0.3);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,107,43,0.1);
+  }
+  .proj-card.orange-accent:hover .card-arrow {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: rgba(255,107,43,0.08);
+    box-shadow: 0 0 12px rgba(255,107,43,0.2);
+  }
+
   .card-banner { height: 160px; position: relative; overflow: hidden; flex-shrink: 0; }
   .banner-grid {
     position: absolute; inset: 0;
     background-image: linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
     background-size: 24px 24px;
+  }
+  .banner-grid.orange {
+    background-image: linear-gradient(rgba(255,107,43,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.07) 1px, transparent 1px);
   }
   .banner-glow { position: absolute; inset: 0; }
   .card-chip {
@@ -351,12 +372,17 @@
     display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
   .chip-icon { font-size: 38px; filter: drop-shadow(0 0 12px rgba(0,212,255,0.4)); }
+  .chip-icon.orange { filter: drop-shadow(0 0 12px rgba(255,107,43,0.5)); }
   .chip-label {
     font-family: 'Share Tech Mono', monospace;
     font-size: 9px; letter-spacing: 3px;
     padding: 4px 10px; border-radius: 2px;
     border: 1px solid rgba(0,212,255,0.3);
     background: rgba(0,0,0,0.5);
+  }
+  .chip-label.orange {
+    border-color: rgba(255,107,43,0.4);
+    color: var(--orange);
   }
 
   .card-badge {
@@ -381,11 +407,13 @@
   .ctag-g { border: 1px solid rgba(0,255,136,0.25);  color: rgba(0,255,136,0.8);  background: rgba(0,255,136,0.04); }
   .ctag-o { border: 1px solid rgba(255,107,43,0.25); color: rgba(255,107,43,0.8); background: rgba(255,107,43,0.05); }
   .ctag-p { border: 1px solid rgba(180,79,255,0.25); color: rgba(180,79,255,0.8); background: rgba(180,79,255,0.05); }
+  .ctag-r { border: 1px solid rgba(255,43,94,0.25);  color: rgba(255,43,94,0.8);  background: rgba(255,43,94,0.05); }
 
   .card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; }
   .card-meta { display: flex; gap: 14px; }
   .meta-item { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
   .meta-item .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); opacity: 0.5; }
+  .meta-item .dot.orange { background: var(--orange); }
 
   .card-arrow {
     width: 30px; height: 30px;
@@ -393,7 +421,7 @@
     display: flex; align-items: center; justify-content: center;
     color: var(--text3); transition: all 0.2s; flex-shrink: 0;
   }
-  .proj-card:hover .card-arrow { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.08); box-shadow: 0 0 12px rgba(0,212,255,0.2); }
+  .proj-card:not(.orange-accent):hover .card-arrow { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.08); box-shadow: 0 0 12px rgba(0,212,255,0.2); }
 
   .coming-soon-overlay {
     position: absolute; inset: 0;
@@ -413,6 +441,9 @@
     font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
     padding: 4px 10px; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.4); color: var(--cyan); border-radius: 3px;
   }
+  .featured-tag.orange {
+    background: rgba(255,107,43,0.12); border-color: rgba(255,107,43,0.4); color: var(--orange);
+  }
 
   footer { border-top: 1px solid var(--border); padding: 28px 0; margin-top: 20px; }
   .footer-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
@@ -428,23 +459,18 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--cyan2); }
 
   @media (max-width: 768px) {
-    /* header */
     .header-inner { padding: 12px 16px; }
     .logo-text { font-size: 13px; letter-spacing: 1.5px; }
     .logo-sub { font-size: 8px; letter-spacing: 1px; }
     .nav-counter { display: none; }
     .yt-link { padding: 6px 10px; font-size: 9px; gap: 5px; }
     .yt-link svg { width: 12px; }
-
-    /* hero */
     .hero { padding: 90px 0 40px; }
     .corner { display: none; }
     .wrap { padding: 0 16px; }
     .eyebrow-text { font-size: 9px; letter-spacing: 2px; }
     .hero-title { font-size: clamp(36px, 12vw, 52px); letter-spacing: -0.5px; margin-bottom: 8px; }
     .hero-desc { font-size: 14px; margin: 14px 0 24px; }
-
-    /* stats — 2x2 grid on phone */
     .hero-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -457,22 +483,14 @@
     .h-stat:nth-child(4) { border-right: none; border-bottom: none; }
     .h-stat-val { font-size: 16px; }
     .h-stat-label { font-size: 8px; }
-
-    /* filter bar */
     .filter-bar { gap: 6px; margin-bottom: 12px; }
     .filter-label { display: none; }
     .filter-btn { padding: 5px 10px; font-size: 9px; }
-
-    /* search */
     .search-input { font-size: 11px; padding: 11px 14px 11px 40px; }
     .search-kbd { display: none; }
     .search-icon { left: 12px; }
-
-    /* section header */
     .section { padding: 16px 0 48px; }
     .sec-title { font-size: 11px; letter-spacing: 2px; }
-
-    /* featured card — stack vertically */
     .featured-card {
       grid-column: 1 / -1;
       grid-template-columns: 1fr;
@@ -482,11 +500,7 @@
       border-right: none;
       border-bottom: 1px solid var(--border);
     }
-
-    /* all cards single column */
     .projects-grid { grid-template-columns: 1fr; gap: 14px; }
-
-    /* card body */
     .card-body { padding: 16px; }
     .card-title { font-size: 12px; }
     .card-desc { font-size: 12px; margin-bottom: 12px; }
@@ -494,18 +508,10 @@
     .ctag { font-size: 8px; padding: 3px 7px; }
     .card-meta { gap: 8px; flex-wrap: wrap; }
     .meta-item { font-size: 8px; }
-
-    /* footer */
-    .footer-inner {
-      flex-direction: column;
-      gap: 12px;
-      text-align: center;
-      padding: 0 16px;
-    }
+    .footer-inner { flex-direction: column; gap: 12px; text-align: center; padding: 0 16px; }
     .footer-links { gap: 16px; }
   }
 
-  /* extra small phones */
   @media (max-width: 380px) {
     .hero-title { font-size: 32px; }
     .filter-btn { padding: 5px 8px; font-size: 8px; }
@@ -516,7 +522,6 @@
 
 <div class="grid-bg"></div>
 
-<!-- HEADER -->
 <header>
   <div class="header-inner">
     <a href="index.html" class="logo">
@@ -535,7 +540,6 @@
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
   <div class="corner tl"></div>
   <div class="corner tr"></div>
@@ -550,11 +554,11 @@
       <span class="dim">///</span> BUILDS
     </h1>
     <p class="hero-desc">
-      Step-by-step hardware & firmware projects for makers. From AI assistants on microcontrollers to custom robotics — every build documented and open source.
+      Step-by-step hardware &amp; firmware projects for makers. From smart watches to AI-powered security cameras — every build fully documented and open source.
     </p>
     <div class="hero-stats">
       <div class="h-stat">
-        <div class="h-stat-val" id="totalProjects">1</div>
+        <div class="h-stat-val" id="totalProjects">2</div>
         <div class="h-stat-label">PROJECTS</div>
       </div>
       <div class="h-stat">
@@ -571,19 +575,19 @@
       </div>
     </div>
 
-    <!-- FILTER BAR -->
     <div class="filter-bar">
       <span class="filter-label">FILTER //</span>
       <button class="filter-btn active" data-filter="all">ALL</button>
       <button class="filter-btn" data-filter="esp32">ESP32</button>
       <button class="filter-btn" data-filter="oled">OLED</button>
+      <button class="filter-btn" data-filter="camera">CAMERA</button>
       <button class="filter-btn" data-filter="games">GAMES</button>
       <button class="filter-btn" data-filter="watch">WATCH</button>
+      <button class="filter-btn" data-filter="security">SECURITY</button>
     </div>
   </div>
 </section>
 
-<!-- PROJECTS -->
 <section class="section">
   <div class="wrap">
     <div class="sec-header">
@@ -592,7 +596,6 @@
       <div class="sec-line"></div>
     </div>
 
-    <!-- SEARCH BAR -->
     <div class="search-wrap">
       <span class="search-icon">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -600,7 +603,7 @@
         </svg>
       </span>
       <input type="text" class="search-input" id="searchInput"
-        placeholder="SEARCH PROJECTS — TYPE KEYWORDS, TAGS, COMPONENTS..."
+        placeholder="SEARCH PROJECTS — KEYWORDS, TAGS, COMPONENTS..."
         autocomplete="off" spellcheck="false">
       <span class="search-kbd">⌘ K</span>
     </div>
@@ -609,40 +612,41 @@
     <div class="no-results" id="noResults">
       <div class="no-results-icon">🔍</div>
       <div class="no-results-title">NO PROJECTS FOUND</div>
-      <div class="no-results-sub">Try different keywords · ESP32 · OLED · GAMES · WATCH</div>
+      <div class="no-results-sub">Try different keywords · ESP32 · OLED · CAMERA · SECURITY · WATCH</div>
     </div>
 
     <div class="projects-grid" id="projectsGrid">
 
-      <!-- PROJECT 01 — FEATURED -->
-      <a href="projects/zwatch/" class="proj-card featured-card" data-tags="esp32 arduino oled games watch">
+      <!-- PROJECT 01 — ESPSentinel: Security Camera -->
+      <a href="projects/espsentinel/" class="proj-card orange-accent" data-tags="esp32 camera security wifi mjpeg avi sd pir servo">
         <div class="card-banner">
-          <div class="banner-grid"></div>
-          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,212,255,0.12), transparent 70%);"></div>
-          <div class="featured-tag">★ FEATURED</div>
+          <div class="banner-grid orange"></div>
+          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,107,43,0.14), transparent 70%);"></div>
+          <div class="card-badge badge-hot">FEATURED</div>
           <div class="card-chip">
-            <div class="chip-icon">⌚</div>
-            <div class="chip-label" style="color: var(--cyan);">Z|WATCH · ESP32-C3</div>
+            <div class="chip-icon orange">📷</div>
+            <div class="chip-label orange">ESP-SENTINEL · ESP32-CAM</div>
           </div>
         </div>
         <div class="card-body">
-          <div class="card-id">PROJ-001 // ESP32-C3 · OLED · GAMES · WATCH</div>
-          <div class="card-title">Z|WATCH — ESP32-C3 SMART WATCH</div>
+          <div class="card-id">PROJ-002 // ESP32-CAM · SECURITY · WIFI · SD · PIR</div>
+          <div class="card-title">ESP-SENTINEL — ESP32-CAM SECURITY CAMERA</div>
           <div class="card-desc">
-            A full-featured smart watch running on ESP32-C3 SuperMini with SSD1306 OLED. NTP time sync, alarms, stopwatch, Pomodoro timer, Breakout, Flappy Bird, Car Dodge and Pong — all in one tiny wearable.
+            A full-featured IP security camera built on ESP32-CAM. 30fps MJPEG live stream, AVI recording to SD, pan/tilt servo control, PIR motion detection with auto-snapshot, LED flash, SD browser, and a beautiful web control panel.
           </div>
           <div class="card-tags">
-            <span class="ctag ctag-c">ESP32-C3</span>
-            <span class="ctag ctag-g">SSD1306 OLED</span>
-            <span class="ctag ctag-c">NTP SYNC</span>
-            <span class="ctag ctag-o">4 GAMES</span>
-            <span class="ctag ctag-p">POMODORO</span>
+            <span class="ctag ctag-o">ESP32-CAM</span>
+            <span class="ctag ctag-r">SD RECORDING</span>
+            <span class="ctag ctag-c">MJPEG STREAM</span>
+            <span class="ctag ctag-g">PIR MOTION</span>
+            <span class="ctag ctag-o">PAN/TILT</span>
+            <span class="ctag ctag-p">WEB UI</span>
           </div>
           <div class="card-footer">
             <div class="card-meta">
-              <div class="meta-item"><div class="dot"></div> 5 COMPONENTS</div>
-              <div class="meta-item"><div class="dot"></div> INTERMEDIATE</div>
-              <div class="meta-item"><div class="dot"></div> ~2 HOURS</div>
+              <div class="meta-item"><div class="dot orange"></div> 6 COMPONENTS</div>
+              <div class="meta-item"><div class="dot orange"></div> INTERMEDIATE</div>
+              <div class="meta-item"><div class="dot orange"></div> ~3 HOURS</div>
             </div>
             <div class="card-arrow">
               <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
@@ -657,14 +661,13 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-text">© 2026 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
     <div class="footer-links">
       <a href="https://www.youtube.com/@zarfrobotics2011" target="_blank">YOUTUBE</a>
       <a href="https://github.com/zarfrobotics" target="_blank">GITHUB</a>
-      <a href="contact.html" id="contactLink">CONTACT</a>
+      <a href="contact.html">CONTACT</a>
     </div>
   </div>
 </footer>
@@ -775,6 +778,5 @@
 
   applyFilters();
 </script>
-
 </body>
 </html>
