@@ -443,11 +443,11 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
       <div class="comp-card">
         <div class="comp-id">COMP-002 // PROGRAMMER</div>
         <div class="comp-icon">🔌</div>
-        <div class="comp-name">FTDI / USB-TTL (3.3V)</div>
-        <div class="comp-spec">CH340 or FT232 USB-to-Serial · 3.3V logic · Required to flash ESP32-CAM (no onboard USB) · Connect TXD→RXD, RXD→TXD, IO0→GND to flash</div>
+        <div class="comp-name">ESP32-CAM MB Board</div>
+        <div class="comp-spec">a dedicated USB programmer and expansion board designed for the ESP32-CAM (AI-Thinker) module, enabling easy programming, debugging, and power supply via a Micro USB</div>
         <div class="comp-footer">
           <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
-          <a href="https://www.amazon.in/s?k=FTDI+USB+TTL+3.3V" target="_blank" class="btn-buy">BUY NOW</a>
+          <a href="https://www.amazon.in/s?k=ESP32+CAM+MB+Board" target="_blank" class="btn-buy">BUY NOW</a>
         </div>
       </div>
       <div class="comp-card">
@@ -474,7 +474,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
         <div class="comp-id">COMP-005 // STORAGE</div>
         <div class="comp-icon">💾</div>
         <div class="comp-name">MICROSD CARD (CLASS 10)</div>
-        <div class="comp-spec">8–64 GB · FAT32 formatted · Class 10 recommended for 15fps AVI recording · Plugs directly into ESP32-CAM slot · Auto-creates /videos and /photos folders</div>
+        <div class="comp-spec">4–32 GB · FAT32 formatted · Class 10 recommended for 15fps AVI recording · Plugs directly into ESP32-CAM slot · Auto-creates /videos and /photos folders</div>
         <div class="comp-footer">
           <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
           <a href="https://www.amazon.in/s?k=microSD+card+class+10+32GB" target="_blank" class="btn-buy">BUY NOW</a>
@@ -483,11 +483,11 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
       <div class="comp-card">
         <div class="comp-id">COMP-006 // POWER</div>
         <div class="comp-icon">⚡</div>
-        <div class="comp-name">5V POWER SUPPLY (2A+)</div>
-        <div class="comp-spec">5V regulated · 2A minimum (servos + camera peak) · USB or DC barrel · Separate supply recommended when using both servos to avoid brownout during capture</div>
+        <div class="comp-name">18650 BATTERY WITH HOLDER</div>
+        <div class="comp-spec">a rechargeable lithium-ion cell, named for its 18mm x 65mm size</div>
         <div class="comp-footer">
-          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
-          <a href="https://www.amazon.in/s?k=5V+2A+power+supply" target="_blank" class="btn-buy">BUY NOW</a>
+          <div class="comp-qty">QTY: <span class="qty-val">×2</span></div>
+          <a href="https://www.amazon.in/s?k=18650+Battery+with+holder" target="_blank" class="btn-buy">BUY NOW</a>
         </div>
       </div>
     </div>
@@ -577,7 +577,6 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
           <tr><td>HC-SR501 PIR</td><td class="pin-pin">OUT</td><td class="pin-gpio">GPIO 2</td><td class="pin-note">Also SD_MMC D0 — INPUT only</td></tr>
           <tr><td>Flash LED</td><td class="pin-pin">+</td><td class="pin-gpio">GPIO 4</td><td class="pin-note">⚠ Also SD_MMC CLK — keep LOW during SD init</td></tr>
           <tr><td>MicroSD Card</td><td class="pin-pin">DAT0/CLK/CMD</td><td class="pin-gpio">BUILT-IN SLOT</td><td class="pin-note">1-bit SDMMC mode via SD_MMC library</td></tr>
-          <tr><td>FTDI Programmer</td><td class="pin-pin">TXD → RXD</td><td class="pin-gpio">UOR / UOT</td><td class="pin-note">3.3V only. GPIO0 → GND to enter flash mode</td></tr>
           <tr><td>All Servos</td><td class="pin-pin">VCC</td><td class="pin-gpio">5V EXTERNAL</td><td class="pin-note">Do NOT power from ESP32 3.3V pin</td></tr>
         </tbody>
       </table>
@@ -592,10 +591,6 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
       <div style="background:rgba(255,107,43,0.06);border:1px solid rgba(255,107,43,0.2);border-radius:8px;padding:16px;">
         <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;margin-bottom:8px;">⚠ GPIO4 — LED + SD CLK CONFLICT</div>
         <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">GPIO4 is both the flash LED and SD_MMC CLK on some AI Thinker revisions. Always keep LED LOW (off) before and during SD init. Use LEDC PWM only after SD is confirmed ready.</div>
-      </div>
-      <div style="background:rgba(255,224,64,0.05);border:1px solid rgba(255,224,64,0.2);border-radius:8px;padding:16px;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--yellow);letter-spacing:2px;margin-bottom:8px;">💡 FLASHING ESP32-CAM</div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">Connect FTDI TXD→RXD0, RXD→TXD0, GND→GND, 3.3V→3.3V. Bridge GPIO0→GND before powering to enter flash mode. Remove bridge after upload and press reset.</div>
       </div>
     </div>
   </div>
