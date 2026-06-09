@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarf Robotics — Xiaozhi AI Voice Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+<style>
+:root{
+  --bg:#020609;--bg2:#040d14;--panel:#060f18;--panel2:#081525;
+  --border:#0a2a3f;--border2:#0d3a55;
+  --cyan:#00d4ff;--cyan2:#00a8cc;
+  --green:#00ff88;--red:#ff2b5e;--purple:#b44fff;--yellow:#ffe040;
+  --orange:#ff6b2b;
+  --text:#c8e8f5;--text2:#6a9ab5;--text3:#3a6a85;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+button{outline:none;border:none;background:none;cursor:pointer;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;}
+
+.grid-bg{
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.022) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
+.grid-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(0,40,80,0.4) 0%,transparent 65%);
+}
+
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px;}
+
+/* ── HEADER ── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(2,6,9,0.87);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.header-inner{
+  max-width:1200px;margin:0 auto;padding:13px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{display:flex;align-items:center;text-decoration:none;}
+.logo-text{font-family:'Orbitron',monospace;font-size:15px;font-weight:700;color:var(--cyan);letter-spacing:2px;text-shadow:0 0 16px rgba(0,212,255,0.4);}
+.logo-sub{font-size:9px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-top:2px;}
+nav{display:flex;gap:6px;}
+nav a{
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);
+  text-decoration:none;padding:6px 14px;border:1px solid transparent;
+  border-radius:4px;letter-spacing:1px;transition:all 0.2s;
+}
+nav a:hover{color:var(--cyan);border-color:var(--border2);background:rgba(0,212,255,0.06);}
+
+/* ── HERO ── */
+.hero{padding:130px 0 72px;position:relative;overflow:hidden;}
+.hero-corner{position:absolute;width:180px;height:180px;border:1px solid rgba(0,212,255,0.08);}
+.hero-corner.tl{top:76px;left:0;border-right:none;border-bottom:none;}
+.hero-corner.br{bottom:0;right:0;border-left:none;border-top:none;}
+
+/* animated AI waveform in hero */
+.hero-visual{
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:420px;height:280px;pointer-events:none;opacity:0.12;
+}
+.hero-visual svg{width:100%;height:100%;}
+
+.status-bar{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.status-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 12px var(--cyan);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+.status-text{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);letter-spacing:2px;}
+
+.hero-channel{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan2);letter-spacing:3px;margin-bottom:12px;opacity:0.8;}
+.hero-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(26px,5vw,54px);font-weight:900;
+  line-height:1.05;color:#fff;letter-spacing:-1px;margin-bottom:16px;
+}
+.hero-title span{color:var(--cyan);text-shadow:0 0 30px rgba(0,212,255,0.55);}
+.hero-sub{font-size:18px;color:var(--text2);font-weight:300;letter-spacing:0.5px;max-width:640px;margin-bottom:36px;line-height:1.6;}
+
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;}
+.tag{font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 12px;border-radius:3px;letter-spacing:1px;}
+.tag-cyan  {border:1px solid rgba(0,212,255,0.4); color:var(--cyan);  background:rgba(0,212,255,0.07);}
+.tag-green {border:1px solid rgba(0,255,136,0.35);color:var(--green); background:rgba(0,255,136,0.06);}
+.tag-purple{border:1px solid rgba(180,79,255,0.35);color:var(--purple);background:rgba(180,79,255,0.06);}
+.tag-red   {border:1px solid rgba(255,43,94,0.35); color:var(--red);  background:rgba(255,43,94,0.06);}
+.tag-orange{border:1px solid rgba(255,107,43,0.35);color:var(--orange);background:rgba(255,107,43,0.06);}
+.tag-yellow{border:1px solid rgba(255,224,64,0.35);color:var(--yellow);background:rgba(255,224,64,0.06);}
+
+.hero-stats{display:flex;gap:40px;padding-top:36px;border-top:1px solid var(--border);}
+.stat-val{font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--cyan);}
+.stat-label{font-size:11px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-top:2px;}
+
+/* ── SECTIONS ── */
+.section{padding:56px 0;}
+.sec-header{display:flex;align-items:center;gap:16px;margin-bottom:34px;}
+.sec-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;opacity:0.6;}
+.sec-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:3px;text-transform:uppercase;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
+
+/* ── HOW IT WORKS ── */
+.arch-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.arch-step{padding:22px 16px;text-align:center;border-right:1px solid var(--border);position:relative;transition:background 0.25s;}
+.arch-step:last-child{border-right:none;}
+.arch-step:hover{background:rgba(0,212,255,0.03);}
+.arch-step-icon{font-size:30px;margin-bottom:10px;}
+.arch-step-title{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:6px;}
+.arch-step-desc{font-size:11px;color:var(--text2);line-height:1.6;font-weight:300;}
+.arch-arrow{
+  position:absolute;right:-14px;top:50%;transform:translateY(-50%);
+  font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--cyan);
+  opacity:0.4;z-index:2;
+}
+.arch-step:last-child .arch-arrow{display:none;}
+
+/* ── COMPONENTS ── */
+.components-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.comp-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  padding:20px;position:relative;overflow:hidden;transition:all 0.3s;
+}
+.comp-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.comp-card:hover{border-color:var(--border2);background:var(--panel2);transform:translateY(-2px);}
+.comp-card:hover::before{opacity:1;}
+.comp-id{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:12px;}
+.comp-icon{width:44px;height:44px;border-radius:8px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.18);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:22px;}
+.comp-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:6px;}
+.comp-spec{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px;font-weight:300;}
+.comp-footer{display:flex;align-items:center;justify-content:space-between;}
+.comp-qty{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:1px;}
+.qty-val{color:var(--cyan);margin-left:4px;}
+.btn-buy{
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;
+  padding:6px 16px;border:1px solid rgba(0,212,255,0.4);
+  background:rgba(0,212,255,0.07);color:var(--cyan);
+  border-radius:4px;cursor:pointer;text-decoration:none;
+  transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-buy:hover{background:rgba(0,212,255,0.14);border-color:var(--cyan);color:#fff;}
+
+/* ── FEATURES ── */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.feat-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px;transition:all 0.25s;}
+.feat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.feat-icon{font-size:26px;margin-bottom:10px;}
+.feat-title{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:6px;}
+.feat-desc{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;}
+
+/* ── PIN TABLE ── */
+.pin-table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.pin-table{width:100%;border-collapse:collapse;}
+.pin-table th{
+  background:var(--panel2);font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--cyan);letter-spacing:2px;
+  padding:12px 18px;text-align:left;border-bottom:1px solid var(--border);
+}
+.pin-table td{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);padding:11px 18px;border-bottom:1px solid var(--border);}
+.pin-table tr:last-child td{border-bottom:none;}
+.pin-table tr:hover td{background:rgba(0,212,255,0.03);}
+.pin-pin{color:var(--cyan);}
+.pin-gpio{color:var(--green);font-weight:700;}
+.pin-note{color:var(--text3);font-size:10px;}
+.pin-section-row td{
+  background:rgba(0,212,255,0.04);
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  color:var(--cyan);letter-spacing:3px;padding:6px 18px;
+}
+
+/* ── FLASH TOOL ── */
+.flash-tool{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  position:relative;
+}
+.flash-tool-header{
+  background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(0,80,160,0.1));
+  border-bottom:1px solid var(--border);padding:20px 28px;
+  display:flex;align-items:center;gap:14px;
+}
+.fth-dots{display:flex;gap:7px;}
+.fth-dot{width:11px;height:11px;border-radius:50%;}
+.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+.fth-title{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text2);letter-spacing:2px;flex:1;text-align:center;}
+.fth-badge{
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  padding:4px 10px;border-radius:3px;letter-spacing:1px;
+  background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green);
+}
+
+.flash-body{padding:36px 32px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+
+/* Left col: steps */
+.flash-steps{display:flex;flex-direction:column;gap:24px;}
+.flash-step-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:20px 22px;position:relative;transition:border-color 0.3s;
+}
+.flash-step-card.active-step{
+  border-color:rgba(0,212,255,0.4);
+  box-shadow:0 0 20px rgba(0,212,255,0.07);
+}
+.step-num{
+  position:absolute;top:-12px;left:20px;
+  font-family:'Orbitron',monospace;font-size:10px;font-weight:700;
+  color:var(--cyan);letter-spacing:2px;
+  background:var(--bg);padding:2px 10px;
+  border:1px solid rgba(0,212,255,0.3);border-radius:3px;
+}
+.step-title{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:10px;margin-top:6px;}
+.step-desc{font-size:12px;color:var(--text2);font-weight:300;line-height:1.65;}
+.step-desc code{
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);
+  background:rgba(0,212,255,0.08);padding:1px 6px;border-radius:3px;
+  border:1px solid rgba(0,212,255,0.18);
+}
+
+/* Right col: flasher widget */
+.flasher-widget{position:sticky;top:90px;}
+.fw-panel{
+  background:var(--bg2);border:1px solid rgba(0,212,255,0.2);border-radius:12px;
+  overflow:hidden;box-shadow:0 0 40px rgba(0,212,255,0.06);
+}
+.fw-header{
+  background:rgba(0,212,255,0.04);
+  border-bottom:1px solid rgba(0,212,255,0.12);
+  padding:16px 20px;
+  display:flex;align-items:center;gap:10px;
+}
+.fw-chip-badge{
+  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;
+  padding:4px 10px;border-radius:3px;
+  background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);
+}
+.fw-title{font-family:'Orbitron',monospace;font-size:11px;color:#fff;flex:1;letter-spacing:1px;}
+
+.fw-body{padding:24px;}
+
+/* Config pills */
+.fw-config{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
+.fw-cfg-item{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 12px;text-align:center;}
+.fw-cfg-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:2px;margin-bottom:4px;}
+.fw-cfg-val{font-family:'Orbitron',monospace;font-size:12px;color:var(--cyan);font-weight:700;}
+
+/* Status indicator */
+.fw-status{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:8px;margin-bottom:16px;
+  background:var(--panel);border:1px solid var(--border);
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);
+  transition:all 0.4s;
+}
+.fw-status.status-ready{border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.04);}
+.fw-status.status-error{border-color:rgba(255,43,94,0.3);background:rgba(255,43,94,0.04);}
+.fw-status.status-busy{border-color:rgba(255,224,64,0.3);background:rgba(255,224,64,0.04);}
+
+.fw-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:all 0.3s;}
+.fw-dot.dot-ok{background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
+.fw-dot.dot-busy{background:var(--yellow);box-shadow:0 0 8px var(--yellow);animation:pulse 0.7s infinite;}
+.fw-dot.dot-err{background:var(--red);}
+
+/* Progress bar (hidden until flashing) */
+.fw-progress{
+  height:3px;background:var(--border);border-radius:2px;
+  margin-bottom:16px;overflow:hidden;display:none;
+}
+.fw-progress.show{display:block;}
+.fw-progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--cyan2),var(--cyan));
+  border-radius:2px;transition:width 0.4s ease;
+  box-shadow:0 0 8px rgba(0,212,255,0.5);
+}
+
+/* Flash button */
+esp-web-install-button{display:block;width:100%;}
+
+.fw-flash-btn{
+  width:100%;padding:15px 20px;
+  background:linear-gradient(135deg,rgba(0,100,200,0.9),rgba(0,212,255,0.85));
+  border:1px solid rgba(0,212,255,0.5);border-radius:9px;
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;
+  letter-spacing:2px;color:#000;cursor:pointer;
+  transition:all 0.3s;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.fw-flash-btn:not(:disabled):hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 28px rgba(0,212,255,0.35);
+  background:linear-gradient(135deg,rgba(0,120,220,1),rgba(0,212,255,1));
+}
+.fw-flash-btn:active:not(:disabled){transform:translateY(0);}
+.fw-flash-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+.fw-flash-btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.12) 50%,transparent 60%);
+  transform:translateX(-100%);transition:transform 0.5s;
+}
+.fw-flash-btn:not(:disabled):hover::after{transform:translateX(100%);}
+
+.fw-unsupported{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  color:var(--red);text-align:center;padding:14px;
+}
+
+/* Warning note */
+.fw-note{
+  margin-top:14px;padding:10px 14px;
+  background:rgba(255,224,64,0.05);border:1px solid rgba(255,224,64,0.2);
+  border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:10px;
+  color:rgba(255,224,64,0.7);line-height:1.6;letter-spacing:0.5px;
+}
+.fw-note strong{color:var(--yellow);}
+
+/* Pills row */
+.fw-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.fw-pill{
+  font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 10px;
+  border-radius:20px;border:1px solid var(--border);color:var(--text3);
+  display:flex;align-items:center;gap:5px;letter-spacing:0.5px;
+}
+
+/* ── SETUP STEPS ── */
+.steps-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.setup-step{
+  display:flex;align-items:flex-start;gap:20px;padding:20px 24px;
+  border-bottom:1px solid var(--border);transition:background 0.2s;
+}
+.setup-step:last-child{border-bottom:none;}
+.setup-step:hover{background:rgba(0,212,255,0.02);}
+.ss-num{
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;
+  color:var(--cyan);flex-shrink:0;width:28px;
+  text-shadow:0 0 12px rgba(0,212,255,0.4);
+}
+.ss-content{flex:1;}
+.ss-title{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:5px;}
+.ss-desc{font-size:13px;color:var(--text2);font-weight:300;line-height:1.65;}
+.ss-desc code{
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);
+  background:rgba(0,212,255,0.08);padding:1px 6px;border-radius:3px;border:1px solid rgba(0,212,255,0.18);
+}
+.ss-desc strong{color:#fff;font-weight:600;}
+
+/* ── VIDEO ── */
+.video-panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.video-inner{display:grid;grid-template-columns:1fr 1fr;}
+.video-preview{
+  position:relative;min-height:280px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;border-right:1px solid var(--border);cursor:pointer;background:var(--bg2);
+}
+.video-thumb-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 35% 50%,rgba(255,0,0,0.12),transparent 60%),
+             radial-gradient(circle at 65% 50%,rgba(0,212,255,0.06),transparent 60%);
+}
+.play-btn{
+  position:relative;z-index:1;width:72px;height:72px;border-radius:50%;
+  background:rgba(255,0,0,0.9);display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;box-shadow:0 0 30px rgba(255,0,0,0.3);
+}
+.play-btn:hover{transform:scale(1.1);}
+.play-btn svg{margin-left:4px;}
+.yt-badge{
+  position:absolute;bottom:16px;left:16px;background:rgba(255,0,0,0.9);border-radius:4px;
+  padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#fff;
+  letter-spacing:1px;display:flex;align-items:center;gap:6px;
+}
+.video-info{padding:32px;display:flex;flex-direction:column;justify-content:center;}
+.video-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:3px;margin-bottom:12px;}
+.video-title{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:#fff;line-height:1.4;margin-bottom:16px;}
+.video-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;font-weight:300;}
+.video-meta{display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);}
+.meta-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);}
+.btn-watch{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Orbitron',monospace;font-size:12px;font-weight:700;
+  letter-spacing:2px;padding:14px 24px;
+  background:rgba(255,0,0,0.12);border:1px solid rgba(255,0,0,0.5);
+  color:#ff4444;border-radius:6px;cursor:pointer;text-decoration:none;
+  transition:all 0.3s;align-self:flex-start;
+}
+.btn-watch:hover{background:rgba(255,0,0,0.22);border-color:#ff4444;color:#fff;}
+
+/* ── CIRCUIT ── */
+.circuit-panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.circuit-toolbar{
+  padding:14px 20px;background:var(--panel2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.circuit-title{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text2);letter-spacing:2px;flex:1;}
+.toolbar-btn{
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;
+  padding:7px 14px;border-radius:4px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;
+}
+.btn-print{border:1px solid rgba(0,212,255,0.35);background:rgba(0,212,255,0.06);color:var(--cyan);}
+.btn-print:hover{background:rgba(0,212,255,0.12);border-color:var(--cyan);}
+.btn-dl{border:1px solid rgba(0,255,136,0.35);background:rgba(0,255,136,0.06);color:var(--green);}
+.btn-dl:hover{background:rgba(0,255,136,0.12);border-color:var(--green);}
+.circuit-area{min-height:380px;display:flex;align-items:center;justify-content:center;background:var(--bg2);}
+.circuit-ph{text-align:center;display:flex;flex-direction:column;align-items:center;}
+.circuit-ph-icon{font-size:54px;margin-bottom:16px;opacity:0.3;}
+.circuit-ph-title{font-family:'Orbitron',monospace;font-size:14px;color:var(--text3);letter-spacing:2px;margin-bottom:8px;}
+.circuit-ph-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);opacity:0.5;letter-spacing:1px;}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;}
+.footer-text{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:1px;}
+.footer-text span{color:var(--cyan);}
+
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+@media(max-width:900px){
+  .arch-flow{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;}
+  .arch-step:nth-child(2){border-right:none;}
+  .arch-step:nth-child(4){border-right:none;}
+  .arch-arrow{display:none;}
+}
+@media(max-width:768px){
+  nav{display:none;}
+  .hero{padding:80px 0 48px;}
+  .hero-corner{display:none;}
+  .hero-visual{display:none;}
+  .wrap{padding:0 16px;}
+  .hero-title{font-size:clamp(26px,9vw,42px);}
+  .hero-sub{font-size:14px;}
+  .hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;padding-top:0;}
+  .hero-stats>div{padding:12px 14px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .hero-stats>div:nth-child(2){border-right:none;}
+  .hero-stats>div:nth-child(3){border-bottom:none;}
+  .hero-stats>div:nth-child(4){border-right:none;border-bottom:none;}
+  .components-grid{grid-template-columns:1fr;}
+  .features-grid{grid-template-columns:1fr 1fr;}
+  .arch-flow{grid-template-columns:1fr;}
+  .arch-step{border-right:none;border-bottom:1px solid var(--border);}
+  .arch-step:last-child{border-bottom:none;}
+  .flash-body{grid-template-columns:1fr;padding:20px 16px;gap:24px;}
+  .flasher-widget{position:static;}
+  .fw-config{grid-template-columns:repeat(3,1fr);}
+  .video-inner{grid-template-columns:1fr;}
+  .video-preview{border-right:none;border-bottom:1px solid var(--border);min-height:180px;}
+  .video-info{padding:20px 16px;}
+  .video-title{font-size:14px;}
+  .footer-inner{flex-direction:column;gap:8px;text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header>
+  <div class="header-inner">
+    <a href="../../index.html" class="logo">
+      <div>
+        <div class="logo-text">ZARF ROBOTICS</div>
+        <div class="logo-sub">TECHNOLOGY THAT HELPS!</div>
+      </div>
+    </a>
+    <nav>
+      <a href="#howit">HOW IT WORKS</a>
+      <a href="#components">COMPONENTS</a>
+      <a href="#pinout">PINOUT</a>
+      <a href="#features">FEATURES</a>
+      <a href="#flash">FLASH</a>
+      <a href="#circuit">CIRCUIT</a>
+      <a href="#tutorial">TUTORIAL</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ══ HERO ══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-corner tl"></div>
+  <div class="hero-corner br"></div>
+
+  <!-- Ambient waveform decoration -->
+  <div class="hero-visual">
+    <svg viewBox="0 0 420 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="0,140 30,100 60,160 90,80 120,140 150,40 180,140 210,100 240,170 270,60 300,140 330,110 360,155 390,90 420,140"
+        stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.8">
+        <animate attributeName="points" dur="3s" repeatCount="indefinite"
+          values="0,140 30,100 60,160 90,80 120,140 150,40 180,140 210,100 240,170 270,60 300,140 330,110 360,155 390,90 420,140;
+                  0,140 30,130 60,110 90,150 120,100 150,130 180,90 210,150 240,120 270,140 300,100 330,140 360,110 390,140 420,140;
+                  0,140 30,100 60,160 90,80 120,140 150,40 180,140 210,100 240,170 270,60 300,140 330,110 360,155 390,90 420,140"/>
+      </polyline>
+      <polyline points="0,140 30,120 60,145 90,110 120,150 150,80 180,145 210,120 240,155 270,90 300,145 330,125 360,148 390,105 420,140"
+        stroke="#00d4ff" stroke-width="1" fill="none" opacity="0.35">
+        <animate attributeName="points" dur="2.2s" repeatCount="indefinite"
+          values="0,140 30,120 60,145 90,110 120,150 150,80 180,145 210,120 240,155 270,90 300,145 330,125 360,148 390,105 420,140;
+                  0,140 30,140 60,130 90,145 120,125 150,140 180,120 210,145 240,130 270,140 300,125 330,140 360,128 390,140 420,140;
+                  0,140 30,120 60,145 90,110 120,150 150,80 180,145 210,120 240,155 270,90 300,145 330,125 360,148 390,105 420,140"/>
+      </polyline>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span class="status-text">PROJECT ACTIVE — REV 1.0.0</span>
+    </div>
+    <div class="hero-channel">// ZARF ROBOTICS PRESENTS</div>
+    <h1 class="hero-title">
+      XIAOZHI<br>
+      <span>AI VOICE</span><br>
+      ASSISTANT
+    </h1>
+    <p class="hero-sub">
+      A real-time AI voice chatbot on ESP32-S3 — powered by the Xiaozhi cloud platform. Talk to it, it listens, it thinks, it answers. INMP441 mic captures your voice, MAX98357A plays the response, and the ST7789 display shows the conversation. No heavy on-device AI — all the intelligence lives in the cloud.
+    </p>
+    <div class="hero-tags">
+      <span class="tag tag-cyan">ESP32-S3 DEVKIT</span>
+      <span class="tag tag-green">XIAOZHI CLOUD AI</span>
+      <span class="tag tag-purple">ST7789 DISPLAY</span>
+      <span class="tag tag-cyan">INMP441 MIC</span>
+      <span class="tag tag-orange">MAX98357A AMP</span>
+      <span class="tag tag-yellow">I2S AUDIO</span>
+      <span class="tag tag-red">VOICE CHATBOT</span>
+      <span class="tag tag-green">OPEN SOURCE</span>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-val">I2S</div><div class="stat-label">DIGITAL AUDIO</div></div>
+      <div><div class="stat-val">240MHz</div><div class="stat-label">DUAL-CORE</div></div>
+      <div><div class="stat-val">ST7789</div><div class="stat-label">COLOR DISPLAY</div></div>
+      <div><div class="stat-val">AI</div><div class="stat-label">CLOUD POWERED</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══════════════════════════════════ -->
+<section class="section" id="howit">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">HOW IT WORKS</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="arch-flow">
+      <div class="arch-step">
+        <div class="arch-arrow">›</div>
+        <div class="arch-step-icon">🎤</div>
+        <div class="arch-step-title">CAPTURE</div>
+        <div class="arch-step-desc">INMP441 MEMS microphone captures your voice digitally via I2S — zero analog noise.</div>
+      </div>
+      <div class="arch-step">
+        <div class="arch-arrow">›</div>
+        <div class="arch-step-icon">📡</div>
+        <div class="arch-step-title">TRANSMIT</div>
+        <div class="arch-step-desc">ESP32-S3 streams audio over WiFi via WebSocket to the Xiaozhi cloud backend in real-time.</div>
+      </div>
+      <div class="arch-step">
+        <div class="arch-arrow">›</div>
+        <div class="arch-step-icon">🧠</div>
+        <div class="arch-step-title">AI PROCESS</div>
+        <div class="arch-step-desc">Xiaozhi cloud runs ASR → LLM (DeepSeek / GPT) → TTS pipeline in milliseconds.</div>
+      </div>
+      <div class="arch-step">
+        <div class="arch-arrow">›</div>
+        <div class="arch-step-icon">🔊</div>
+        <div class="arch-step-title">PLAYBACK</div>
+        <div class="arch-step-desc">Audio response streams back and MAX98357A Class-D amplifier plays it through the speaker.</div>
+      </div>
+      <div class="arch-step">
+        <div class="arch-step-icon">📺</div>
+        <div class="arch-step-title">DISPLAY</div>
+        <div class="arch-step-desc">ST7789 color LCD shows the conversation, pairing code, connection status, and animations.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;padding:18px 22px;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.15);border-radius:8px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;">// WHY CLOUD AI?</div>
+      <div style="font-size:13px;color:var(--text2);font-weight:300;line-height:1.7;">
+        Running a Large Language Model on a microcontroller is not feasible — LLMs need gigabytes of RAM and heavy compute. Xiaozhi's architecture is clever: the ESP32-S3 handles only the real-time I/O (mic, speaker, display, WiFi), while the cloud handles ASR, the LLM conversation, and TTS synthesis. Round-trip latency is typically under 1.5 seconds on a good connection. This means you get genuine GPT-level intelligence in a device you can hold in your hand for under $10 in components.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMPONENTS ══════════════════════════════════════ -->
+<section class="section" id="components">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">BILL OF MATERIALS</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="components-grid">
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-001 // MAIN CONTROLLER</div>
+        <div class="comp-icon">⚡</div>
+        <div class="comp-name">ESP32-S3 DEVKITC-1</div>
+        <div class="comp-spec">Dual-core Xtensa LX7 @ 240MHz · 512KB SRAM · 8MB PSRAM · WiFi 2.4GHz · Bluetooth 5 · USB-OTG · 45 GPIO · Built-in USB-Serial for easy flashing</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=ESP32-S3+DevKitC" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-002 // MICROPHONE</div>
+        <div class="comp-icon">🎤</div>
+        <div class="comp-name">INMP441 I2S MIC</div>
+        <div class="comp-spec">MEMS digital microphone · I2S output · −26 dBFS sensitivity · 60 Hz – 15 kHz response · 3.3V · Built-in ADC — sends digital audio directly, no analog noise, no external ADC needed</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=INMP441+microphone+module" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-003 // AMPLIFIER</div>
+        <div class="comp-icon">🔊</div>
+        <div class="comp-name">MAX98357A I2S AMP</div>
+        <div class="comp-spec">Class D I2S audio amplifier · 3.2W @ 4Ω · No external DAC needed — decodes I2S directly · 2.5V–5.5V · Combines DAC + Amplifier in one module · Perfect for 8Ω mini speaker</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=MAX98357A+I2S+amplifier" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-004 // DISPLAY</div>
+        <div class="comp-icon">📺</div>
+        <div class="comp-name">ST7789 1.54" TFT LCD</div>
+        <div class="comp-spec">240×240 pixel color IPS display · SPI interface · 3.3V logic · 65K colors · Shows pairing code on boot, conversation text, animated waveform, WiFi status</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=ST7789+1.54+inch+display+module" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-005 // SPEAKER</div>
+        <div class="comp-icon">📢</div>
+        <div class="comp-name">MINI SPEAKER 8Ω 1W</div>
+        <div class="comp-spec">8Ω impedance · 1W rated power · 40mm or 36mm round cavity speaker · Connects to SPK+ and SPK− pads on MAX98357A · Do not use headphones directly</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=mini+speaker+8+ohm+1W" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-006 // PROTOTYPING</div>
+        <div class="comp-icon">🔧</div>
+        <div class="comp-name">BREADBOARDS × 2 + WIRES</div>
+        <div class="comp-spec">2 × 400-tie point breadboards · Jumper wire set (M-M, M-F) · ESP32-S3 DevKit spans both breadboards side by side — one board per side · Color-coded wires strongly recommended</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×2</span></div>
+          <a href="https://www.amazon.in/s?k=breadboard+400+points+jumper+wires" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-id">COMP-007 // INDICATOR</div>
+        <div class="comp-icon">💡</div>
+        <div class="comp-name">LED (ANY COLOR) + 100Ω RESISTOR</div>
+        <div class="comp-spec">5mm or 3mm standard LED · 100Ω current-limiting resistor · Acts as status indicator — lights up when Xiaozhi is listening or processing your request</div>
+        <div class="comp-footer">
+          <div class="comp-qty">QTY: <span class="qty-val">×1</span></div>
+          <a href="https://www.amazon.in/s?k=5mm+LED+assorted+pack" target="_blank" class="btn-buy">BUY NOW</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══════════════════════════════════════ -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">FEATURES</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🗣️</div>
+        <div class="feat-title">REAL-TIME VOICE INPUT</div>
+        <div class="feat-desc">INMP441 I2S mic delivers crisp digital audio directly to ESP32-S3. No analog-to-digital conversion needed on the MCU side — noise-free capture for reliable ASR.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🧠</div>
+        <div class="feat-title">CLOUD AI (DEEPSEEK / GPT)</div>
+        <div class="feat-desc">Xiaozhi platform supports multiple LLM backends including DeepSeek and GPT. The ESP32 just handles transport — the AI model runs server-side with full contextual memory per session.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📺</div>
+        <div class="feat-title">ST7789 COLOR DISPLAY</div>
+        <div class="feat-desc">240×240 IPS LCD shows pairing code on boot, conversation transcript, animated waveform while talking, and connection status. Full color at 65K color depth.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔗</div>
+        <div class="feat-title">PAIRING CODE SYSTEM</div>
+        <div class="feat-desc">On first boot, the device shows a 6-digit pairing code on the ST7789 display. Enter it at xiaozhi.fun to link the device to your AI account — no config file edits needed.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">1.5s RESPONSE LATENCY</div>
+        <div class="feat-desc">ESP32-S3's dual-core LX7 at 240MHz handles audio I/O efficiently. With a stable WiFi connection, full voice-to-voice round trip completes in roughly 1.5 seconds.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔊</div>
+        <div class="feat-title">CLASS-D AUDIO OUTPUT</div>
+        <div class="feat-desc">MAX98357A receives I2S data directly from ESP32-S3, no external DAC required. 3.2W into 4Ω for surprisingly loud, clear speech playback from a tiny module.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📡</div>
+        <div class="feat-title">WEBSOCKET STREAMING</div>
+        <div class="feat-desc">Audio is streamed bidirectionally over WebSocket — mic audio goes up, TTS audio comes down. Real-time full-duplex communication keeps latency low.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🏠</div>
+        <div class="feat-title">HOME ASSISTANT READY</div>
+        <div class="feat-desc">Xiaozhi supports MQTT and HomeAssistant integration — your voice assistant can control smart home devices, query sensors, and trigger automations through conversation.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔓</div>
+        <div class="feat-title">ONE-CLICK BROWSER FLASH</div>
+        <div class="feat-desc">No Arduino IDE required. The built-in web flasher on this page uses ESP Web Tools to flash the merged firmware directly from Chrome or Edge. Just plug in USB and click.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PINOUT ══════════════════════════════════════════ -->
+<section class="section" id="pinout">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">PIN MAPPING</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="pin-table-wrap">
+      <table class="pin-table">
+        <thead>
+          <tr>
+            <th>MODULE</th>
+            <th>SIGNAL / PIN</th>
+            <th>ESP32-S3 GPIO</th>
+            <th>NOTES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- INMP441 -->
+          <tr class="pin-section-row"><td colspan="4">// INMP441 — I2S MICROPHONE</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">VDD</td><td class="pin-gpio">3.3V</td><td class="pin-note">Do NOT connect to 5V — module is 3.3V only</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">GND</td><td class="pin-gpio">GND</td><td class="pin-note">Common ground</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">SD (Data)</td><td class="pin-gpio">GPIO 4</td><td class="pin-note">I2S data line from mic to ESP32</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">WS (Word Select)</td><td class="pin-gpio">GPIO 5</td><td class="pin-note">L/R clock — sets left/right channel</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">SCK (Bit Clock)</td><td class="pin-gpio">GPIO 6</td><td class="pin-note">I2S bit clock from ESP32</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">L/R (Channel Select)</td><td class="pin-gpio">GND</td><td class="pin-note">Tie to GND for left channel output</td></tr>
+          <!-- MAX98357A -->
+          <tr class="pin-section-row"><td colspan="4">// MAX98357A — I2S CLASS-D AMPLIFIER</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">VIN</td><td class="pin-gpio">3.3V or 5V</td><td class="pin-note">5V gives slightly more volume</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">GND</td><td class="pin-gpio">GND</td><td class="pin-note">Common ground</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">LRC (Word Select)</td><td class="pin-gpio">GPIO 15</td><td class="pin-note">I2S word select from ESP32</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">BCLK (Bit Clock)</td><td class="pin-gpio">GPIO 16</td><td class="pin-note">I2S bit clock from ESP32</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">DIN (Data In)</td><td class="pin-gpio">GPIO 17</td><td class="pin-note">I2S data output from ESP32</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">GAIN / SD</td><td class="pin-gpio">NC</td><td class="pin-note">Leave unconnected for 9dB gain default</td></tr>
+          <tr><td>Speaker</td><td class="pin-pin">+/−</td><td class="pin-gpio">SPK+ / SPK−</td><td class="pin-note">8Ω 1W speaker to MAX98357A output pads</td></tr>
+          <!-- ST7789 -->
+          <tr class="pin-section-row"><td colspan="4">// ST7789 — SPI COLOR DISPLAY</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">VCC</td><td class="pin-gpio">3.3V</td><td class="pin-note">3.3V only — never 5V on display logic</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">GND</td><td class="pin-gpio">GND</td><td class="pin-note">Common ground</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">SCL (SPI Clock)</td><td class="pin-gpio">GPIO 18</td><td class="pin-note">SPI clock line</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">SDA (MOSI)</td><td class="pin-gpio">GPIO 23</td><td class="pin-note">SPI data to display</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">RES (Reset)</td><td class="pin-gpio">GPIO 21</td><td class="pin-note">Hard reset for display controller</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">DC (Data/Cmd)</td><td class="pin-gpio">GPIO 22</td><td class="pin-note">Selects data vs command mode</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">CS (Chip Select)</td><td class="pin-gpio">GPIO 19</td><td class="pin-note">SPI chip select — active LOW</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">BLK (Backlight)</td><td class="pin-gpio">3.3V</td><td class="pin-note">Tie to 3.3V to keep backlight on permanently</td></tr>
+          <!-- LED -->
+          <tr class="pin-section-row"><td colspan="4">// STATUS LED</td></tr>
+          <tr><td>LED</td><td class="pin-pin">Anode (+)</td><td class="pin-gpio">GPIO 48</td><td class="pin-note">Via 100Ω current-limiting resistor</td></tr>
+          <tr><td>LED</td><td class="pin-pin">Cathode (−)</td><td class="pin-gpio">GND</td><td class="pin-note">Lights when device is listening/processing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:20px;">
+      <div style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:16px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;">⚠ BREADBOARD LAYOUT TIP</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">ESP32-S3 DevKitC-1 is 18 pins wide and spans both breadboards when placed in the center gap. Orient it with USB-C port facing away from you. All GPIO headers are accessible on both sides of the two boards.</div>
+      </div>
+      <div style="background:rgba(255,43,94,0.04);border:1px solid rgba(255,43,94,0.18);border-radius:8px;padding:16px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);letter-spacing:2px;margin-bottom:8px;">⚠ 3.3V ONLY FOR MIC + DISPLAY</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">INMP441 and ST7789 are strictly 3.3V components. Connecting them to the 5V rail will permanently damage both modules. Double-check VCC connections before powering on.</div>
+      </div>
+      <div style="background:rgba(0,255,136,0.03);border:1px solid rgba(0,255,136,0.18);border-radius:8px;padding:16px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:8px;">// I2S BUS SEPARATION</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;">Mic (I2S RX) and amplifier (I2S TX) use separate GPIO groups. This is intentional — the ESP32-S3 has two independent I2S peripherals (I2S0 and I2S1), allowing simultaneous full-duplex audio.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CIRCUIT DIAGRAM ════════════════════════════════ -->
+<section class="section" id="circuit">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">CIRCUIT DIAGRAM</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="circuit-panel">
+      <div class="circuit-toolbar">
+        <div class="circuit-title">XIAOZHI-ESP32S3-CIRCUIT.PNG — SCHEMATIC VIEW</div>
+        <button id="printBtn" class="toolbar-btn btn-print">🖨️ PRINT</button>
+        <button id="dlCircuitBtn" class="toolbar-btn btn-dl">↓ DOWNLOAD</button>
+      </div>
+      <div class="circuit-area" id="circuitArea">
+        <img id="circuitImg" src="circuits/xiaozhi-esp32s3-circuit.png" alt="Circuit Diagram" style="width:100%;max-height:600px;object-fit:contain;display:none;">
+        <div class="circuit-ph" id="circuitPh">
+          <div class="circuit-ph-icon">🔌</div>
+          <div class="circuit-ph-title">CIRCUIT DIAGRAM</div>
+          <div class="circuit-ph-sub">Place image at circuits/xiaozhi-esp32s3-circuit.png</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SETUP STEPS ════════════════════════════════════ -->
+<section class="section" id="setup">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">SETUP GUIDE</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="steps-list">
+      <div class="setup-step">
+        <span class="ss-num">01</span>
+        <div class="ss-content">
+          <div class="ss-title">ASSEMBLE THE HARDWARE</div>
+          <div class="ss-desc">Place both breadboards side by side and seat the ESP32-S3 DevKitC-1 spanning the center gap. Wire INMP441, MAX98357A, ST7789, and the LED following the pin table above. Use color-coded wires — red for 3.3V, black for GND, and distinct colors for each I2S bus.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <span class="ss-num">02</span>
+        <div class="ss-content">
+          <div class="ss-title">FLASH THE FIRMWARE</div>
+          <div class="ss-desc">Scroll down to the <strong>Flash Tool</strong> section. Connect the ESP32-S3 via USB-C to your PC. Open <strong>Chrome or Edge</strong> — Web Serial is not supported in Firefox or Safari. Click <strong>⚡ CONNECT & FLASH</strong>. The firmware is pre-configured for Xiaozhi; you only need to set up WiFi and pair after flashing.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <span class="ss-num">03</span>
+        <div class="ss-content">
+          <div class="ss-title">CONFIGURE WiFi</div>
+          <div class="ss-desc">On first boot the ST7789 shows a QR code or prompts for network config. Connect to the ESP32's temporary hotspot (<code>Xiaozhi-XXXX</code>) from your phone or PC, navigate to <code>192.168.4.1</code>, and enter your WiFi credentials. The device will reboot and connect automatically.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <span class="ss-num">04</span>
+        <div class="ss-content">
+          <div class="ss-title">PAIR WITH XIAOZHI ACCOUNT</div>
+          <div class="ss-desc">Once on WiFi, the ST7789 display shows a <strong>6-digit pairing code</strong>. Visit <a href="https://xiaozhi.fun" target="_blank" style="color:var(--cyan);text-decoration:none;">xiaozhi.fun</a>, create a free account, and enter the pairing code to link your device. You can then select the AI model (DeepSeek, GPT, etc.) from the web console.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <span class="ss-num">05</span>
+        <div class="ss-content">
+          <div class="ss-title">START TALKING</div>
+          <div class="ss-desc">Wake the device by saying the wake word (default: <strong>"Jarvis or Alexa"</strong> /or configurable). The LED lights up, the display shows the waveform animation, and you'll hear the AI respond through your speaker within about 1–2 seconds. That's it — your AI voice assistant is live.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FLASH TOOL ════════════════════════════════════ -->
+<section class="section" id="flash">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">07</span>
+      <h2 class="sec-title">BROWSER FLASH TOOL</h2>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="flash-tool">
+      <div class="flash-tool-header">
+        <div class="fth-dots">
+          <div class="fth-dot dot-r"></div>
+          <div class="fth-dot dot-y"></div>
+          <div class="fth-dot dot-g"></div>
+        </div>
+        <div class="fth-title">XIAOZHI AI — ESP32-S3 FIRMWARE FLASHER v1.0</div>
+        <div class="fth-badge">WEB SERIAL</div>
+      </div>
+
+      <div class="flash-body">
+
+        <!-- LEFT: Step cards -->
+        <div class="flash-steps">
+          <div class="flash-step-card active-step" id="step1card">
+            <div class="step-num">STEP 01</div>
+            <div class="step-title">CONNECT YOUR ESP32-S3</div>
+            <div class="step-desc">
+              Plug the ESP32-S3 DevKitC-1 into your PC via the <code>USB-C</code> port. Use Chrome or Edge — Firefox doesn't support Web Serial API. Make sure no other serial monitor (Arduino IDE, etc.) is open on the same port.<br><br>
+              If the device doesn't appear in the port list, hold the <code>BOOT</code> button while plugging in USB to enter download mode.
+            </div>
+          </div>
+
+          <div class="flash-step-card" id="step2card">
+            <div class="step-num">STEP 02</div>
+            <div class="step-title">FIRMWARE IS PRE-LOADED</div>
+            <div class="step-desc">
+              The Xiaozhi firmware for ESP32-S3 with ST7789 display support is already bundled with this page as <code>firmware/xiaozhi-esp32s3.bin</code>. No need to download or configure anything — the flasher picks it up automatically.<br><br>
+              Chip family is locked to <code>ESP32-S3</code>. Flash offset is <code>0x0000</code> (merged firmware).
+            </div>
+          </div>
+
+          <div class="flash-step-card" id="step3card">
+            <div class="step-num">STEP 03</div>
+            <div class="step-title">CLICK CONNECT & FLASH</div>
+            <div class="step-desc">
+              Hit the button on the right. A browser popup will ask you to select the serial port — pick your ESP32-S3. The flasher will erase the chip, then write the firmware. The whole process takes about <code>30–60 seconds</code>.<br><br>
+              After flashing completes, the device reboots automatically into the Xiaozhi firmware. Watch the ST7789 for the WiFi setup screen.
+            </div>
+          </div>
+
+          <!-- Browser requirement callout -->
+          <div style="background:rgba(255,224,64,0.04);border:1px solid rgba(255,224,64,0.2);border-radius:8px;padding:16px 18px;">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--yellow);letter-spacing:2px;margin-bottom:8px;">// REQUIREMENTS</div>
+            <div style="font-size:12px;color:var(--text2);font-weight:300;line-height:1.7;">
+              Web Serial only works in <strong style="color:#fff;">Chrome or Edge on desktop</strong>. The page must be served over <strong style="color:#fff;">HTTPS or localhost</strong> — direct file:// opens will block the API. If you're hosting this on GitHub Pages or a web server, you're good.
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Flasher widget -->
+        <div class="flasher-widget">
+          <div class="fw-panel">
+            <div class="fw-header">
+              <div class="fw-title">ESP32-S3 FLASHER</div>
+              <div class="fw-chip-badge">ESP32-S3</div>
+            </div>
+            <div class="fw-body">
+
+              <div class="fw-config">
+                <div class="fw-cfg-item">
+                  <div class="fw-cfg-label">BOARD</div>
+                  <div class="fw-cfg-val">S3</div>
+                </div>
+                <div class="fw-cfg-item">
+                  <div class="fw-cfg-label">OFFSET</div>
+                  <div class="fw-cfg-val">0x0</div>
+                </div>
+                <div class="fw-cfg-item">
+                  <div class="fw-cfg-label">BAUD</div>
+                  <div class="fw-cfg-val">AUTO</div>
+                </div>
+              </div>
+
+              <div class="fw-status" id="fwStatus">
+                <div class="fw-dot" id="fwDot"></div>
+                <span id="fwStatusText">Initialising flasher…</span>
+              </div>
+
+              <div class="fw-progress" id="fwProgress">
+                <div class="fw-progress-bar" id="fwProgressBar"></div>
+              </div>
+
+              <esp-web-install-button id="espInstallBtn" manifest="firmware/xiaozhi-esp32s3-manifest.json">
+                <button slot="activate" class="fw-flash-btn" id="fwFlashBtn">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.251.068a.5.5 0 01.227.58L9.677 6.5H13a.5.5 0 01.364.843l-8 8.5a.5.5 0 01-.842-.49L6.323 9.5H3a.5.5 0 01-.364-.843l8-8.5a.5.5 0 01.615-.09z"/>
+                  </svg>
+                  CONNECT &amp; FLASH
+                </button>
+                <span slot="unsupported" class="fw-unsupported">
+                  ⚠ Use Chrome or Edge on desktop — Web Serial not supported in this browser.
+                </span>
+                <span slot="not-allowed" class="fw-unsupported">
+                  ⚠ HTTPS or localhost required. Open via GitHub Pages or a local server.
+                </span>
+              </esp-web-install-button>
+
+              <div class="fw-note">
+                <strong>ERASE RECOMMENDED:</strong> When prompted, enable "Erase device" to clear any previous firmware and ensure a clean flash. Required for first-time flashes.
+              </div>
+
+              <div class="fw-pills">
+                <div class="fw-pill">🌐 Chrome / Edge</div>
+                <div class="fw-pill">🔒 HTTPS / localhost</div>
+                <div class="fw-pill">📡 Web Serial API</div>
+                <div class="fw-pill">🔓 No server upload</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VIDEO ════════════════════════════════════════════ -->
+<section class="section" id="tutorial">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-num">08</span>
+      <h2 class="sec-title">VIDEO TUTORIAL</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="video-panel">
+      <div class="video-inner">
+        <div class="video-preview" id="videoPreview">
+          <div class="video-thumb-bg"></div>
+          <div class="play-btn">
+            <svg width="28" height="28" fill="white" viewBox="0 0 16 16">
+              <path d="M6.79 5.093A.5.5 0 006 5.5v5a.5.5 0 00.79.407l3.5-2.5a.5.5 0 000-.814l-3.5-2.5z"/>
+            </svg>
+          </div>
+          <div class="yt-badge">
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="white"><path d="M13.7 1.56C13.54.92 13.04.42 12.4.26 11.32 0 7 0 7 0S2.68 0 1.6.26C.96.42.46.92.3 1.56 0 2.64 0 5 0 5s0 2.36.3 3.44c.16.64.66 1.12 1.3 1.3C2.68 10 7 10 7 10s4.32 0 5.4-.26c.64-.18 1.14-.66 1.3-1.3C14 7.36 14 5 14 5s0-2.36-.3-3.44z"/></svg>
+            YOUTUBE
+          </div>
+        </div>
+        <div class="video-info">
+          <div class="video-label">// FULL BUILD WALKTHROUGH</div>
+          <div class="video-title">Xiaozhi AI Voice Assistant — ESP32-S3 Build</div>
+          <div class="video-desc">Complete step-by-step build: breadboard wiring for ESP32-S3 DevKitC, INMP441 mic, MAX98357A amp, ST7789 display, flashing firmware from browser, WiFi config, Xiaozhi account pairing, and a live conversation demo.</div>
+          <div class="video-meta">
+            <div class="meta-item"><div class="meta-dot"></div> ZARF ROBOTICS</div>
+            <div class="meta-item"><div class="meta-dot"></div> ~25 MIN</div>
+            <div class="meta-item"><div class="meta-dot"></div> BEGINNER</div>
+          </div>
+          <a href="https://www.youtube.com/@zarfrobotics2011" target="_blank" class="btn-watch">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M15.6 1.87C15.43 1.22 14.93.72 14.28.55 13.03.22 8 .22 8 .22S2.97.22 1.72.55C1.07.72.57 1.22.4 1.87.08 3.12.08 5.72.08 5.72s0 2.6.32 3.85c.17.65.67 1.15 1.32 1.32C3 11.22 8 11.22 8 11.22s5.03 0 6.28-.33c.65-.17 1.15-.67 1.32-1.32.32-1.25.32-3.85.32-3.85S15.92 3.12 15.6 1.87z"/></svg>
+            WATCH ON YOUTUBE
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-text">© 2026 <span>ZARF ROBOTICS</span> · ALL RIGHTS RESERVED</div>
+    <div class="footer-text">PROJECT: <span>XIAOZHI-AI-ESP32S3-V1.0</span></div>
+  </div>
+</footer>
+
+<script>
+// ── Circuit image ──────────────────────────
+const cImg = document.getElementById('circuitImg');
+if(cImg){
+  cImg.addEventListener('load', function(){ this.style.display='block'; document.getElementById('circuitPh').style.display='none'; });
+  cImg.addEventListener('error', function(){ this.style.display='none'; document.getElementById('circuitPh').style.display='flex'; });
+}
+document.getElementById('printBtn').addEventListener('click',function(){
+  const img=document.getElementById('circuitImg');
+  if(!img||img.style.display==='none'){alert('Circuit diagram not loaded.');return;}
+  const w=window.open('','_blank');
+  w.document.write('<html><body style="margin:0"><img src="'+img.src+'" style="max-width:100%" onload="window.print();window.close()"></body></html>');
+  w.document.close();
+});
+document.getElementById('dlCircuitBtn').addEventListener('click',function(){
+  const a=document.createElement('a');
+  a.href='circuits/xiaozhi-esp32s3-circuit.png';
+  a.download='xiaozhi-esp32s3-circuit.png';
+  a.click();
+});
+
+// ── Video click ────────────────────────────
+document.getElementById('videoPreview').addEventListener('click',function(){
+  window.open('https://www.youtube.com/@zarfrobotics2011','_blank');
+});
+
+// ── Flasher status ─────────────────────────
+const fwDot        = document.getElementById('fwDot');
+const fwStatusEl   = document.getElementById('fwStatusEl') || document.getElementById('fwStatus');
+const fwStatusText = document.getElementById('fwStatusText');
+const fwProgress   = document.getElementById('fwProgress');
+const fwProgressBar= document.getElementById('fwProgressBar');
+const step2card    = document.getElementById('step2card');
+const step3card    = document.getElementById('step3card');
+
+function setStatus(state, text){
+  fwStatusText.textContent = text;
+  const statusDiv = document.getElementById('fwStatus');
+  statusDiv.className = 'fw-status';
+  fwDot.className = 'fw-dot';
+  if(state==='ready'){statusDiv.classList.add('status-ready');fwDot.classList.add('dot-ok');}
+  if(state==='busy') {statusDiv.classList.add('status-busy'); fwDot.classList.add('dot-busy');}
+  if(state==='error'){statusDiv.classList.add('status-error');fwDot.classList.add('dot-err');}
+}
+
+// Simulate readiness check on load
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    // Check if WebSerial is supported
+    if('serial' in navigator){
+      setStatus('ready','Ready — ESP32-S3 firmware loaded · Click to flash');
+      step2card.classList.add('active-step');
+    } else {
+      setStatus('error','Web Serial not available — use Chrome or Edge on desktop');
+    }
+  }, 800);
+});
+
+// Listen to ESP Web Tools events for progress animation
+document.getElementById('espInstallBtn').addEventListener('state-changed',(e)=>{
+  const state = e.detail;
+  if(!state) return;
+  fwProgress.classList.add('show');
+  if(state.state === 'initializing'){
+    setStatus('busy','Connecting to ESP32-S3…');
+    step3card.classList.add('active-step');
+    animateProgress(0, 15, 1200);
+  } else if(state.state === 'preparing'){
+    setStatus('busy','Erasing flash memory…');
+    animateProgress(15, 40, 2000);
+  } else if(state.state === 'writing'){
+    const pct = state.details?.percentage || 0;
+    setStatus('busy',`Flashing firmware… ${Math.round(pct)}%`);
+    fwProgressBar.style.width = (40 + pct * 0.55) + '%';
+  } else if(state.state === 'finished'){
+    setStatus('ready','✓ Flash complete! Device is rebooting…');
+    animateProgress(95, 100, 600);
+  } else if(state.state === 'error'){
+    setStatus('error','Flash failed — check connection and retry');
+    fwProgress.classList.remove('show');
+  }
+});
+
+function animateProgress(from, to, duration){
+  const start = performance.now();
+  const cur = parseFloat(fwProgressBar.style.width)||from;
+  function step(now){
+    const t = Math.min((now-start)/duration,1);
+    const ease = t<0.5?2*t*t:(1-Math.pow(-2*t+2,2)/2);
+    fwProgressBar.style.width = (cur + (to-cur)*ease) + '%';
+    if(t<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+</script>
+</body>
+</html>
