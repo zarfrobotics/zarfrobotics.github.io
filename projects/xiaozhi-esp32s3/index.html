@@ -878,7 +878,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
         <span class="ss-num">05</span>
         <div class="ss-content">
           <div class="ss-title">START TALKING</div>
-          <div class="ss-desc">Wake the device by saying the wake word (default: <strong>"Jarvis or Alexa"</strong> /or configurable). The LED lights up, the display shows the waveform animation, and you'll hear the AI respond through your speaker within about 1–2 seconds. That's it — your AI voice assistant is live.</div>
+          <div class="ss-desc">Wake the device by saying the wake word (default: <strong>"小智"</strong> / "Xiaozhi" or configurable). The LED lights up, the display shows the waveform animation, and you'll hear the AI respond through your speaker within about 1–2 seconds. That's it — your AI voice assistant is live.</div>
         </div>
       </div>
     </div>
@@ -978,7 +978,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
                 <div class="fw-progress-bar" id="fwProgressBar"></div>
               </div>
 
-              <esp-web-install-button id="espInstallBtn" manifest="firmware/xiaozhi-esp32s3-manifest.json">
+              <esp-web-install-button id="espInstallBtn" manifest="">
                 <button slot="activate" class="fw-flash-btn" id="fwFlashBtn">
                   <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M11.251.068a.5.5 0 01.227.58L9.677 6.5H13a.5.5 0 01.364.843l-8 8.5a.5.5 0 01-.842-.49L6.323 9.5H3a.5.5 0 01-.364-.843l8-8.5a.5.5 0 01.615-.09z"/>
@@ -1087,73 +1087,109 @@ document.getElementById('videoPreview').addEventListener('click',function(){
   window.open('https://www.youtube.com/@zarfrobotics2011','_blank');
 });
 
-// ── Flasher status ─────────────────────────
+// ── Flasher ──────────────────────────────────────────────────────────────
+const espBtn       = document.getElementById('espInstallBtn');
 const fwDot        = document.getElementById('fwDot');
-const fwStatusEl   = document.getElementById('fwStatusEl') || document.getElementById('fwStatus');
 const fwStatusText = document.getElementById('fwStatusText');
 const fwProgress   = document.getElementById('fwProgress');
 const fwProgressBar= document.getElementById('fwProgressBar');
 const step2card    = document.getElementById('step2card');
 const step3card    = document.getElementById('step3card');
 
+const FIRMWARE_PATH = 'firmware/xiaozhi-esp32s3.bin';
+let   manifestBlobUrl = null;
+
 function setStatus(state, text){
   fwStatusText.textContent = text;
   const statusDiv = document.getElementById('fwStatus');
   statusDiv.className = 'fw-status';
   fwDot.className = 'fw-dot';
-  if(state==='ready'){statusDiv.classList.add('status-ready');fwDot.classList.add('dot-ok');}
-  if(state==='busy') {statusDiv.classList.add('status-busy'); fwDot.classList.add('dot-busy');}
-  if(state==='error'){statusDiv.classList.add('status-error');fwDot.classList.add('dot-err');}
+  if(state==='ready'){ statusDiv.classList.add('status-ready'); fwDot.classList.add('dot-ok');   }
+  if(state==='busy') { statusDiv.classList.add('status-busy');  fwDot.classList.add('dot-busy'); }
+  if(state==='error'){ statusDiv.classList.add('status-error'); fwDot.classList.add('dot-err');  }
 }
 
-// Simulate readiness check on load
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    // Check if WebSerial is supported
-    if('serial' in navigator){
-      setStatus('ready','Ready — ESP32-S3 firmware loaded · Click to flash');
-      step2card.classList.add('active-step');
-    } else {
-      setStatus('error','Web Serial not available — use Chrome or Edge on desktop');
-    }
-  }, 800);
+// Build a blob-URL manifest pointing at the local .bin file.
+// This is the same approach used by WLED and other ESP Web Tools deployments —
+// no separate manifest.json file needed on the server.
+async function buildManifest(){
+  // Fetch the firmware to get a blob URL the esp-web-tools element can use
+  let firmwareUrl;
+  try {
+    const resp = await fetch(FIRMWARE_PATH);
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const blob = await resp.blob();
+    firmwareUrl = URL.createObjectURL(blob);
+  } catch(err) {
+    setStatus('error', `Cannot load firmware bin: ${err.message}`);
+    return;
+  }
+
+  // Revoke previous manifest blob if any
+  if(manifestBlobUrl) URL.revokeObjectURL(manifestBlobUrl);
+
+  const manifest = {
+    name: "Xiaozhi AI — ESP32-S3",
+    version: "1.0.0",
+    new_install_prompt_erase: true,
+    builds: [{
+      chipFamily: "ESP32-S3",
+      parts: [{ path: firmwareUrl, offset: 0 }]
+    }]
+  };
+
+  const mBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  manifestBlobUrl = URL.createObjectURL(mBlob);
+  espBtn.manifest = manifestBlobUrl;
+
+  setStatus('ready', 'Ready — Xiaozhi firmware loaded · Click to flash');
+  step2card.classList.add('active-step');
+}
+
+// Kick off on page load
+window.addEventListener('load', () => {
+  if(!('serial' in navigator)){
+    setStatus('error', 'Web Serial not supported — use Chrome or Edge on desktop');
+    return;
+  }
+  setStatus('busy', 'Loading firmware…');
+  buildManifest();
 });
 
-// Listen to ESP Web Tools events for progress animation
-document.getElementById('espInstallBtn').addEventListener('state-changed',(e)=>{
-  const state = e.detail;
-  if(!state) return;
+// Progress + state feedback from ESP Web Tools
+espBtn.addEventListener('state-changed', (e) => {
+  const s = e.detail;
+  if(!s) return;
   fwProgress.classList.add('show');
-  if(state.state === 'initializing'){
-    setStatus('busy','Connecting to ESP32-S3…');
+  if(s.state === 'initializing'){
+    setStatus('busy', 'Connecting to ESP32-S3…');
     step3card.classList.add('active-step');
     animateProgress(0, 15, 1200);
-  } else if(state.state === 'preparing'){
-    setStatus('busy','Erasing flash memory…');
-    animateProgress(15, 40, 2000);
-  } else if(state.state === 'writing'){
-    const pct = state.details?.percentage || 0;
-    setStatus('busy',`Flashing firmware… ${Math.round(pct)}%`);
+  } else if(s.state === 'preparing'){
+    setStatus('busy', 'Erasing flash memory…');
+    animateProgress(15, 40, 2500);
+  } else if(s.state === 'writing'){
+    const pct = s.details?.percentage ?? 0;
+    setStatus('busy', `Writing firmware… ${Math.round(pct)}%`);
     fwProgressBar.style.width = (40 + pct * 0.55) + '%';
-  } else if(state.state === 'finished'){
-    setStatus('ready','✓ Flash complete! Device is rebooting…');
-    animateProgress(95, 100, 600);
-  } else if(state.state === 'error'){
-    setStatus('error','Flash failed — check connection and retry');
+  } else if(s.state === 'finished'){
+    setStatus('ready', '✓ Flash complete — device is rebooting into Xiaozhi!');
+    animateProgress(parseFloat(fwProgressBar.style.width) || 95, 100, 500);
+  } else if(s.state === 'error'){
+    setStatus('error', 'Flash failed — check USB connection and retry');
     fwProgress.classList.remove('show');
   }
 });
 
 function animateProgress(from, to, duration){
   const start = performance.now();
-  const cur = parseFloat(fwProgressBar.style.width)||from;
-  function step(now){
-    const t = Math.min((now-start)/duration,1);
-    const ease = t<0.5?2*t*t:(1-Math.pow(-2*t+2,2)/2);
-    fwProgressBar.style.width = (cur + (to-cur)*ease) + '%';
-    if(t<1) requestAnimationFrame(step);
+  function tick(now){
+    const t = Math.min((now - start) / duration, 1);
+    const ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+    fwProgressBar.style.width = (from + (to - from) * ease) + '%';
+    if(t < 1) requestAnimationFrame(tick);
   }
-  requestAnimationFrame(step);
+  requestAnimationFrame(tick);
 }
 </script>
 </body>
