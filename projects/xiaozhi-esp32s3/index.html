@@ -763,32 +763,31 @@ footer{border-top:1px solid var(--border);padding:32px 0;margin-top:60px;}
           <tr class="pin-section-row"><td colspan="4">// INMP441 — I2S MICROPHONE</td></tr>
           <tr><td>INMP441</td><td class="pin-pin">VDD</td><td class="pin-gpio">3.3V</td><td class="pin-note">Do NOT connect to 5V — module is 3.3V only</td></tr>
           <tr><td>INMP441</td><td class="pin-pin">GND</td><td class="pin-gpio">GND</td><td class="pin-note">Common ground</td></tr>
-          <tr><td>INMP441</td><td class="pin-pin">SD (Data)</td><td class="pin-gpio">GPIO 4</td><td class="pin-note">I2S data line from mic to ESP32</td></tr>
-          <tr><td>INMP441</td><td class="pin-pin">WS (Word Select)</td><td class="pin-gpio">GPIO 5</td><td class="pin-note">L/R clock — sets left/right channel</td></tr>
-          <tr><td>INMP441</td><td class="pin-pin">SCK (Bit Clock)</td><td class="pin-gpio">GPIO 6</td><td class="pin-note">I2S bit clock from ESP32</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">SD (Data)</td><td class="pin-gpio">GPIO 6</td><td class="pin-note">I2S data line from mic to ESP32</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">WS (Word Select)</td><td class="pin-gpio">GPIO 4</td><td class="pin-note">L/R clock — sets left/right channel</td></tr>
+          <tr><td>INMP441</td><td class="pin-pin">SCK (Bit Clock)</td><td class="pin-gpio">GPIO 5</td><td class="pin-note">I2S bit clock from ESP32</td></tr>
           <tr><td>INMP441</td><td class="pin-pin">L/R (Channel Select)</td><td class="pin-gpio">GND</td><td class="pin-note">Tie to GND for left channel output</td></tr>
           <!-- MAX98357A -->
           <tr class="pin-section-row"><td colspan="4">// MAX98357A — I2S CLASS-D AMPLIFIER</td></tr>
           <tr><td>MAX98357A</td><td class="pin-pin">VIN</td><td class="pin-gpio">3.3V or 5V</td><td class="pin-note">5V gives slightly more volume</td></tr>
           <tr><td>MAX98357A</td><td class="pin-pin">GND</td><td class="pin-gpio">GND</td><td class="pin-note">Common ground</td></tr>
-          <tr><td>MAX98357A</td><td class="pin-pin">LRC (Word Select)</td><td class="pin-gpio">GPIO 15</td><td class="pin-note">I2S word select from ESP32</td></tr>
-          <tr><td>MAX98357A</td><td class="pin-pin">BCLK (Bit Clock)</td><td class="pin-gpio">GPIO 16</td><td class="pin-note">I2S bit clock from ESP32</td></tr>
-          <tr><td>MAX98357A</td><td class="pin-pin">DIN (Data In)</td><td class="pin-gpio">GPIO 17</td><td class="pin-note">I2S data output from ESP32</td></tr>
-          <tr><td>MAX98357A</td><td class="pin-pin">GAIN / SD</td><td class="pin-gpio">NC</td><td class="pin-note">Leave unconnected for 9dB gain default</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">LRC (Word Select)</td><td class="pin-gpio">GPIO 16</td><td class="pin-note">I2S word select from ESP32</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">BCLK (Bit Clock)</td><td class="pin-gpio">GPIO 15</td><td class="pin-note">I2S bit clock from ESP32</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">DIN (Data In)</td><td class="pin-gpio">GPIO 7</td><td class="pin-note">I2S data output from ESP32</td></tr>
+          <tr><td>MAX98357A</td><td class="pin-pin">GAIN / SD</td><td class="pin-gpio">GND and VCC</td><td class="pin-note">For higher Volume</td></tr>
           <tr><td>Speaker</td><td class="pin-pin">+/−</td><td class="pin-gpio">SPK+ / SPK−</td><td class="pin-note">8Ω 1W speaker to MAX98357A output pads</td></tr>
           <!-- ST7789 -->
           <tr class="pin-section-row"><td colspan="4">// ST7789 — SPI COLOR DISPLAY</td></tr>
           <tr><td>ST7789</td><td class="pin-pin">VCC</td><td class="pin-gpio">3.3V</td><td class="pin-note">3.3V only — never 5V on display logic</td></tr>
           <tr><td>ST7789</td><td class="pin-pin">GND</td><td class="pin-gpio">GND</td><td class="pin-note">Common ground</td></tr>
-          <tr><td>ST7789</td><td class="pin-pin">SCL (SPI Clock)</td><td class="pin-gpio">GPIO 18</td><td class="pin-note">SPI clock line</td></tr>
-          <tr><td>ST7789</td><td class="pin-pin">SDA (MOSI)</td><td class="pin-gpio">GPIO 23</td><td class="pin-note">SPI data to display</td></tr>
-          <tr><td>ST7789</td><td class="pin-pin">RES (Reset)</td><td class="pin-gpio">GPIO 21</td><td class="pin-note">Hard reset for display controller</td></tr>
-          <tr><td>ST7789</td><td class="pin-pin">DC (Data/Cmd)</td><td class="pin-gpio">GPIO 22</td><td class="pin-note">Selects data vs command mode</td></tr>
-          <tr><td>ST7789</td><td class="pin-pin">CS (Chip Select)</td><td class="pin-gpio">GPIO 19</td><td class="pin-note">SPI chip select — active LOW</td></tr>
-          <tr><td>ST7789</td><td class="pin-pin">BLK (Backlight)</td><td class="pin-gpio">3.3V</td><td class="pin-note">Tie to 3.3V to keep backlight on permanently</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">SCL (SPI Clock)</td><td class="pin-gpio">GPIO 21</td><td class="pin-note">SPI clock line</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">SDA (MOSI)</td><td class="pin-gpio">GPIO 47</td><td class="pin-note">SPI data to display</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">RES (Reset)</td><td class="pin-gpio">GPIO 45</td><td class="pin-note">Hard reset for display controller</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">DC (Data/Cmd)</td><td class="pin-gpio">GPIO 40</td><td class="pin-note">Selects data vs command mode</td></tr>
+          <tr><td>ST7789</td><td class="pin-pin">BLK (Backlight)</td><td class="pin-gpio">42</td><td class="pin-note">For Brightness Control</td></tr>
           <!-- LED -->
           <tr class="pin-section-row"><td colspan="4">// STATUS LED</td></tr>
-          <tr><td>LED</td><td class="pin-pin">Anode (+)</td><td class="pin-gpio">GPIO 48</td><td class="pin-note">Via 100Ω current-limiting resistor</td></tr>
+          <tr><td>LED</td><td class="pin-pin">Anode (+)</td><td class="pin-gpio">GPIO 18</td><td class="pin-note">Via 100Ω current-limiting resistor</td></tr>
           <tr><td>LED</td><td class="pin-pin">Cathode (−)</td><td class="pin-gpio">GND</td><td class="pin-note">Lights when device is listening/processing</td></tr>
         </tbody>
       </table>
