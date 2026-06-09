@@ -338,23 +338,17 @@
   .proj-card:hover::before { opacity: 1; }
   .proj-card:hover::after { opacity: 1; }
 
-  /* Orange accent for ESPCam card */
-  .proj-card.orange-accent::before {
-    background: linear-gradient(90deg, transparent, var(--orange), transparent);
-  }
-  .proj-card.orange-accent::after {
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,107,43,0.07), transparent 70%);
-  }
-  .proj-card.orange-accent:hover {
-    border-color: rgba(255,107,43,0.3);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,107,43,0.1);
-  }
-  .proj-card.orange-accent:hover .card-arrow {
-    border-color: var(--orange);
-    color: var(--orange);
-    background: rgba(255,107,43,0.08);
-    box-shadow: 0 0 12px rgba(255,107,43,0.2);
-  }
+  /* Orange accent */
+  .proj-card.orange-accent::before { background: linear-gradient(90deg, transparent, var(--orange), transparent); }
+  .proj-card.orange-accent::after  { background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,107,43,0.07), transparent 70%); }
+  .proj-card.orange-accent:hover   { border-color: rgba(255,107,43,0.3); box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,107,43,0.1); }
+  .proj-card.orange-accent:hover .card-arrow { border-color: var(--orange); color: var(--orange); background: rgba(255,107,43,0.08); box-shadow: 0 0 12px rgba(255,107,43,0.2); }
+
+  /* Cyan/AI accent for Xiaozhi */
+  .proj-card.cyan-accent::before { background: linear-gradient(90deg, transparent, var(--cyan), transparent); }
+  .proj-card.cyan-accent::after  { background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.08), transparent 70%); }
+  .proj-card.cyan-accent:hover   { border-color: rgba(0,212,255,0.35); box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.12); }
+  .proj-card.cyan-accent:hover .card-arrow { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.08); box-shadow: 0 0 12px rgba(0,212,255,0.25); }
 
   .card-banner { height: 160px; position: relative; overflow: hidden; flex-shrink: 0; }
   .banner-grid {
@@ -362,9 +356,7 @@
     background-image: linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
     background-size: 24px 24px;
   }
-  .banner-grid.orange {
-    background-image: linear-gradient(rgba(255,107,43,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.07) 1px, transparent 1px);
-  }
+  .banner-grid.orange { background-image: linear-gradient(rgba(255,107,43,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.07) 1px, transparent 1px); }
   .banner-glow { position: absolute; inset: 0; }
   .card-chip {
     position: absolute; top: 50%; left: 50%;
@@ -379,11 +371,9 @@
     padding: 4px 10px; border-radius: 2px;
     border: 1px solid rgba(0,212,255,0.3);
     background: rgba(0,0,0,0.5);
+    color: var(--cyan);
   }
-  .chip-label.orange {
-    border-color: rgba(255,107,43,0.4);
-    color: var(--orange);
-  }
+  .chip-label.orange { border-color: rgba(255,107,43,0.4); color: var(--orange); }
 
   .card-badge {
     position: absolute; top: 12px; right: 12px;
@@ -395,6 +385,7 @@
   .badge-soon { background: rgba(255,224,64,0.1);  border: 1px solid rgba(255,224,64,0.35); color: var(--yellow); }
   .badge-hot  { background: rgba(255,107,43,0.15); border: 1px solid rgba(255,107,43,0.4); color: var(--orange); }
   .badge-wip  { background: rgba(180,79,255,0.12); border: 1px solid rgba(180,79,255,0.35);color: var(--purple); }
+  .badge-ai   { background: rgba(0,212,255,0.12);  border: 1px solid rgba(0,212,255,0.4);  color: var(--cyan);   }
 
   .card-body { padding: 20px 22px; flex: 1; display: flex; flex-direction: column; }
   .card-id { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 2px; margin-bottom: 10px; }
@@ -408,6 +399,7 @@
   .ctag-o { border: 1px solid rgba(255,107,43,0.25); color: rgba(255,107,43,0.8); background: rgba(255,107,43,0.05); }
   .ctag-p { border: 1px solid rgba(180,79,255,0.25); color: rgba(180,79,255,0.8); background: rgba(180,79,255,0.05); }
   .ctag-r { border: 1px solid rgba(255,43,94,0.25);  color: rgba(255,43,94,0.8);  background: rgba(255,43,94,0.05); }
+  .ctag-y { border: 1px solid rgba(255,224,64,0.25); color: rgba(255,224,64,0.8); background: rgba(255,224,64,0.05); }
 
   .card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; }
   .card-meta { display: flex; gap: 14px; }
@@ -421,7 +413,7 @@
     display: flex; align-items: center; justify-content: center;
     color: var(--text3); transition: all 0.2s; flex-shrink: 0;
   }
-  .proj-card:not(.orange-accent):hover .card-arrow { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.08); box-shadow: 0 0 12px rgba(0,212,255,0.2); }
+  .proj-card:not(.orange-accent):not(.cyan-accent):hover .card-arrow { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.08); box-shadow: 0 0 12px rgba(0,212,255,0.2); }
 
   .coming-soon-overlay {
     position: absolute; inset: 0;
@@ -433,17 +425,6 @@
   .proj-card.locked:hover .coming-soon-overlay { opacity: 1; }
   .coming-soon-overlay span { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; color: var(--yellow); letter-spacing: 3px; text-shadow: 0 0 20px rgba(255,224,64,0.5); }
   .coming-soon-overlay small { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 2px; }
-
-  .featured-card { grid-column: 1 / -1; display: grid; grid-template-columns: 280px 1fr; min-height: 200px; }
-  .featured-card .card-banner { height: auto; min-height: 200px; border-right: 1px solid var(--border); }
-  .featured-tag {
-    position: absolute; top: 12px; left: 12px;
-    font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
-    padding: 4px 10px; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.4); color: var(--cyan); border-radius: 3px;
-  }
-  .featured-tag.orange {
-    background: rgba(255,107,43,0.12); border-color: rgba(255,107,43,0.4); color: var(--orange);
-  }
 
   footer { border-top: 1px solid var(--border); padding: 28px 0; margin-top: 20px; }
   .footer-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
@@ -471,12 +452,7 @@
     .eyebrow-text { font-size: 9px; letter-spacing: 2px; }
     .hero-title { font-size: clamp(36px, 12vw, 52px); letter-spacing: -0.5px; margin-bottom: 8px; }
     .hero-desc { font-size: 14px; margin: 14px 0 24px; }
-    .hero-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: 100%;
-      margin-bottom: 28px;
-    }
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr; width: 100%; margin-bottom: 28px; }
     .h-stat { padding: 12px 16px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .h-stat:nth-child(2) { border-right: none; }
     .h-stat:nth-child(3) { border-bottom: none; }
@@ -491,15 +467,6 @@
     .search-icon { left: 12px; }
     .section { padding: 16px 0 48px; }
     .sec-title { font-size: 11px; letter-spacing: 2px; }
-    .featured-card {
-      grid-column: 1 / -1;
-      grid-template-columns: 1fr;
-    }
-    .featured-card .card-banner {
-      height: 140px;
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-    }
     .projects-grid { grid-template-columns: 1fr; gap: 14px; }
     .card-body { padding: 16px; }
     .card-title { font-size: 12px; }
@@ -554,7 +521,7 @@
       <span class="dim">///</span> BUILDS
     </h1>
     <p class="hero-desc">
-      Step-by-step hardware &amp; firmware projects for makers. From smart watches to AI-powered security cameras — every build fully documented and open source.
+      Step-by-step hardware &amp; firmware projects for makers. From AI voice assistants to smart security cameras — every build fully documented and open source.
     </p>
     <div class="hero-stats">
       <div class="h-stat">
@@ -578,8 +545,10 @@
     <div class="filter-bar">
       <span class="filter-label">FILTER //</span>
       <button class="filter-btn active" data-filter="all">ALL</button>
-      <button class="filter-btn" data-filter="esp32">ESP32-CAM</button>
+      <button class="filter-btn" data-filter="esp32">ESP32</button>
       <button class="filter-btn" data-filter="camera">CAMERA</button>
+      <button class="filter-btn" data-filter="ai">AI</button>
+      <button class="filter-btn" data-filter="audio">AUDIO</button>
       <button class="filter-btn" data-filter="security">SECURITY</button>
     </div>
   </div>
@@ -609,13 +578,53 @@
     <div class="no-results" id="noResults">
       <div class="no-results-icon">🔍</div>
       <div class="no-results-title">NO PROJECTS FOUND</div>
-      <div class="no-results-sub">Try different keywords · ESP32 · CAMERA · SECURITY</div>
+      <div class="no-results-sub">Try different keywords · ESP32 · CAMERA · AI · AUDIO</div>
     </div>
 
     <div class="projects-grid" id="projectsGrid">
 
-      <!-- PROJECT 01 — ESPSentinel: Security Camera -->
-      <a href="projects/ESPSentinel/" class="proj-card orange-accent" data-tags="esp32 camera security wifi mjpeg avi sd pir servo">
+      <!-- PROJECT 01 — Xiaozhi AI Voice Assistant -->
+      <a href="projects/XiaozhiAI/xiaozhi-esp32s3.html" class="proj-card cyan-accent" data-tags="esp32 esp32s3 ai audio voice i2s display xiaozhi chatbot">
+        <div class="card-banner">
+          <div class="banner-grid"></div>
+          <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,212,255,0.13), transparent 70%);"></div>
+          <div class="card-badge badge-new">NEW</div>
+          <div class="card-chip">
+            <div class="chip-icon">🤖</div>
+            <div class="chip-label">XIAOZHI AI · ESP32-S3</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-id">PROJ-001 // ESP32-S3 · AI · I2S AUDIO · ST7789 DISPLAY</div>
+          <div class="card-title">XIAOZHI AI VOICE ASSISTANT</div>
+          <div class="card-desc">
+            A real-time AI voice chatbot on ESP32-S3. Talk to it naturally — INMP441 mic captures your voice, Xiaozhi cloud AI processes it, MAX98357A plays the response, and the ST7789 display shows the conversation. No heavy AI on the chip.
+          </div>
+          <div class="card-tags">
+            <span class="ctag ctag-c">ESP32-S3</span>
+            <span class="ctag ctag-g">XIAOZHI AI</span>
+            <span class="ctag ctag-c">I2S AUDIO</span>
+            <span class="ctag ctag-p">ST7789 DISPLAY</span>
+            <span class="ctag ctag-y">VOICE CHAT</span>
+            <span class="ctag ctag-g">WEB FLASHER</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-meta">
+              <div class="meta-item"><div class="dot"></div> 7 COMPONENTS</div>
+              <div class="meta-item"><div class="dot"></div> BEGINNER</div>
+              <div class="meta-item"><div class="dot"></div> ~1 HOUR</div>
+            </div>
+            <div class="card-arrow">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- PROJECT 02 — ESPSentinel: Security Camera -->
+      <a href="projects/ESPSentinel/" class="proj-card orange-accent" data-tags="esp32 esp32cam camera security wifi mjpeg avi sd pir servo">
         <div class="card-banner">
           <div class="banner-grid orange"></div>
           <div class="banner-glow" style="background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,107,43,0.14), transparent 70%);"></div>
@@ -654,7 +663,7 @@
         </div>
       </a>
 
-      <!-- PROJECT XX — FEATURED  -->
+            <!-- PROJECT XX — FEATURED  -->
       <!--<a href="projects/xiaozhi-esp32/index.html" class="proj-card featured-card" data-tags="esp32 ai audio">
         <div class="card-banner">
           <div class="banner-grid"></div>
